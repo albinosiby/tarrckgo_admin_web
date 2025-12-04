@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Drivers</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="sidebar-header">Smart Bus Admin</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="SmartBusAdmin.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="students.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item active"><a href="drivers.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="buses.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item"><a href="routes.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="tracking.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="attendance.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="settings.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="login.html"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Drivers</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <section id="page-drivers" class="page-section active">
+                    <div class="card">
+                        <div class="card-title-row"
+                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <h3>Drivers Directory</h3>
+                            <button class="btn btn-primary" onclick="openModal('addDriverModal')">
+                                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Driver
+                            </button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>License No</th>
+                                        <th>Phone</th>
+                                        <th>Assigned Bus</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight:600">Ramesh P</div>
+                                        </td>
+                                        <td>KL-13-20050012345</td>
+                                        <td>9876543210</td>
+                                        <td>Bus 1</td>
+                                        <td><span class="badge badge-success"
+                                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Active</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--primary)">Edit</button>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--danger)">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Driver Modal -->
+                <div class="modal-overlay" id="addDriverModal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div class="modal-title">Add New Driver</div>
+                            <button class="close-btn" onclick="closeModal('addDriverModal')">&times;</button>
+                        </div>
+                        <form onsubmit="event.preventDefault(); closeModal('addDriverModal'); alert('Driver Added!');">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" placeholder="e.g. Ramesh P" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">License Number</label>
+                                <input type="text" class="form-input" placeholder="e.g. KL-13..." required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-input" placeholder="10-digit number" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn" style="background:#f3f4f6; color:#374151"
+                                    onclick="closeModal('addDriverModal')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Driver</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

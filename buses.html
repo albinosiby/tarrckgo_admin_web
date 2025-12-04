@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Buses</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="sidebar-header">Smart Bus Admin</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="SmartBusAdmin.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="students.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item"><a href="drivers.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item active"><a href="buses.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item"><a href="routes.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="tracking.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="attendance.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="settings.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="login.html"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Buses</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <section id="page-buses" class="page-section active">
+                    <div class="card">
+                        <div class="card-title-row"
+                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <h3>Bus Fleet Management</h3>
+                            <button class="btn btn-primary" onclick="openModal('addBusModal')">
+                                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Bus
+                            </button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Bus No</th>
+                                        <th>Registration No</th>
+                                        <th>Capacity</th>
+                                        <th>Driver</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight:600">Bus 1</div>
+                                        </td>
+                                        <td>KL-10-4589</td>
+                                        <td>40 Seats</td>
+                                        <td>Ramesh P</td>
+                                        <td><span class="badge badge-success"
+                                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Active</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--primary)">Edit</button>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--danger)">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight:600">Bus 2</div>
+                                        </td>
+                                        <td>KL-10-5521</td>
+                                        <td>40 Seats</td>
+                                        <td>Suresh K</td>
+                                        <td><span class="badge"
+                                                style="color:var(--text-light);background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Maintenance</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--primary)">Edit</button>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--danger)">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Bus Modal -->
+                <div class="modal-overlay" id="addBusModal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div class="modal-title">Add New Bus</div>
+                            <button class="close-btn" onclick="closeModal('addBusModal')">&times;</button>
+                        </div>
+                        <form onsubmit="event.preventDefault(); closeModal('addBusModal'); alert('Bus Added!');">
+                            <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                                <div>
+                                    <label class="form-label">Bus Number</label>
+                                    <input type="text" class="form-input" placeholder="e.g. Bus 1" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Registration No</label>
+                                    <input type="text" class="form-input" placeholder="e.g. KL-10-..." required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Capacity</label>
+                                <input type="number" class="form-input" placeholder="Number of seats" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Assign Driver</label>
+                                <select class="form-input">
+                                    <option>Select Driver...</option>
+                                    <option>Ramesh P</option>
+                                    <option>Suresh K</option>
+                                    <option>Unassigned</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn" style="background:#f3f4f6; color:#374151"
+                                    onclick="closeModal('addBusModal')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Bus</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

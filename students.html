@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Students</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="sidebar-header">Smart Bus Admin</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="SmartBusAdmin.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item active"><a href="students.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item"><a href="drivers.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="buses.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item"><a href="routes.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="tracking.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="attendance.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="settings.html"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="login.html"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Students</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <!-- Students Page -->
+                <section id="page-students" class="page-section active">
+                    <div class="card">
+                        <div class="card-title-row"
+                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <h3>Students Directory</h3>
+                            <button class="btn btn-primary" onclick="openModal('addStudentModal')">
+                                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Student
+                            </button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Roll No</th>
+                                        <th>Class</th>
+                                        <th>Stop</th>
+                                        <th>Parent Contact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-table-body">
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight:600">Arjun K</div>
+                                            <div class="muted">arjun@example.com</div>
+                                        </td>
+                                        <td>CS-2022-01</td>
+                                        <td>S7 CS A</td>
+                                        <td>Kannur</td>
+                                        <td>9876543210</td>
+                                        <td><span class="badge badge-success"
+                                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Active</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--primary)">Edit</button>
+                                            <button class="btn"
+                                                style="padding:4px 8px;color:var(--danger)">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Student Modal -->
+                <div class="modal-overlay" id="addStudentModal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div class="modal-title">Add New Student</div>
+                            <button class="close-btn" onclick="closeModal('addStudentModal')">&times;</button>
+                        </div>
+                        <form id="addStudentForm"
+                            onsubmit="event.preventDefault(); closeModal('addStudentModal'); alert('Student Added!');">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" placeholder="e.g. John Doe" required>
+                            </div>
+                            <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                                <div>
+                                    <label class="form-label">Roll Number</label>
+                                    <input type="text" class="form-input" placeholder="e.g. CS-101" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Class/Batch</label>
+                                    <input type="text" class="form-input" placeholder="e.g. S7 CS A">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bus Stop</label>
+                                <select class="form-input">
+                                    <option>Select Stop...</option>
+                                    <option>Kannur</option>
+                                    <option>Taliparamba</option>
+                                    <option>Payyanur</option>
+                                    <option>Chemperi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Parent Phone</label>
+                                <input type="tel" class="form-input" placeholder="10-digit number" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn" style="background:#f3f4f6; color:#374151"
+                                    onclick="closeModal('addStudentModal')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Student</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
