@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Routes</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="app">
+        <div class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Smart Bus Admin
+                <button class="sidebar-close">&times;</button>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('main.index') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="{{ url_for('students.students') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item active"><a href="{{ url_for('routes.routes') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="{{ url_for('auth.login') }}"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Routes</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <section id="page-routes" class="page-section active">
+                    <div class="card">
+                        <div class="card-title-row"
+                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <h3>Route Management</h3>
+                            <a href="{{ url_for('routes.add_route') }}" class="btn btn-primary"
+                                style="text-decoration:none;">
+                                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Route
+                            </a>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Route Name</th>
+                                        <th>Start Point</th>
+                                        <th>End Point</th>
+                                        <th>Stops</th>
+                                        <th>Assigned Bus</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for route in routes %}
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight:600">{{ route.route_name }}</div>
+                                        </td>
+                                        <td>{{ route.start_point }}</td>
+                                        <td>{{ route.end_point }}</td>
+                                        <td>{{ route.stops }}</td>
+                                        <td>{{ route.assigned_bus or 'Unassigned' }}</td>
+                                        <td>
+                                            <a href="{{ url_for('routes.route_details', route_id=route.id) }}"
+                                                class="btn"
+                                                style="padding:4px 8px;color:var(--primary);text-decoration:none;">View</a>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="6" style="text-align:center; padding: 20px;">No routes found. Add
+                                            one to get started!</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

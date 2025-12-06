@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Driver Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .detail-group {
+            margin-bottom: 16px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #9ca3af;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Smart Bus Admin
+                <button class="sidebar-close">&times;</button>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('main.index') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="{{ url_for('students.students') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item active"><a href="{{ url_for('drivers.drivers') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="{{ url_for('auth.login') }}"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Driver Details</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <!-- Driver Profile Card -->
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-title-row"
+                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <h3>Driver Profile</h3>
+                            <button class="btn btn-primary">
+                                <span style="font-size:1rem; margin-right:6px">✎</span> Edit
+                            </button>
+                        </div>
+
+                        <div class="profile-header">
+                            <div class="profile-img">👨‍✈️</div>
+                            <div>
+                                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">
+                                    <span id="display_full_name">{{ driver.full_name }}</span>
+                                    <input type="text" id="edit_full_name" class="form-input"
+                                        value="{{ driver.full_name }}" style="display:none; margin-top:5px;">
+                                </h2>
+                                <div style="color: var(--text-light);">License:
+                                    <span id="display_license_number">{{ driver.license_number }}</span>
+                                    <input type="text" id="edit_license_number" class="form-input"
+                                        value="{{ driver.license_number }}" style="display:none; margin-top:5px;">
+                                </div>
+                                <span class="badge badge-success"
+                                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
+                            </div>
+                        </div>
+
+                        <div class="split-row">
+                            <!-- Personal Info -->
+                            <div>
+                                <h4 style="margin-bottom: 16px; color: var(--primary);">Personal Information</h4>
+                                <div class="detail-group">
+                                    <div class="detail-label">Phone Number</div>
+                                    <div class="detail-value" id="display_phone_number">{{ driver.phone_number }}</div>
+                                    <input type="tel" id="edit_phone_number" class="form-input"
+                                        value="{{ driver.phone_number }}" style="display:none;">
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Address</div>
+                                    <div class="detail-value" id="display_address">{{ driver.address or 'N/A' }}</div>
+                                    <textarea id="edit_address" class="form-input"
+                                        style="display:none;">{{ driver.address }}</textarea>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Date of Birth</div>
+                                    <div class="detail-value" id="display_date_of_birth">{{ driver.date_of_birth or
+                                        'N/A' }}</div>
+                                    <input type="date" id="edit_date_of_birth" class="form-input"
+                                        value="{{ driver.date_of_birth }}" style="display:none;">
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Blood Group</div>
+                                    <div class="detail-value" id="display_blood_group">{{ driver.blood_group or 'N/A' }}
+                                    </div>
+                                    <select id="edit_blood_group" class="form-input" style="display:none;">
+                                        <option value="">Select...</option>
+                                        <option value="A+" {% if driver.blood_group=='A+' %}selected{% endif %}>A+
+                                        </option>
+                                        <option value="A-" {% if driver.blood_group=='A-' %}selected{% endif %}>A-
+                                        </option>
+                                        <option value="B+" {% if driver.blood_group=='B+' %}selected{% endif %}>B+
+                                        </option>
+                                        <option value="B-" {% if driver.blood_group=='B-' %}selected{% endif %}>B-
+                                        </option>
+                                        <option value="O+" {% if driver.blood_group=='O+' %}selected{% endif %}>O+
+                                        </option>
+                                        <option value="O-" {% if driver.blood_group=='O-' %}selected{% endif %}>O-
+                                        </option>
+                                        <option value="AB+" {% if driver.blood_group=='AB+' %}selected{% endif %}>AB+
+                                        </option>
+                                        <option value="AB-" {% if driver.blood_group=='AB-' %}selected{% endif %}>AB-
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Assignment & Professional Info -->
+                            <div>
+                                <h4 style="margin-bottom: 16px; color: var(--primary);">Assignment</h4>
+                                <div class="detail-group">
+                                    <div class="detail-label">Assigned Bus</div>
+                                    <div class="detail-value" id="display_assigned_bus">{{ driver.assigned_bus or
+                                        'Unassigned' }}</div>
+                                    <select id="edit_assigned_bus" class="form-input" style="display:none;">
+                                        <option value="">Select Bus...</option>
+                                        {% for bus in buses %}
+                                        <option value="{{ bus.bus_number }}" {% if driver.assigned_bus==bus.bus_number
+                                            %}selected{% endif %}>{{ bus.bus_number }}</option>
+                                        {% endfor %}
+                                        <option value="Unassigned">Unassigned</option>
+                                    </select>
+                                </div>
+
+                                <h4 style="margin-bottom: 16px; color: var(--primary); margin-top: 24px;">Professional &
+                                    Emergency</h4>
+                                <div class="detail-group">
+                                    <div class="detail-label">Joining Date</div>
+                                    <div class="detail-value" id="display_joining_date">{{ driver.joining_date or 'N/A'
+                                        }}</div>
+                                    <input type="date" id="edit_joining_date" class="form-input"
+                                        value="{{ driver.joining_date }}" style="display:none;">
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">License Expiry</div>
+                                    <div class="detail-value" id="display_license_expiry_date">{{
+                                        driver.license_expiry_date or 'N/A' }}</div>
+                                    <input type="date" id="edit_license_expiry_date" class="form-input"
+                                        value="{{ driver.license_expiry_date }}" style="display:none;">
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Emergency Contact</div>
+                                    <div class="detail-value" id="display_emergency_contact">
+                                        {{ driver.emergency_contact_name or 'N/A' }}
+                                        {% if driver.emergency_contact_phone %}
+                                        <br><span style="font-size:0.9rem;color:var(--text-light)">{{
+                                            driver.emergency_contact_phone }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div id="edit_emergency_contact" style="display:none;">
+                                        <input type="text" id="edit_emergency_contact_name" class="form-input"
+                                            value="{{ driver.emergency_contact_name }}" placeholder="Name"
+                                            style="margin-bottom:5px;">
+                                        <input type="tel" id="edit_emergency_contact_phone" class="form-input"
+                                            value="{{ driver.emergency_contact_phone }}" placeholder="Phone">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        let isEditing = false;
+        const editBtn = document.querySelector('.btn-primary');
+
+        editBtn.addEventListener('click', function () {
+            if (!isEditing) {
+                // Switch to Edit Mode
+                isEditing = true;
+                this.innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
+                this.style.backgroundColor = '#10b981'; // Green color
+
+                // Toggle visibility
+                toggleFields(true);
+            } else {
+                // Save Changes
+                saveChanges();
+            }
+        });
+
+        function toggleFields(showInput) {
+            const fields = [
+                'full_name', 'license_number', 'phone_number', 'address',
+                'date_of_birth', 'blood_group', 'assigned_bus',
+                'joining_date', 'license_expiry_date'
+            ];
+
+            fields.forEach(field => {
+                const displayEl = document.getElementById('display_' + field);
+                const inputEl = document.getElementById('edit_' + field);
+                if (displayEl && inputEl) {
+                    displayEl.style.display = showInput ? 'none' : 'block';
+                    inputEl.style.display = showInput ? 'block' : 'none';
+                }
+            });
+
+            // Special handling for Emergency Contact
+            document.getElementById('display_emergency_contact').style.display = showInput ? 'none' : 'block';
+            document.getElementById('edit_emergency_contact').style.display = showInput ? 'block' : 'none';
+        }
+
+        function saveChanges() {
+            const btn = document.querySelector('.btn-primary');
+            const originalText = '<span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile';
+            btn.innerText = 'Saving...';
+            btn.disabled = true;
+
+            const data = {
+                full_name: document.getElementById('edit_full_name').value,
+                license_number: document.getElementById('edit_license_number').value,
+                phone_number: document.getElementById('edit_phone_number').value,
+                address: document.getElementById('edit_address').value,
+                date_of_birth: document.getElementById('edit_date_of_birth').value,
+                blood_group: document.getElementById('edit_blood_group').value,
+                assigned_bus: document.getElementById('edit_assigned_bus').value,
+                joining_date: document.getElementById('edit_joining_date').value,
+                license_expiry_date: document.getElementById('edit_license_expiry_date').value,
+                emergency_contact_name: document.getElementById('edit_emergency_contact_name').value,
+                emergency_contact_phone: document.getElementById('edit_emergency_contact_phone').value
+            };
+
+            fetch("{{ url_for('api.api_update_driver', driver_id=driver.id) }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Driver details updated successfully!');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                        btn.style.backgroundColor = ''; // Reset color
+                        isEditing = false;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = ''; // Reset color
+                    isEditing = false;
+                });
+        }
+    </script>
+</body>
+
+</html>

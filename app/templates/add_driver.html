@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Add Driver</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Smart Bus Admin
+                <button class="sidebar-close">&times;</button>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('main.index') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="{{ url_for('students.students') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item active"><a href="{{ url_for('drivers.drivers') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="{{ url_for('auth.login') }}"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Add Driver</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <div class="form-container">
+                    <h2 style="margin-bottom: 24px; color: var(--text-dark);">Add New Driver</h2>
+                    <form id="addDriverForm">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="full_name" class="form-input" placeholder="e.g. Ramesh P" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">License Number</label>
+                            <input type="text" id="license_number" class="form-input" placeholder="e.g. KL-13..."
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="phone_number" class="form-input" placeholder="10-digit number"
+                                required>
+                        </div>
+                        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                            <div>
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" id="date_of_birth" class="form-input">
+                            </div>
+                            <div>
+                                <label class="form-label">Joining Date</label>
+                                <input type="date" id="joining_date" class="form-input">
+                            </div>
+                        </div>
+                        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                            <div>
+                                <label class="form-label">License Expiry</label>
+                                <input type="date" id="license_expiry_date" class="form-input">
+                            </div>
+                            <div>
+                                <label class="form-label">Blood Group</label>
+                                <select id="blood_group" class="form-input">
+                                    <option value="">Select...</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                            <div>
+                                <label class="form-label">Emergency Contact Name</label>
+                                <input type="text" id="emergency_contact_name" class="form-input" placeholder="Name">
+                            </div>
+                            <div>
+                                <label class="form-label">Emergency Contact Phone</label>
+                                <input type="tel" id="emergency_contact_phone" class="form-input" placeholder="Phone">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <textarea id="address" class="form-input" rows="2" placeholder="Full Address"></textarea>
+                        </div>
+                        <div class="form-actions" style="margin-top: 30px;">
+                            <a href="{{ url_for('drivers.drivers') }}" class="btn"
+                                style="background:#f3f4f6; color:#374151; text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Driver</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.getElementById('addDriverForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = {
+                full_name: document.getElementById('full_name').value,
+                license_number: document.getElementById('license_number').value,
+                phone_number: document.getElementById('phone_number').value,
+                date_of_birth: document.getElementById('date_of_birth').value,
+                joining_date: document.getElementById('joining_date').value,
+                license_expiry_date: document.getElementById('license_expiry_date').value,
+                blood_group: document.getElementById('blood_group').value,
+                emergency_contact_name: document.getElementById('emergency_contact_name').value,
+                emergency_contact_phone: document.getElementById('emergency_contact_phone').value,
+                address: document.getElementById('address').value,
+                assigned_bus: '' // Can be updated later
+            };
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            fetch("{{ url_for('api.api_add_driver') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Driver Added Successfully!');
+                        window.location.href = "{{ url_for('drivers.drivers') }}";
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                });
+        });
+    </script>
+</body>
+
+</html>

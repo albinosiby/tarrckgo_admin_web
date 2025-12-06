@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Route Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .detail-group {
+            margin-bottom: 16px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #9ca3af;
+            object-fit: cover;
+        }
+
+        .stop-tile {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: #374151;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            border: 1px solid #e5e7eb;
+            font-weight: 500;
+        }
+
+        .edit-stop-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .edit-stop-item input {
+            flex: 1;
+        }
+
+        .remove-stop-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .add-stop-btn {
+            background: #e0e7ff;
+            color: #4f46e5;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Smart Bus Admin
+                <button class="sidebar-close">&times;</button>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('main.index') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="{{ url_for('students.students') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item active"><a href="{{ url_for('routes.routes') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="{{ url_for('auth.login') }}"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Route Details</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <!-- Route Profile Card -->
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-title-row"
+                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <h3>Route Profile</h3>
+                            <button class="btn btn-primary">
+                                <span style="font-size:1rem; margin-right:6px">✎</span> Edit
+                            </button>
+                        </div>
+
+                        <div class="profile-header">
+                            <div class="profile-img">🗺️</div>
+                            <div>
+                                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">
+                                    <span id="display_route_name">{{ route.route_name }}</span>
+                                    <input type="text" id="edit_route_name" class="form-input"
+                                        value="{{ route.route_name }}" style="display:none; margin-top:5px;">
+                                </h2>
+                                <div style="color: var(--text-light);">
+                                    <span id="display_points">{{ route.start_point }} ➝ {{ route.end_point }}</span>
+                                    <div id="edit_points" style="display:none; margin-top:5px;">
+                                        <input type="text" id="edit_start_point" class="form-input"
+                                            value="{{ route.start_point }}" placeholder="Start Point"
+                                            style="margin-bottom:5px;">
+                                        <input type="text" id="edit_end_point" class="form-input"
+                                            value="{{ route.end_point }}" placeholder="End Point">
+                                    </div>
+                                </div>
+                                <span class="badge badge-success"
+                                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
+                            </div>
+                        </div>
+
+                        <div class="split-row">
+                            <!-- Route Info -->
+                            <div>
+                                <h4 style="margin-bottom: 16px; color: var(--primary);">Route Information</h4>
+                                <div class="detail-group">
+                                    <div class="detail-label">Stops</div>
+                                    <div class="detail-value" id="display_stops">
+                                        {% if route.stops %}
+                                        {% for stop in route.stops.split(',') %}
+                                        {% if stop.strip() %}
+                                        <span class="stop-tile">{{ stop.strip() }}</span>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        <span style="color:var(--text-light)">No stops defined</span>
+                                        {% endif %}
+                                    </div>
+                                    <div id="edit_stops_container" style="display:none;">
+                                        <div id="stops_list"></div>
+                                        <button type="button" class="add-stop-btn" onclick="addStopInput('')">+ Add
+                                            Stop</button>
+                                    </div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Distance</div>
+                                    <div class="detail-value" id="display_distance">{{ route.distance or 'N/A' }}</div>
+                                    <input type="text" id="edit_distance" class="form-input"
+                                        value="{{ route.distance }}" style="display:none;">
+                                </div>
+                            </div>
+
+                            <!-- Assignment Info -->
+                            <div>
+                                <h4 style="margin-bottom: 16px; color: var(--primary);">Assignment</h4>
+                                <div class="detail-group">
+                                    <div class="detail-label">Assigned Bus</div>
+                                    <div class="detail-value" id="display_assigned_bus">{{ route.assigned_bus or
+                                        'Unassigned' }}</div>
+                                    <select id="edit_assigned_bus" class="form-input" style="display:none;">
+                                        <option value="">Select Bus...</option>
+                                        {% for bus in buses %}
+                                        <option value="{{ bus.bus_number }}" {% if route.assigned_bus==bus.bus_number
+                                            %}selected{% endif %}>{{ bus.bus_number }}</option>
+                                        {% endfor %}
+                                        <option value="Unassigned">Unassigned</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map Card -->
+                    <div class="card">
+                        <div class="card-title-row" style="margin-bottom:20px">
+                            <h3>Route Map</h3>
+                        </div>
+                        <div id="map" style="height: 400px; border-radius: 8px;"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Initialize map
+        const map = L.map('map').setView([11.2588, 75.7804], 13); // Default to Calicut
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add markers for start and end points (Placeholder coordinates)
+        // In a real app, you would geocode the start and end points
+        const startMarker = L.marker([11.2588, 75.7804]).addTo(map).bindPopup('Start: {{ route.start_point }}');
+        const endMarker = L.marker([11.2700, 75.7900]).addTo(map).bindPopup('End: {{ route.end_point }}');
+
+        // Edit Logic
+        let isEditing = false;
+        const editBtn = document.querySelector('.btn-primary');
+
+        editBtn.addEventListener('click', function () {
+            if (!isEditing) {
+                // Switch to Edit Mode
+                isEditing = true;
+                this.innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
+                this.style.backgroundColor = '#10b981'; // Green color
+
+                // Toggle visibility
+                toggleFields(true);
+            } else {
+                // Save Changes
+                saveChanges();
+            }
+        });
+
+        function toggleFields(showInput) {
+            const fields = ['route_name', 'distance', 'assigned_bus'];
+
+            fields.forEach(field => {
+                const displayEl = document.getElementById('display_' + field);
+                const inputEl = document.getElementById('edit_' + field);
+                if (displayEl && inputEl) {
+                    displayEl.style.display = showInput ? 'none' : 'block';
+                    inputEl.style.display = showInput ? 'block' : 'none';
+                }
+            });
+
+            // Special handling for Start/End Points
+            document.getElementById('display_points').style.display = showInput ? 'none' : 'block';
+            document.getElementById('edit_points').style.display = showInput ? 'block' : 'none';
+
+            // Special handling for Stops
+            document.getElementById('display_stops').style.display = showInput ? 'none' : 'block';
+            const stopsContainer = document.getElementById('edit_stops_container');
+            stopsContainer.style.display = showInput ? 'block' : 'none';
+
+            if (showInput) {
+                // Populate stops inputs
+                const stopsList = document.getElementById('stops_list');
+                stopsList.innerHTML = ''; // Clear existing
+
+                const tiles = document.querySelectorAll('#display_stops .stop-tile');
+                if (tiles.length > 0) {
+                    tiles.forEach(tile => addStopInput(tile.innerText));
+                } else {
+                    // If no tiles (empty), maybe add one empty input
+                    // Check if it says "No stops defined"
+                    const noStops = document.querySelector('#display_stops span');
+                    if (noStops && noStops.innerText === 'No stops defined') {
+                        // Do nothing, start empty
+                    }
+                }
+            }
+        }
+
+        function addStopInput(value) {
+            const container = document.getElementById('stops_list');
+            const div = document.createElement('div');
+            div.className = 'edit-stop-item';
+            div.innerHTML = `
+                <input type="text" class="form-input stop-input" value="${value}" placeholder="Stop Name">
+                <button type="button" class="remove-stop-btn" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function saveChanges() {
+            const btn = document.querySelector('.btn-primary');
+            const originalText = '<span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile';
+            btn.innerText = 'Saving...';
+            btn.disabled = true;
+
+            // Collect stops
+            const stopInputs = document.querySelectorAll('.stop-input');
+            const stops = Array.from(stopInputs).map(input => input.value).filter(val => val.trim() !== '').join(', ');
+
+            const data = {
+                route_name: document.getElementById('edit_route_name').value,
+                start_point: document.getElementById('edit_start_point').value,
+                end_point: document.getElementById('edit_end_point').value,
+                stops: stops,
+                distance: document.getElementById('edit_distance').value,
+                assigned_bus: document.getElementById('edit_assigned_bus').value
+            };
+
+            fetch("{{ url_for('api.api_update_route', route_id=route.id) }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Route details updated successfully!');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                        btn.style.backgroundColor = ''; // Reset color
+                        isEditing = false;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = ''; // Reset color
+                    isEditing = false;
+                });
+        }
+    </script>
+</body>
+
+</html>

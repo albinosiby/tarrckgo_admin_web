@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Add Bus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="app">
+        <div class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Smart Bus Admin
+                <button class="sidebar-close">&times;</button>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('main.index') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="{{ url_for('students.students') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item active"><a href="{{ url_for('buses.buses') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="{{ url_for('auth.login') }}"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Add Bus</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div class="card">
+                        <div class="card-title-row" style="margin-bottom: 20px;">
+                            <h3>Add New Bus</h3>
+                        </div>
+                        <form id="addBusForm">
+                            <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                                <div>
+                                    <label class="form-label">Bus Number</label>
+                                    <input type="text" id="bus_number" class="form-input" placeholder="e.g. Bus 1"
+                                        required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Registration No</label>
+                                    <input type="text" id="registration_no" class="form-input"
+                                        placeholder="e.g. KL-10-..." required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Capacity</label>
+                                <input type="number" id="capacity" class="form-input" placeholder="Number of seats"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Assign Driver</label>
+                                <select id="driver_name" class="form-input">
+                                    <option value="">Select Driver...</option>
+                                    {% for driver in drivers %}
+                                    <option value="{{ driver.full_name }}">{{ driver.full_name }}</option>
+                                    {% endfor %}
+                                    <option value="Unassigned">Unassigned</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Assign Route</label>
+                                <select id="route" class="form-input">
+                                    <option value="">Select Route...</option>
+                                    {% for route in routes %}
+                                    <option value="{{ route.route_name }}">{{ route.route_name }}</option>
+                                    {% endfor %}
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                                <h4 style="margin-bottom: 15px; font-size: 1rem; color: var(--text-dark);">Service &
+                                    Compliance</h4>
+                                <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                                    <div>
+                                        <label class="form-label">Last Service Date</label>
+                                        <input type="date" id="last_service_date" class="form-input">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Next Service Due</label>
+                                        <input type="date" id="next_service_due" class="form-input">
+                                    </div>
+                                </div>
+                                <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                                    <div>
+                                        <label class="form-label">Insurance Expiry</label>
+                                        <input type="date" id="insurance_expiry" class="form-input">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Fitness Cert. Expiry</label>
+                                        <input type="date" id="fitness_expiry" class="form-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <a href="{{ url_for('buses.buses') }}" class="btn"
+                                    style="background:#f3f4f6; color:#374151; text-decoration: none;">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Save Bus</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.getElementById('addBusForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = {
+                bus_number: document.getElementById('bus_number').value,
+                registration_no: document.getElementById('registration_no').value,
+                capacity: document.getElementById('capacity').value,
+                driver_name: document.getElementById('driver_name').value || 'Unassigned',
+                route: document.getElementById('route').value || 'N/A',
+                last_service_date: document.getElementById('last_service_date').value,
+                next_service_due: document.getElementById('next_service_due').value,
+                insurance_expiry: document.getElementById('insurance_expiry').value,
+                fitness_expiry: document.getElementById('fitness_expiry').value
+            };
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            fetch("{{ url_for('api.api_add_bus') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Bus Added Successfully!');
+                        window.location.href = "{{ url_for('buses.buses') }}";
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel - Add Route</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stop-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .stop-item input {
+            flex: 1;
+        }
+
+        .remove-stop-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .remove-stop-btn:hover {
+            background: #fecaca;
+        }
+
+        .add-stop-btn {
+            background: #e0e7ff;
+            color: #4f46e5;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .add-stop-btn:hover {
+            background: #c7d2fe;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Smart Bus Admin
+                <button class="sidebar-close">&times;</button>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('main.index') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="{{ url_for('students.students') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item active"><a href="{{ url_for('routes.routes') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="{{ url_for('auth.login') }}"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Add Route</div>
+                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <div class="form-container">
+                    <h2 style="margin-bottom: 24px; color: var(--text-dark);">Add New Route</h2>
+                    <form id="addRouteForm">
+                        <div class="form-group">
+                            <label class="form-label">Route Name</label>
+                            <input type="text" id="route_name" class="form-input" placeholder="e.g. Route 1" required>
+                        </div>
+
+                        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+                            <div>
+                                <label class="form-label">Start Point</label>
+                                <input type="text" id="start_point" class="form-input" placeholder="Start Location"
+                                    required>
+                            </div>
+                            <div>
+                                <label class="form-label">End Point</label>
+                                <input type="text" id="end_point" class="form-input" placeholder="End Location"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Assigned Bus</label>
+                            <select id="assigned_bus" class="form-input">
+                                <option value="">Select Bus...</option>
+                                {% for bus in buses %}
+                                <option value="{{ bus.bus_number }}">{{ bus.bus_number }}</option>
+                                {% endfor %}
+                                <option value="Unassigned">Unassigned</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Stops</label>
+                            <div id="stops-container">
+                                <!-- Stops will be added here -->
+                                <div class="stop-item">
+                                    <span style="color:var(--text-light); font-weight:500; width: 20px;">1.</span>
+                                    <input type="text" class="form-input stop-input" placeholder="Stop Name" required>
+                                </div>
+                            </div>
+                            <button type="button" class="add-stop-btn" onclick="addStop()">
+                                <span>+</span> Add Stop
+                            </button>
+                        </div>
+
+                        <div class="form-actions" style="margin-top: 30px;">
+                            <a href="{{ url_for('routes.routes') }}" class="btn"
+                                style="background:#f3f4f6; color:#374151; text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Route</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function addStop() {
+            const container = document.getElementById('stops-container');
+            const count = container.children.length + 1;
+
+            const div = document.createElement('div');
+            div.className = 'stop-item';
+            div.innerHTML = `
+                <span style="color:var(--text-light); font-weight:500; width: 20px;">${count}.</span>
+                <input type="text" class="form-input stop-input" placeholder="Stop Name" required>
+                <button type="button" class="remove-stop-btn" onclick="removeStop(this)">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeStop(btn) {
+            btn.parentElement.remove();
+            // Renumber stops
+            const container = document.getElementById('stops-container');
+            Array.from(container.children).forEach((child, index) => {
+                child.querySelector('span').innerText = (index + 1) + '.';
+            });
+        }
+
+        document.getElementById('addRouteForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Collect stops
+            const stopInputs = document.querySelectorAll('.stop-input');
+            const stops = Array.from(stopInputs).map(input => input.value).filter(val => val.trim() !== '');
+
+            const formData = {
+                route_name: document.getElementById('route_name').value,
+                start_point: document.getElementById('start_point').value,
+                end_point: document.getElementById('end_point').value,
+                assigned_bus: document.getElementById('assigned_bus').value,
+                stops: stops.join(', ') // Save as comma-separated string for now to maintain compatibility
+            };
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            fetch("{{ url_for('api.api_add_route') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Route Added Successfully!');
+                        window.location.href = "{{ url_for('routes.routes') }}";
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                });
+        });
+    </script>
+</body>
+
+</html>

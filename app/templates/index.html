@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Smart Bus Admin Panel</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="app">
+        <div class="sidebar-overlay"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Smart Bus Admin
+                <button class="sidebar-close">&times;</button>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item active"><a href="{{ url_for('main.index') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📊</span> Dashboard</a></li>
+                <li class="nav-item"><a href="{{ url_for('students.students') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🎓</span> Students</a></li>
+                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">👨‍✈️</span> Drivers</a></li>
+                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🚌</span> Buses</a></li>
+                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">🗺️</span> Routes</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">📍</span> Live Tracking</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">✅</span> Attendance</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
+                            class="icon">⚙️</span> Settings</a></li>
+            </ul>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
+                <a href="{{ url_for('auth.login') }}"
+                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
+                    <span class="icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="menu-toggle">☰</button>
+                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Dashboard</div>
+                <div class="topbar-right">
+                    <div class="topbar-avatar">A</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <section id="page-dashboard" class="page-section active">
+                    <div class="cards-row">
+                        <div class="card">
+                            <div class="stat-card-title">Total Students</div>
+                            <div class="stat-card-value">420</div>
+                        </div>
+                        <div class="card">
+                            <div class="stat-card-title">Active Buses</div>
+                            <div class="stat-card-value">8</div>
+                        </div>
+                        <div class="card">
+                            <div class="stat-card-title">Drivers</div>
+                            <div class="stat-card-value">12</div>
+                        </div>
+                        <div class="card">
+                            <div class="stat-card-title">Today Present</div>
+                            <div class="stat-card-value">392</div>
+                        </div>
+                    </div>
+
+                    <div class="split-row">
+                        <div class="card">
+                            <div class="card-title-row">
+                                <h3>Live Trips</h3><span class="muted">Updated just now</span>
+                            </div>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Bus</th>
+                                            <th>Route</th>
+                                            <th>Status</th>
+                                            <th>Students On Board</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Bus 1 • KL-10-4589</td>
+                                            <td>Chemberi → College</td>
+                                            <td><span class="badge badge-success">In Progress</span></td>
+                                            <td>38</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bus 3 • KL-10-2201</td>
+                                            <td>Town → College</td>
+                                            <td><span class="badge badge-success">In Progress</span></td>
+                                            <td>30</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bus 5 • KL-10-9988</td>
+                                            <td>Village Route</td>
+                                            <td><span class="badge badge-idle">Not Started</span></td>
+                                            <td>0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card" style="display:flex;flex-direction:column;">
+                            <div class="card-title-row">
+                                <h3>Live Bus Tracking (Preview)</h3>
+                            </div>
+                            <div id="map"></div>
+                            <div class="legend"><span><span class="dot"
+                                        style="background:#16a34a"></span>Moving</span><span><span class="dot"
+                                        style="background:#f97316"></span>Idle</span><span><span class="dot"
+                                        style="background:#ef4444"></span>Offline</span></div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
