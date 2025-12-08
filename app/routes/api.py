@@ -16,7 +16,7 @@ def api_add_student():
         if not data.get('full_name') or not data.get('roll_number'):
              return jsonify({'status': 'error', 'message': 'Missing required fields'}), 400
 
-        student_ref = db.collection('admins').document(uid).collection('students').document()
+        student_ref = db.collection('organizations').document(uid).collection('students').document()
         student_ref.set(data)
         
         return jsonify({'status': 'success', 'id': student_ref.id})
@@ -32,7 +32,7 @@ def api_add_bus():
         data = request.get_json()
         uid = session['uid']
         db = get_db()
-        bus_ref = db.collection('admins').document(uid).collection('buses').document()
+        bus_ref = db.collection('organizations').document(uid).collection('buses').document()
         bus_ref.set(data)
         return jsonify({'status': 'success', 'id': bus_ref.id})
     except Exception as e:
@@ -67,7 +67,7 @@ def api_add_driver():
             'address': data.get('address', '')
         }
         
-        driver_ref = db.collection('admins').document(uid).collection('drivers').document()
+        driver_ref = db.collection('organizations').document(uid).collection('drivers').document()
         driver_ref.set(driver_data)
         return jsonify({'status': 'success', 'id': driver_ref.id})
     except Exception as e:
@@ -81,7 +81,7 @@ def api_add_route():
         data = request.get_json()
         uid = session['uid']
         db = get_db()
-        route_ref = db.collection('admins').document(uid).collection('routes').document()
+        route_ref = db.collection('organizations').document(uid).collection('routes').document()
         route_ref.set(data)
         return jsonify({'status': 'success', 'id': route_ref.id})
     except Exception as e:
@@ -95,7 +95,7 @@ def api_update_bus(bus_id):
         data = request.get_json()
         uid = session['uid']
         db = get_db()
-        bus_ref = db.collection('admins').document(uid).collection('buses').document(bus_id)
+        bus_ref = db.collection('organizations').document(uid).collection('buses').document(bus_id)
         bus_ref.update(data)
         return jsonify({'status': 'success'})
     except Exception as e:
@@ -109,7 +109,7 @@ def api_update_driver(driver_id):
         data = request.get_json()
         uid = session['uid']
         db = get_db()
-        driver_ref = db.collection('admins').document(uid).collection('drivers').document(driver_id)
+        driver_ref = db.collection('organizations').document(uid).collection('drivers').document(driver_id)
         driver_ref.update(data)
         return jsonify({'status': 'success'})
     except Exception as e:
@@ -123,7 +123,7 @@ def api_update_route(route_id):
         data = request.get_json()
         uid = session['uid']
         db = get_db()
-        route_ref = db.collection('admins').document(uid).collection('routes').document(route_id)
+        route_ref = db.collection('organizations').document(uid).collection('routes').document(route_id)
         route_ref.update(data)
         return jsonify({'status': 'success'})
     except Exception as e:

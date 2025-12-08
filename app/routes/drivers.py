@@ -9,7 +9,7 @@ def drivers():
     if 'user' not in session: return redirect(url_for('auth.login'))
     uid = session.get('uid')
     db = get_db()
-    drivers_ref = db.collection('admins').document(uid).collection('drivers')
+    drivers_ref = db.collection('organizations').document(uid).collection('drivers')
     drivers = []
     for doc in drivers_ref.stream():
         driver_data = doc.to_dict()
@@ -22,13 +22,13 @@ def driver_details(driver_id):
     if 'user' not in session: return redirect(url_for('auth.login'))
     uid = session.get('uid')
     db = get_db()
-    driver_ref = db.collection('admins').document(uid).collection('drivers').document(driver_id)
+    driver_ref = db.collection('organizations').document(uid).collection('drivers').document(driver_id)
     driver = driver_ref.get().to_dict()
     if driver:
         driver['id'] = driver_id
 
     # Fetch buses for dropdown
-    buses_ref = db.collection('admins').document(uid).collection('buses')
+    buses_ref = db.collection('organizations').document(uid).collection('buses')
     buses = []
     for doc in buses_ref.stream():
         b_data = doc.to_dict()

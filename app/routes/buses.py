@@ -8,7 +8,7 @@ def buses():
     if 'user' not in session: return redirect(url_for('auth.login'))
     uid = session.get('uid')
     db = get_db()
-    buses_ref = db.collection('admins').document(uid).collection('buses')
+    buses_ref = db.collection('organizations').document(uid).collection('buses')
     buses = []
     for doc in buses_ref.stream():
         bus_data = doc.to_dict()
@@ -16,7 +16,7 @@ def buses():
         buses.append(bus_data)
 
     # Fetch drivers
-    drivers_ref = db.collection('admins').document(uid).collection('drivers')
+    drivers_ref = db.collection('organizations').document(uid).collection('drivers')
     drivers = []
     for doc in drivers_ref.stream():
         d_data = doc.to_dict()
@@ -24,7 +24,7 @@ def buses():
         drivers.append(d_data)
 
     # Fetch routes
-    routes_ref = db.collection('admins').document(uid).collection('routes')
+    routes_ref = db.collection('organizations').document(uid).collection('routes')
     routes = []
     for doc in routes_ref.stream():
         r_data = doc.to_dict()
@@ -38,13 +38,13 @@ def bus_details(bus_id):
     if 'user' not in session: return redirect(url_for('auth.login'))
     uid = session.get('uid')
     db = get_db()
-    bus_ref = db.collection('admins').document(uid).collection('buses').document(bus_id)
+    bus_ref = db.collection('organizations').document(uid).collection('buses').document(bus_id)
     bus = bus_ref.get().to_dict()
     if bus:
         bus['id'] = bus_id
 
     # Fetch drivers
-    drivers_ref = db.collection('admins').document(uid).collection('drivers')
+    drivers_ref = db.collection('organizations').document(uid).collection('drivers')
     drivers = []
     for doc in drivers_ref.stream():
         d_data = doc.to_dict()
@@ -52,7 +52,7 @@ def bus_details(bus_id):
         drivers.append(d_data)
 
     # Fetch routes
-    routes_ref = db.collection('admins').document(uid).collection('routes')
+    routes_ref = db.collection('organizations').document(uid).collection('routes')
     routes = []
     for doc in routes_ref.stream():
         r_data = doc.to_dict()
@@ -68,7 +68,7 @@ def add_bus():
     db = get_db()
 
     # Fetch drivers
-    drivers_ref = db.collection('admins').document(uid).collection('drivers')
+    drivers_ref = db.collection('organizations').document(uid).collection('drivers')
     drivers = []
     for doc in drivers_ref.stream():
         d_data = doc.to_dict()
@@ -76,7 +76,7 @@ def add_bus():
         drivers.append(d_data)
 
     # Fetch routes
-    routes_ref = db.collection('admins').document(uid).collection('routes')
+    routes_ref = db.collection('organizations').document(uid).collection('routes')
     routes = []
     for doc in routes_ref.stream():
         r_data = doc.to_dict()
