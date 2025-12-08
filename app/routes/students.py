@@ -19,7 +19,26 @@ def students():
 @students_bp.route('/add_student')
 def add_student():
     if 'user' not in session: return redirect(url_for('auth.login'))
-    return render_template('add_student.html')
+    uid = session.get('uid')
+    db = get_db()
+    
+    # Fetch buses
+    buses_ref = db.collection('admins').document(uid).collection('buses')
+    buses = []
+    for doc in buses_ref.stream():
+        b_data = doc.to_dict()
+        b_data['id'] = doc.id
+        buses.append(b_data)
+
+    # Fetch routes
+    routes_ref = db.collection('admins').document(uid).collection('routes')
+    routes = []
+    for doc in routes_ref.stream():
+        r_data = doc.to_dict()
+        r_data['id'] = doc.id
+        routes.append(r_data)
+
+    return render_template('add_student.html', buses=buses, routes=routes)
 
 @students_bp.route('/student_details/<student_id>')
 def student_details(student_id):

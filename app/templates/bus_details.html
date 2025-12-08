@@ -102,7 +102,6 @@
                 </a>
             </div>
         </aside>
-
         <div class="main">
             <header class="topbar">
                 <button class="menu-toggle">☰</button>
@@ -285,7 +284,6 @@
                 insurance_expiry: document.getElementById('input-insurance').value,
                 fitness_expiry: document.getElementById('input-fitness').value
             };
-
             fetch("{{ url_for('api.api_update_bus', bus_id=bus.id) }}", {
                 method: 'POST',
                 headers: {

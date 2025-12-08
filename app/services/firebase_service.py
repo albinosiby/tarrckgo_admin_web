@@ -3,10 +3,24 @@ from firebase_admin import credentials, firestore
 
 db = None
 
+import json
+
 def init_firebase(app):
     global db
     if not firebase_admin._apps:
-        cred = credentials.Certificate(app.config['FIREBASE_CREDENTIALS'])
+        creds_config = app.config['FIREBASE_CREDENTIALS']
+        
+        if isinstance(creds_config, dict):
+            # Already a dict (unlikely from config but possible)
+            cred = credentials.Certificate(creds_config)
+        elif creds_config.startswith('{'):
+            # It's a JSON string from env var
+            cred_dict = json.loads(creds_config)
+            cred = credentials.Certificate(cred_dict)
+        else:
+            # It's a file path
+            cred = credentials.Certificate(creds_config)
+            
         firebase_admin.initialize_app(cred)
     db = firestore.client()
 

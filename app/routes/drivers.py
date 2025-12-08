@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, session, redirect, url_for
 from app.services.firebase_service import get_db
 

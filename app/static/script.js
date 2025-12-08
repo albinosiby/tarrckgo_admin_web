@@ -9,22 +9,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sidebar Toggle Logic
     const menuToggle = document.querySelector('.menu-toggle');
     const sidebar = document.querySelector('.sidebar');
-    const sidebarClose = document.querySelector('.sidebar-close');
-    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+    const overlay = document.querySelector('.sidebar-overlay');
+    const closeBtn = document.querySelector('.sidebar-close');
 
-    if (menuToggle && sidebar && sidebarOverlay) {
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.add('open');
-            sidebarOverlay.classList.add('active');
-        });
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
 
-        const closeSidebar = () => {
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('active');
-        };
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleSidebar);
+    }
 
-        if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
-        sidebarOverlay.addEventListener('click', closeSidebar);
+    if (closeBtn) {
+        closeBtn.addEventListener('click', toggleSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', toggleSidebar);
     }
 
     // Initialize Map centered on Chemperi (Vimal Jyothi College area)

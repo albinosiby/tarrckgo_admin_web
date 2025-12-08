@@ -15,7 +15,7 @@ def session_login():
     id_token = data.get('idToken')
     
     try:
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=10)
         session['user'] = decoded_token['email']
         session['uid'] = decoded_token['uid']
         
