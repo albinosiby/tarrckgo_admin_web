@@ -16,8 +16,26 @@ def index():
     if org_doc.exists:
         org_data = org_doc.to_dict()
         org_name = org_data.get('name', 'Smart Bus Admin')
+
+    # Fetch Real-time Counts
+    try:
+        total_students = len(list(org_ref.collection('students').stream()))
+        active_buses = len(list(org_ref.collection('buses').stream()))
+        total_drivers = len(list(org_ref.collection('drivers').stream()))
+        # For attendance, ideally query by today's date. For now, we count total records or default to 0.
+        present_today = len(list(org_ref.collection('attendance').stream()))
+    except Exception as e:
+        print(f"Error fetching stats: {e}")
+        total_students = 0
+        active_buses = 0
+        total_drivers = 0
+        present_today = 0
         
-    return render_template('index.html', org_name=org_name)
+    return render_template('index.html', org_name=org_name,
+                           total_students=total_students,
+                           active_buses=active_buses,
+                           total_drivers=total_drivers,
+                           present_today=present_today)
 
 @main_bp.route('/profile')
 def profile():
