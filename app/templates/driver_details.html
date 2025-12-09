@@ -110,7 +110,20 @@
                         </div>
 
                         <div class="profile-header">
-                            <div class="profile-img">👨‍✈️</div>
+                            <div class="profile-img">
+                                {% if driver.profile_photo_url %}
+                                <img src="{{ driver.profile_photo_url }}" alt="Profile"
+                                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                                {% else %}
+                                👨‍✈️
+                                {% endif %}
+                            </div>
+                            <div style="margin-left: -50px; margin-top: 80px; display: none;" id="edit_photo_container">
+                                <label for="edit_driver_photo"
+                                    style="cursor: pointer; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Change
+                                    Photo</label>
+                                <input type="file" id="edit_driver_photo" style="display: none;" accept="image/*">
+                            </div>
                             <div>
                                 <h2 style="font-size: 1.5rem; margin-bottom: 4px;">
                                     <span id="display_full_name">{{ driver.full_name }}</span>
@@ -189,10 +202,10 @@
                                     <select id="edit_assigned_bus" class="form-input" style="display:none;">
                                         <option value="">Select Bus...</option>
                                         {% for bus in buses %}
-                                        <option value="{{ bus.bus_number }}" {% if driver.assigned_bus==bus.bus_number
-                                            %}selected{% endif %}>{{ bus.bus_number }}</option>
+                                        <option value="{{ bus.id }}" {% if driver.assigned_bus==bus.id %}selected{%
+                                            endif %}>{{ bus.bus_number }}</option>
                                         {% endfor %}
-                                        <option value="Unassigned">Unassigned</option>
+                                        <option value="">Unassigned</option>
                                     </select>
                                 </div>
 
@@ -275,6 +288,10 @@
             // Special handling for Emergency Contact
             document.getElementById('display_emergency_contact').style.display = showInput ? 'none' : 'block';
             document.getElementById('edit_emergency_contact').style.display = showInput ? 'block' : 'none';
+
+            // Photo Edit
+            const photoContainer = document.getElementById('edit_photo_container');
+            if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
         }
 
         function saveChanges() {
@@ -283,26 +300,27 @@
             btn.innerText = 'Saving...';
             btn.disabled = true;
 
-            const data = {
-                full_name: document.getElementById('edit_full_name').value,
-                license_number: document.getElementById('edit_license_number').value,
-                phone_number: document.getElementById('edit_phone_number').value,
-                address: document.getElementById('edit_address').value,
-                date_of_birth: document.getElementById('edit_date_of_birth').value,
-                blood_group: document.getElementById('edit_blood_group').value,
-                assigned_bus: document.getElementById('edit_assigned_bus').value,
-                joining_date: document.getElementById('edit_joining_date').value,
-                license_expiry_date: document.getElementById('edit_license_expiry_date').value,
-                emergency_contact_name: document.getElementById('edit_emergency_contact_name').value,
-                emergency_contact_phone: document.getElementById('edit_emergency_contact_phone').value
-            };
+            const formData = new FormData();
+            formData.append('full_name', document.getElementById('edit_full_name').value);
+            formData.append('license_number', document.getElementById('edit_license_number').value);
+            formData.append('phone_number', document.getElementById('edit_phone_number').value);
+            formData.append('address', document.getElementById('edit_address').value);
+            formData.append('date_of_birth', document.getElementById('edit_date_of_birth').value);
+            formData.append('blood_group', document.getElementById('edit_blood_group').value);
+            formData.append('assigned_bus', document.getElementById('edit_assigned_bus').value);
+            formData.append('joining_date', document.getElementById('edit_joining_date').value);
+            formData.append('license_expiry_date', document.getElementById('edit_license_expiry_date').value);
+            formData.append('emergency_contact_name', document.getElementById('edit_emergency_contact_name').value);
+            formData.append('emergency_contact_phone', document.getElementById('edit_emergency_contact_phone').value);
+
+            const fileInput = document.getElementById('edit_driver_photo');
+            if (fileInput && fileInput.files.length > 0) {
+                formData.append('driver_photo', fileInput.files[0]);
+            }
 
             fetch("{{ url_for('api.api_update_driver', driver_id=driver.id) }}", {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+                body: formData,
             })
                 .then(response => response.json())
                 .then(data => {

@@ -73,6 +73,10 @@
                     <h2 style="margin-bottom: 24px; color: var(--text-dark);">Add New Driver</h2>
                     <form id="addDriverForm">
                         <div class="form-group">
+                            <label class="form-label">Driver Photo</label>
+                            <input type="file" id="driver_photo" class="form-input" accept="image/*">
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Full Name</label>
                             <input type="text" id="full_name" class="form-input" placeholder="e.g. Ramesh P" required>
                         </div>
@@ -116,6 +120,15 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label">Assigned Bus (Optional)</label>
+                            <select id="assigned_bus" class="form-input">
+                                <option value="">Select Bus...</option>
+                                {% for bus in buses %}
+                                <option value="{{ bus.id }}">{{ bus.bus_number }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
                             <div>
                                 <label class="form-label">Emergency Contact Name</label>
@@ -156,8 +169,18 @@
                 emergency_contact_name: document.getElementById('emergency_contact_name').value,
                 emergency_contact_phone: document.getElementById('emergency_contact_phone').value,
                 address: document.getElementById('address').value,
-                assigned_bus: '' // Can be updated later
+                assigned_bus: document.getElementById('assigned_bus').value
             };
+
+            const formDataObj = new FormData();
+            for (const key in formData) {
+                formDataObj.append(key, formData[key]);
+            }
+
+            const fileInput = document.getElementById('driver_photo');
+            if (fileInput && fileInput.files.length > 0) {
+                formDataObj.append('driver_photo', fileInput.files[0]);
+            }
 
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
@@ -166,10 +189,7 @@
 
             fetch("{{ url_for('api.api_add_driver') }}", {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                body: formDataObj,
             })
                 .then(response => response.json())
                 .then(data => {

@@ -74,7 +74,7 @@
 
                             <div class="form-group">
                                 <label class="form-label">Student Photo</label>
-                                <input type="file" class="form-input" accept="image/*">
+                                <input type="file" id="student_photo" class="form-input" accept="image/*">
                             </div>
 
                             <div class="split-row">
@@ -236,21 +236,27 @@
         document.getElementById('addStudentForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const formData = {
-                full_name: document.getElementById('full_name').value,
-                dob: document.getElementById('dob').value,
-                email: document.getElementById('email').value,
-                roll_number: document.getElementById('roll_number').value,
-                batch: document.getElementById('batch').value,
-                address: document.getElementById('address').value,
-                bus_number: document.getElementById('bus_number').value,
-                bus_stop: document.getElementById('bus_stop').value,
-                payment_type: document.getElementById('payment_type').value,
-                fee_amount: document.getElementById('fee_amount').value,
-                parent_name: document.getElementById('parent_name').value,
-                parent_phone: document.getElementById('parent_phone').value,
-                bus_id: busesData.find(b => b.bus_number === document.getElementById('bus_number').value)?.id || ''
-            };
+            const formData = new FormData();
+            formData.append('full_name', document.getElementById('full_name').value);
+            formData.append('dob', document.getElementById('dob').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('roll_number', document.getElementById('roll_number').value);
+            formData.append('batch', document.getElementById('batch').value);
+            formData.append('address', document.getElementById('address').value);
+            formData.append('bus_number', document.getElementById('bus_number').value);
+            formData.append('bus_stop', document.getElementById('bus_stop').value);
+            formData.append('payment_type', document.getElementById('payment_type').value);
+            formData.append('fee_amount', document.getElementById('fee_amount').value);
+            formData.append('parent_name', document.getElementById('parent_name').value);
+            formData.append('parent_phone', document.getElementById('parent_phone').value);
+
+            const busId = busesData.find(b => b.bus_number === document.getElementById('bus_number').value)?.id || '';
+            formData.append('bus_id', busId);
+
+            const fileInput = document.getElementById('student_photo');
+            if (fileInput && fileInput.files.length > 0) {
+                formData.append('student_photo', fileInput.files[0]);
+            }
 
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
@@ -259,10 +265,7 @@
 
             fetch("{{ url_for('api.api_add_student') }}", {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                body: formData,
             })
                 .then(response => response.json())
                 .then(data => {

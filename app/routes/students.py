@@ -49,6 +49,20 @@ def student_details(student_id):
     student = student_ref.get().to_dict()
     if student:
         student['id'] = student_id
-        return render_template('student_details.html', student=student)
+        
+        # Fetch payments
+        payments_ref = student_ref.collection('payments')
+        payments = []
+        total_paid = 0
+        for doc in payments_ref.order_by('date', direction='DESCENDING').stream():
+            p_data = doc.to_dict()
+            p_data['id'] = doc.id
+            total_paid += float(p_data.get('amount', 0))
+            payments.append(p_data)
+            
+        fee_amount = float(student.get('fee_amount', 0))
+        balance = fee_amount - total_paid
+
+        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance)
     else:
         return "Student not found", 404

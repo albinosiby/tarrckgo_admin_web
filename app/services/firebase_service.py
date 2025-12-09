@@ -21,8 +21,15 @@ def init_firebase(app):
             # It's a file path
             cred = credentials.Certificate(creds_config)
             
-        firebase_admin.initialize_app(cred)
+        options = {
+            'storageBucket': f"{cred.project_id}.firebasestorage.app"
+        }
+        firebase_admin.initialize_app(cred, options)
     db = firestore.client()
+
+from firebase_admin import storage
+def get_bucket():
+    return storage.bucket()
 
 def get_db():
     return db

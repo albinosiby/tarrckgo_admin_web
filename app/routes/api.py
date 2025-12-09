@@ -1,8 +1,23 @@
 from flask import Blueprint, request, session, jsonify
-from app.services.firebase_service import get_db
+from app.services.firebase_service import get_db, get_bucket
 from firebase_admin import auth
+import uuid
 
 api_bp = Blueprint('api', __name__)
+
+def upload_file(file, folder):
+    if not file:
+        return None
+    try:
+        bucket = get_bucket()
+        filename = f"{folder}/{uuid.uuid4()}_{file.filename}"
+        blob = bucket.blob(filename)
+        blob.upload_from_file(file, content_type=file.content_type)
+        blob.make_public()
+        return blob.public_url
+    except Exception as e:
+        print(f"Error uploading file: {e}")
+        return None
 
 def create_firebase_user(phone_number):
     try:
@@ -50,12 +65,36 @@ def api_add_student():
         return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
     
     try:
-        data = request.get_json()
+        # Handle both JSON and Form Data
+        if request.is_json:
+            data = request.get_json()
+        else:
+            data = request.form.to_dict()
+        
         uid = session['uid']
         db = get_db()
         
         if not data.get('full_name') or not data.get('roll_number'):
              return jsonify({'status': 'error', 'message': 'Missing required fields'}), 400
+
+        # Handle Photo Upload
+        profile_photo_url = None
+        if 'student_photo' in request.files:
+            file = request.files['student_photo']
+            if file.filename:
+                profile_photo_url = upload_file(file, f"students/{uid}")
+                
+        if profile_photo_url:
+            data['profile_photo_url'] = profile_photo_url
+
+        # Initialize Payment Fields
+        try:
+            fee_amount = float(data.get('fee_amount', 0))
+        except ValueError:
+            fee_amount = 0.0
+            
+        data['paid'] = 0.0
+        data['due'] = fee_amount
 
         student_ref = db.collection('organizations').document(uid).collection('students').document()
         student_ref.set(data)
@@ -100,7 +139,12 @@ def api_add_driver():
     if 'user' not in session or 'uid' not in session:
         return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
     try:
-        data = request.get_json()
+        # Handle both JSON and Form Data
+        if request.is_json:
+            data = request.get_json()
+        else:
+            data = request.form.to_dict()
+            
         uid = session['uid']
         db = get_db()
         
@@ -120,6 +164,13 @@ def api_add_driver():
         else:
              return jsonify({'status': 'error', 'message': 'Phone number is required for driver login creation'}), 400
 
+        # Handle Driver Photo Upload
+        profile_photo_url = None
+        if 'driver_photo' in request.files:
+            file = request.files['driver_photo']
+            if file.filename:
+                profile_photo_url = upload_file(file, f"drivers/{uid}")
+
         driver_data = {
             'full_name': data['full_name'],
             'license_number': data['license_number'],
@@ -135,10 +186,18 @@ def api_add_driver():
             'driver_uid': driver_uid # explicit field
         }
         
+        if profile_photo_url:
+            driver_data['profile_photo_url'] = profile_photo_url
+        
         # 2. Use Auth UID as Document ID
         driver_ref = db.collection('organizations').document(uid).collection('drivers').document(driver_uid)
         driver_ref.set(driver_data)
         
+        # If assigned_bus is present (which is a Bus ID), update the Bus document
+        if data.get('assigned_bus'):
+            bus_ref = db.collection('organizations').document(uid).collection('buses').document(data['assigned_bus'])
+            bus_ref.update({'driver_id': driver_uid})
+
         return jsonify({'status': 'success', 'id': driver_ref.id, 'driver_uid': driver_uid})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
@@ -197,10 +256,45 @@ def api_update_driver(driver_id):
     if 'user' not in session or 'uid' not in session:
         return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
     try:
-        data = request.get_json()
+        # Handle both JSON and Form Data
+        if request.is_json:
+            data = request.get_json()
+        else:
+            data = request.form.to_dict()
+            
         uid = session['uid']
         db = get_db()
         driver_ref = db.collection('organizations').document(uid).collection('drivers').document(driver_id)
+        
+        # Handle Photo Upload
+        profile_photo_url = None
+        if 'driver_photo' in request.files:
+            file = request.files['driver_photo']
+            if file.filename:
+                profile_photo_url = upload_file(file, f"drivers/{uid}")
+        
+        if profile_photo_url:
+            driver_data['profile_photo_url'] = profile_photo_url
+        
+        # Handle assigned_bus change
+        if 'assigned_bus' in data:
+             new_bus_id = data['assigned_bus']
+             
+             # Get current driver data to find old assigned bus
+             current_driver = driver_ref.get().to_dict()
+             old_bus_id = current_driver.get('assigned_bus')
+             
+             if old_bus_id != new_bus_id:
+                 # Unassign from old bus if exists
+                 if old_bus_id:
+                     old_bus_ref = db.collection('organizations').document(uid).collection('buses').document(old_bus_id)
+                     old_bus_ref.update({'driver_id': ''})
+                 
+                 # Assign to new bus if exists
+                 if new_bus_id:
+                     new_bus_ref = db.collection('organizations').document(uid).collection('buses').document(new_bus_id)
+                     new_bus_ref.update({'driver_id': driver_id})
+
         driver_ref.update(data)
         return jsonify({'status': 'success'})
     except Exception as e:
@@ -217,5 +311,42 @@ def api_update_route(route_id):
         route_ref = db.collection('organizations').document(uid).collection('routes').document(route_id)
         route_ref.update(data)
         return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/api/add_payment/<student_id>', methods=['POST'])
+def api_add_payment(student_id):
+    if 'user' not in session or 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        data = request.get_json()
+        uid = session['uid']
+        db = get_db()
+        
+        # Validate data
+        if not data.get('amount') or not data.get('date'):
+             return jsonify({'status': 'error', 'message': 'Missing required fields'}), 400
+
+        # Add payment to subcollection
+        student_doc_ref = db.collection('organizations').document(uid).collection('students').document(student_id)
+        payment_ref = student_doc_ref.collection('payments').document()
+        payment_ref.set(data)
+        
+        # Update student document totals (paid and due)
+        student_data = student_doc_ref.get().to_dict()
+        if student_data:
+             current_paid = float(student_data.get('paid', 0))
+             fee_amount = float(student_data.get('fee_amount', 0))
+             new_payment = float(data.get('amount', 0))
+             
+             new_paid = current_paid + new_payment
+             new_due = fee_amount - new_paid
+             
+             student_doc_ref.update({
+                 'paid': new_paid,
+                 'due': new_due
+             })
+        
+        return jsonify({'status': 'success', 'id': payment_ref.id})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500

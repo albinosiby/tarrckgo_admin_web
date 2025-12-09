@@ -194,11 +194,17 @@
                                     <div class="detail-label">Stops</div>
                                     <div class="detail-value" id="display_stops">
                                         {% if route.stops %}
+                                        {% if route.stops is string %}
                                         {% for stop in route.stops.split(',') %}
                                         {% if stop.strip() %}
                                         <span class="stop-tile">{{ stop.strip() }}</span>
                                         {% endif %}
                                         {% endfor %}
+                                        {% else %}
+                                        {% for stop in route.stops %}
+                                        <span class="stop-tile">{{ stop }}</span>
+                                        {% endfor %}
+                                        {% endif %}
                                         {% else %}
                                         <span style="color:var(--text-light)">No stops defined</span>
                                         {% endif %}
@@ -339,7 +345,7 @@
 
             // Collect stops
             const stopInputs = document.querySelectorAll('.stop-input');
-            const stops = Array.from(stopInputs).map(input => input.value).filter(val => val.trim() !== '').join(', ');
+            const stops = Array.from(stopInputs).map(input => input.value).filter(val => val.trim() !== '');
 
             const data = {
                 route_name: document.getElementById('edit_route_name').value,

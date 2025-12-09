@@ -44,6 +44,14 @@
             color: #9ca3af;
             object-fit: cover;
         }
+
+        .text-danger {
+            color: var(--danger);
+        }
+
+        .text-default {
+            color: var(--text-dark);
+        }
     </style>
 </head>
 
@@ -183,6 +191,114 @@
                         </div>
                     </div>
 
+                    <!-- Fee Management Card -->
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-title-row"
+                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <h3>Fee Management</h3>
+                            <button id="show-payment-form-btn" class="btn btn-primary" onclick="togglePaymentForm()">
+                                <span style="font-size:1.2rem; margin-right:6px">+</span> Record Payment
+                            </button>
+                        </div>
+
+                        <!-- Fee Summary -->
+                        <div class="split-row" style="margin-bottom: 24px;">
+                            <div class="stat-card"
+                                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Total Fee
+                                </div>
+                                <div style="font-size:1.5rem; font-weight:600; color:var(--text-dark);">₹ {{
+                                    student.fee_amount }}</div>
+                            </div>
+                            <div class="stat-card"
+                                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Amount Paid
+                                </div>
+                                <div style="font-size:1.5rem; font-weight:600; color:var(--success);">₹ {{ total_paid }}
+                                </div>
+                            </div>
+                            <div class="stat-card"
+                                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Balance Due
+                                </div>
+                                <div class="{{ 'text-danger' if balance > 0 else 'text-default' }}"
+                                    style="font-size:1.5rem; font-weight:600;">
+                                    ₹ {{ balance }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Add Payment Form (Hidden by default) -->
+                        <div id="payment-form-container"
+                            style="display:none; background:var(--bg-light); padding:20px; border-radius:8px; margin-bottom:24px; border:1px solid var(--border);">
+                            <h4 style="margin-bottom:16px; color:var(--primary);">Record New Payment</h4>
+                            <form id="addPaymentForm">
+                                <div class="split-row">
+                                    <div>
+                                        <label class="form-label">Amount (₹)</label>
+                                        <input type="number" id="pay_amount" class="form-input" required
+                                            max="{{ balance }}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Payment Date</label>
+                                        <input type="date" id="pay_date" class="form-input" required>
+                                    </div>
+                                </div>
+                                <div class="split-row">
+                                    <div>
+                                        <label class="form-label">Payment Mode</label>
+                                        <select id="pay_mode" class="form-input" required>
+                                            <option value="Cash">Cash</option>
+                                            <option value="UPI">UPI</option>
+                                            <option value="Bank Transfer">Bank Transfer</option>
+                                            <option value="Cheque">Cheque</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Reference ID (Optional)</label>
+                                        <input type="text" id="pay_ref" class="form-input"
+                                            placeholder="e.g. Transaction ID">
+                                    </div>
+                                </div>
+                                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+                                    <button type="button" class="btn" style="background:#e5e7eb; color:#374151;"
+                                        onclick="togglePaymentForm()">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Payment</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Payment History Table -->
+                        <div class="table-wrapper">
+                            <h4 style="margin-bottom:12px; font-size:1rem;">Payment History</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Mode</th>
+                                        <th>Reference ID</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for payment in payments %}
+                                    <tr>
+                                        <td>{{ payment.date }}</td>
+                                        <td>{{ payment.mode }}</td>
+                                        <td>{{ payment.reference_id or '-' }}</td>
+                                        <td style="font-weight:500; color:var(--success);">+ ₹ {{ payment.amount }}</td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4"
+                                            style="text-align:center; padding:20px; color:var(--text-light);">No payment
+                                            history found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- Attendance History Card -->
                     <div class="card">
                         <div class="card-title-row" style="margin-bottom:20px">
@@ -234,6 +350,64 @@
         </div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function togglePaymentForm() {
+            const formContainer = document.getElementById('payment-form-container');
+            const showBtn = document.getElementById('show-payment-form-btn');
+
+            if (formContainer.style.display === 'none') {
+                formContainer.style.display = 'block';
+                showBtn.style.display = 'none';
+
+                // Set default date to today
+                document.getElementById('pay_date').valueAsDate = new Date();
+            } else {
+                formContainer.style.display = 'none';
+                showBtn.style.display = 'block';
+            }
+        }
+
+        document.getElementById('addPaymentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            const formData = {
+                amount: document.getElementById('pay_amount').value,
+                date: document.getElementById('pay_date').value,
+                mode: document.getElementById('pay_mode').value,
+                reference_id: document.getElementById('pay_ref').value
+            };
+
+            fetch("{{ url_for('api.api_add_payment', student_id=student.id) }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Payment Added Successfully!');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                });
+        });
+    </script>
 </body>
 
 </html>

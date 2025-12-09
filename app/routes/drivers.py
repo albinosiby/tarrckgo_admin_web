@@ -40,4 +40,16 @@ def driver_details(driver_id):
 @drivers_bp.route('/add_driver')
 def add_driver():
     if 'user' not in session: return redirect(url_for('auth.login'))
-    return render_template('add_driver.html')
+    
+    uid = session.get('uid')
+    db = get_db()
+    
+    # Fetch buses for dropdown
+    buses_ref = db.collection('organizations').document(uid).collection('buses')
+    buses = []
+    for doc in buses_ref.stream():
+        b_data = doc.to_dict()
+        b_data['id'] = doc.id
+        buses.append(b_data)
+
+    return render_template('add_driver.html', buses=buses)
