@@ -248,7 +248,8 @@
                 payment_type: document.getElementById('payment_type').value,
                 fee_amount: document.getElementById('fee_amount').value,
                 parent_name: document.getElementById('parent_name').value,
-                parent_phone: document.getElementById('parent_phone').value
+                parent_phone: document.getElementById('parent_phone').value,
+                bus_id: busesData.find(b => b.bus_number === document.getElementById('bus_number').value)?.id || ''
             };
 
             const btn = this.querySelector('button[type="submit"]');

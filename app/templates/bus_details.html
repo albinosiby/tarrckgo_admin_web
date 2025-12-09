@@ -161,14 +161,14 @@
                                     <select id="input-driver" class="edit-input">
                                         <option value="">Unassigned</option>
                                         {% for driver in drivers %}
-                                        <option value="{{ driver.full_name }}" {% if bus.driver_name==driver.full_name
-                                            %}selected{% endif %}>{{ driver.full_name }}</option>
+                                        <option value="{{ driver.id }}" data-name="{{ driver.full_name }}" {% if
+                                            bus.driver_name==driver.full_name %}selected{% endif %}>{{ driver.full_name
+                                            }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="detail-group">
                                     <div class="detail-label">Route</div>
-                                    <div id="display-route" class="detail-value">{{ bus.route or 'N/A' }}</div>
                                     <select id="input-route" class="edit-input">
                                         <option value="">N/A</option>
                                         {% for route in routes %}
@@ -274,10 +274,16 @@
             btn.disabled = true;
             btn.innerText = 'Saving...';
 
+            const driverSelect = document.getElementById('input-driver');
+            const selectedOption = driverSelect.options[driverSelect.selectedIndex];
+            const driverId = driverSelect.value;
+            const driverName = selectedOption.getAttribute('data-name') || (driverId === '' ? 'Unassigned' : selectedOption.innerText);
+
             const data = {
                 capacity: document.getElementById('input-capacity').value,
                 model: document.getElementById('input-model').value,
-                driver_name: document.getElementById('input-driver').value,
+                driver_name: driverName,
+                driver_id: driverId === '' ? null : driverId,
                 route: document.getElementById('input-route').value,
                 last_service_date: document.getElementById('input-last-service').value,
                 next_service_due: document.getElementById('input-next-service').value,

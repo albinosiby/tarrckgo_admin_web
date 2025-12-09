@@ -176,6 +176,9 @@
                     if (data.status === 'success') {
                         alert('Driver Added Successfully!');
                         window.location.href = "{{ url_for('drivers.drivers') }}";
+                    } else if (data.status === 'warning') {
+                        alert('Warning: ' + data.message);
+                        window.location.href = "{{ url_for('drivers.drivers') }}";
                     } else {
                         alert('Error: ' + data.message);
                         btn.disabled = false;

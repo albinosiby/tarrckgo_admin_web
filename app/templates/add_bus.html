@@ -87,7 +87,8 @@
                                 <select id="driver_name" class="form-input">
                                     <option value="">Select Driver...</option>
                                     {% for driver in drivers %}
-                                    <option value="{{ driver.full_name }}">{{ driver.full_name }}</option>
+                                    <option value="{{ driver.id }}" data-name="{{ driver.full_name }}">{{
+                                        driver.full_name }}</option>
                                     {% endfor %}
                                     <option value="Unassigned">Unassigned</option>
                                 </select>
@@ -143,11 +144,17 @@
         document.getElementById('addBusForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
+            const driverSelect = document.getElementById('driver_name');
+            const selectedOption = driverSelect.options[driverSelect.selectedIndex];
+            const driverId = driverSelect.value;
+            const driverName = selectedOption.getAttribute('data-name') || (driverId === 'Unassigned' ? 'Unassigned' : selectedOption.innerText);
+
             const formData = {
                 bus_number: document.getElementById('bus_number').value,
                 registration_no: document.getElementById('registration_no').value,
                 capacity: document.getElementById('capacity').value,
-                driver_name: document.getElementById('driver_name').value || 'Unassigned',
+                driver_name: driverName,
+                driver_id: driverId === 'Unassigned' ? null : driverId,
                 route: document.getElementById('route').value || 'N/A',
                 last_service_date: document.getElementById('last_service_date').value,
                 next_service_due: document.getElementById('next_service_due').value,

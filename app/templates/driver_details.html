@@ -135,7 +135,10 @@
                                     <div class="detail-label">Phone Number</div>
                                     <div class="detail-value" id="display_phone_number">{{ driver.phone_number }}</div>
                                     <input type="tel" id="edit_phone_number" class="form-input"
-                                        value="{{ driver.phone_number }}" style="display:none;">
+                                        value="{{ driver.phone_number }}"
+                                        style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;"
+                                        disabled
+                                        title="Phone number cannot be changed as it is linked to the login account.">
                                 </div>
                                 <div class="detail-group">
                                     <div class="detail-label">Address</div>
