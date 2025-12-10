@@ -58,6 +58,48 @@ def create_firebase_user(phone_number):
         msg = f"Error creating auth user: {str(e)}"
         print(msg)
         return None, msg
+        
+@api_bp.route('/api/rfid/initiate', methods=['POST'])
+def api_rfid_initiate():
+    if 'user' not in session or 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        data = request.get_json()
+        roll_number = data.get('roll_number')
+        if not roll_number:
+            return jsonify({'status': 'error', 'message': 'Roll number required'}), 400
+        
+        # Get RTDB reference
+        from app.services.firebase_service import get_db_rtdb
+        ref = get_db_rtdb().reference('/rfid_writer')
+        
+        import time
+        payload = {
+            'status': 'writing',
+            'roll_number': roll_number,
+            'timestamp': int(time.time() * 1000)
+        }
+        ref.set(payload)
+        
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/api/rfid/status', methods=['GET'])
+def api_rfid_status():
+    if 'user' not in session or 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        from app.services.firebase_service import get_db_rtdb
+        ref = get_db_rtdb().reference('/rfid_writer')
+        data = ref.get()
+        
+        if not data:
+             return jsonify({'status': 'unknown'})
+             
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @api_bp.route('/api/add_student', methods=['POST'])
 def api_add_student():

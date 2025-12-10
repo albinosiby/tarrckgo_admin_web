@@ -22,14 +22,20 @@ def init_firebase(app):
             cred = credentials.Certificate(creds_config)
             
         options = {
-            'storageBucket': f"{cred.project_id}.firebasestorage.app"
+            'storageBucket': f"{cred.project_id}.firebasestorage.app",
+            'databaseURL': app.config.get('FIREBASE_RTDB_URL')
         }
         firebase_admin.initialize_app(cred, options)
     db = firestore.client()
 
+from firebase_admin import db as rtdb
 from firebase_admin import storage
+
 def get_bucket():
     return storage.bucket()
+
+def get_db_rtdb():
+    return rtdb
 
 def get_db():
     return db

@@ -6,3 +6,4 @@ class Config:
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(days=30)
     # Prefer env var for credentials, fallback to file
     FIREBASE_CREDENTIALS = os.environ.get('FIREBASE_CREDENTIALS_JSON') or "serviceAccountKey.json"
+    FIREBASE_RTDB_URL = "https://bus-management-c8612-default-rtdb.firebaseio.com/"
