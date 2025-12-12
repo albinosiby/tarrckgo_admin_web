@@ -1,350 +1,378 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Smart Bus Admin Panel - Driver Details</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        .detail-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-bottom: 4px;
-        }
+{% set active_page = 'drivers' %}
 
-        .detail-value {
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
+{% block title %}Smart Bus Admin Panel - Driver Details{% endblock %}
 
-        .detail-group {
-            margin-bottom: 16px;
-        }
+{% block header_title %}Smart Bus Admin • Driver Details{% endblock %}
 
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 24px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-        }
+{% block head %}
+<style>
+    .detail-label {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin-bottom: 4px;
+    }
 
-        .profile-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #9ca3af;
-            object-fit: cover;
-        }
-    </style>
-</head>
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-dark);
+    }
 
-<body>
-    <div class="app">
-        <div class="sidebar-overlay"></div>
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                Smart Bus Admin
-                <button class="sidebar-close">&times;</button>
+    .detail-group {
+        margin-bottom: 16px;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .profile-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #9ca3af;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <!-- Driver Profile Card -->
+    <div class="card" style="margin-bottom: 20px;">
+        <div class="card-title-row"
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3>Driver Profile</h3>
+            <div>
+                <button class="btn btn-primary">
+                    <span style="font-size:1rem; margin-right:6px">✎</span> Edit
+                </button>
+                <button class="btn" style="background-color: #ef4444; color: white; margin-left: 10px;"
+                    onclick="deleteDriver()">
+                    <span style="font-size:1rem; margin-right:6px">🗑️</span> Delete
+                </button>
             </div>
-            <ul class="nav-list">
-                <li class="nav-item"><a href="{{ url_for('main.index') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📊</span> Dashboard</a></li>
-                <li class="nav-item"><a href="{{ url_for('students.students') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🎓</span> Students</a></li>
-                <li class="nav-item active"><a href="{{ url_for('drivers.drivers') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">👨‍✈️</span> Drivers</a></li>
-                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🚌</span> Buses</a></li>
-                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🗺️</span> Routes</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📍</span> Live Tracking</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">✅</span> Attendance</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">⚙️</span> Settings</a></li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
-                <a href="{{ url_for('auth.login') }}"
-                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
-                    <span class="icon">🚪</span> Logout
-                </a>
+        </div>
+
+        <div class="profile-header">
+            <div class="profile-img">
+                {% if driver.profile_photo_url %}
+                <img src="{{ driver.profile_photo_url }}" alt="Profile"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                {% else %}
+                👨‍✈️
+                {% endif %}
             </div>
-        </aside>
-        <div class="main">
-            <header class="topbar">
-                <button class="menu-toggle">☰</button>
-                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Driver Details</div>
-                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
-                    <div class="topbar-avatar">A</div>
+            <div style="margin-left: -50px; margin-top: 80px; display: none;" id="edit_photo_container">
+                <label for="edit_driver_photo"
+                    style="cursor: pointer; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Change
+                    Photo</label>
+                <input type="file" id="edit_driver_photo" style="display: none;" accept="image/*">
+            </div>
+            <div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">
+                    <span id="display_full_name">{{ driver.full_name }}</span>
+                    <input type="text" id="edit_full_name" class="form-input" value="{{ driver.full_name }}"
+                        style="display:none; margin-top:5px;">
+                </h2>
+                <div style="color: var(--text-light);">License:
+                    <span id="display_license_number">{{ driver.license_number }}</span>
+                    <input type="text" id="edit_license_number" class="form-input" value="{{ driver.license_number }}"
+                        style="display:none; margin-top:5px;">
                 </div>
-            </header>
+                <span class="badge badge-success"
+                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
+            </div>
+        </div>
 
-            <main class="content">
-                <div style="max-width: 1000px; margin: 0 auto;">
-                    <!-- Driver Profile Card -->
-                    <div class="card" style="margin-bottom: 20px;">
-                        <div class="card-title-row"
-                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                            <h3>Driver Profile</h3>
-                            <button class="btn btn-primary">
-                                <span style="font-size:1rem; margin-right:6px">✎</span> Edit
-                            </button>
-                        </div>
+        <div class="split-row">
+            <!-- Personal Info -->
+            <div>
+                <h4 style="margin-bottom: 16px; color: var(--primary);">Personal Information</h4>
+                <div class="detail-group">
+                    <div class="detail-label">Phone Number</div>
+                    <div class="detail-value" id="display_phone_number">{{ driver.phone_number }}</div>
+                    <input type="tel" id="edit_phone_number" class="form-input" value="{{ driver.phone_number }}"
+                        style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;" disabled
+                        title="Phone number cannot be changed as it is linked to the login account.">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Address</div>
+                    <div class="detail-value" id="display_address">{{ driver.address or 'N/A' }}</div>
+                    <textarea id="edit_address" class="form-input" style="display:none;">{{ driver.address }}</textarea>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Date of Birth</div>
+                    <div class="detail-value" id="display_date_of_birth">{{ driver.date_of_birth or
+                        'N/A' }}</div>
+                    <input type="date" id="edit_date_of_birth" class="form-input" value="{{ driver.date_of_birth }}"
+                        style="display:none;">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Blood Group</div>
+                    <div class="detail-value" id="display_blood_group">{{ driver.blood_group or 'N/A' }}
+                    </div>
+                    <select id="edit_blood_group" class="form-input" style="display:none;">
+                        <option value="">Select...</option>
+                        <option value="A+" {% if driver.blood_group=='A+' %}selected{% endif %}>A+
+                        </option>
+                        <option value="A-" {% if driver.blood_group=='A-' %}selected{% endif %}>A-
+                        </option>
+                        <option value="B+" {% if driver.blood_group=='B+' %}selected{% endif %}>B+
+                        </option>
+                        <option value="B-" {% if driver.blood_group=='B-' %}selected{% endif %}>B-
+                        </option>
+                        <option value="O+" {% if driver.blood_group=='O+' %}selected{% endif %}>O+
+                        </option>
+                        <option value="O-" {% if driver.blood_group=='O-' %}selected{% endif %}>O-
+                        </option>
+                        <option value="AB+" {% if driver.blood_group=='AB+' %}selected{% endif %}>AB+
+                        </option>
+                        <option value="AB-" {% if driver.blood_group=='AB-' %}selected{% endif %}>AB-
+                        </option>
+                    </select>
+                </div>
+            </div>
 
-                        <div class="profile-header">
-                            <div class="profile-img">
-                                {% if driver.profile_photo_url %}
-                                <img src="{{ driver.profile_photo_url }}" alt="Profile"
-                                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                                {% else %}
-                                👨‍✈️
-                                {% endif %}
-                            </div>
-                            <div style="margin-left: -50px; margin-top: 80px; display: none;" id="edit_photo_container">
-                                <label for="edit_driver_photo"
-                                    style="cursor: pointer; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Change
-                                    Photo</label>
-                                <input type="file" id="edit_driver_photo" style="display: none;" accept="image/*">
-                            </div>
-                            <div>
-                                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">
-                                    <span id="display_full_name">{{ driver.full_name }}</span>
-                                    <input type="text" id="edit_full_name" class="form-input"
-                                        value="{{ driver.full_name }}" style="display:none; margin-top:5px;">
-                                </h2>
-                                <div style="color: var(--text-light);">License:
-                                    <span id="display_license_number">{{ driver.license_number }}</span>
-                                    <input type="text" id="edit_license_number" class="form-input"
-                                        value="{{ driver.license_number }}" style="display:none; margin-top:5px;">
-                                </div>
-                                <span class="badge badge-success"
-                                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
-                            </div>
-                        </div>
+            <!-- Assignment & Professional Info -->
+            <div>
+                <h4 style="margin-bottom: 16px; color: var(--primary);">Assignment</h4>
+                <div class="detail-group">
+                    <div class="detail-label">Assigned Bus</div>
+                    <div class="detail-value" id="display_assigned_bus">{{ driver.assigned_bus_name or
+                        'Unassigned' }}</div>
+                    <select id="edit_assigned_bus" class="form-input" style="display:none;">
+                        <option value="">Select Bus...</option>
+                        {% for bus in buses %}
+                        <option value="{{ bus.id }}" {% if driver.assigned_bus==bus.id %}selected{% endif %}>{{
+                            bus.bus_number }}</option>
+                        {% endfor %}
+                        <option value="">Unassigned</option>
+                    </select>
+                </div>
 
-                        <div class="split-row">
-                            <!-- Personal Info -->
-                            <div>
-                                <h4 style="margin-bottom: 16px; color: var(--primary);">Personal Information</h4>
-                                <div class="detail-group">
-                                    <div class="detail-label">Phone Number</div>
-                                    <div class="detail-value" id="display_phone_number">{{ driver.phone_number }}</div>
-                                    <input type="tel" id="edit_phone_number" class="form-input"
-                                        value="{{ driver.phone_number }}"
-                                        style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;"
-                                        disabled
-                                        title="Phone number cannot be changed as it is linked to the login account.">
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Address</div>
-                                    <div class="detail-value" id="display_address">{{ driver.address or 'N/A' }}</div>
-                                    <textarea id="edit_address" class="form-input"
-                                        style="display:none;">{{ driver.address }}</textarea>
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Date of Birth</div>
-                                    <div class="detail-value" id="display_date_of_birth">{{ driver.date_of_birth or
-                                        'N/A' }}</div>
-                                    <input type="date" id="edit_date_of_birth" class="form-input"
-                                        value="{{ driver.date_of_birth }}" style="display:none;">
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Blood Group</div>
-                                    <div class="detail-value" id="display_blood_group">{{ driver.blood_group or 'N/A' }}
-                                    </div>
-                                    <select id="edit_blood_group" class="form-input" style="display:none;">
-                                        <option value="">Select...</option>
-                                        <option value="A+" {% if driver.blood_group=='A+' %}selected{% endif %}>A+
-                                        </option>
-                                        <option value="A-" {% if driver.blood_group=='A-' %}selected{% endif %}>A-
-                                        </option>
-                                        <option value="B+" {% if driver.blood_group=='B+' %}selected{% endif %}>B+
-                                        </option>
-                                        <option value="B-" {% if driver.blood_group=='B-' %}selected{% endif %}>B-
-                                        </option>
-                                        <option value="O+" {% if driver.blood_group=='O+' %}selected{% endif %}>O+
-                                        </option>
-                                        <option value="O-" {% if driver.blood_group=='O-' %}selected{% endif %}>O-
-                                        </option>
-                                        <option value="AB+" {% if driver.blood_group=='AB+' %}selected{% endif %}>AB+
-                                        </option>
-                                        <option value="AB-" {% if driver.blood_group=='AB-' %}selected{% endif %}>AB-
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Assignment & Professional Info -->
-                            <div>
-                                <h4 style="margin-bottom: 16px; color: var(--primary);">Assignment</h4>
-                                <div class="detail-group">
-                                    <div class="detail-label">Assigned Bus</div>
-                                    <div class="detail-value" id="display_assigned_bus">{{ driver.assigned_bus or
-                                        'Unassigned' }}</div>
-                                    <select id="edit_assigned_bus" class="form-input" style="display:none;">
-                                        <option value="">Select Bus...</option>
-                                        {% for bus in buses %}
-                                        <option value="{{ bus.id }}" {% if driver.assigned_bus==bus.id %}selected{%
-                                            endif %}>{{ bus.bus_number }}</option>
-                                        {% endfor %}
-                                        <option value="">Unassigned</option>
-                                    </select>
-                                </div>
-
-                                <h4 style="margin-bottom: 16px; color: var(--primary); margin-top: 24px;">Professional &
-                                    Emergency</h4>
-                                <div class="detail-group">
-                                    <div class="detail-label">Joining Date</div>
-                                    <div class="detail-value" id="display_joining_date">{{ driver.joining_date or 'N/A'
-                                        }}</div>
-                                    <input type="date" id="edit_joining_date" class="form-input"
-                                        value="{{ driver.joining_date }}" style="display:none;">
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">License Expiry</div>
-                                    <div class="detail-value" id="display_license_expiry_date">{{
-                                        driver.license_expiry_date or 'N/A' }}</div>
-                                    <input type="date" id="edit_license_expiry_date" class="form-input"
-                                        value="{{ driver.license_expiry_date }}" style="display:none;">
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Emergency Contact</div>
-                                    <div class="detail-value" id="display_emergency_contact">
-                                        {{ driver.emergency_contact_name or 'N/A' }}
-                                        {% if driver.emergency_contact_phone %}
-                                        <br><span style="font-size:0.9rem;color:var(--text-light)">{{
-                                            driver.emergency_contact_phone }}</span>
-                                        {% endif %}
-                                    </div>
-                                    <div id="edit_emergency_contact" style="display:none;">
-                                        <input type="text" id="edit_emergency_contact_name" class="form-input"
-                                            value="{{ driver.emergency_contact_name }}" placeholder="Name"
-                                            style="margin-bottom:5px;">
-                                        <input type="tel" id="edit_emergency_contact_phone" class="form-input"
-                                            value="{{ driver.emergency_contact_phone }}" placeholder="Phone">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <h4 style="margin-bottom: 16px; color: var(--primary); margin-top: 24px;">Professional &
+                    Emergency</h4>
+                <div class="detail-group">
+                    <div class="detail-label">Joining Date</div>
+                    <div class="detail-value" id="display_joining_date">{{ driver.joining_date or 'N/A'
+                        }}</div>
+                    <input type="date" id="edit_joining_date" class="form-input" value="{{ driver.joining_date }}"
+                        style="display:none;">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">License Expiry</div>
+                    <div class="detail-value" id="display_license_expiry_date">{{
+                        driver.license_expiry_date or 'N/A' }}</div>
+                    <input type="date" id="edit_license_expiry_date" class="form-input"
+                        value="{{ driver.license_expiry_date }}" style="display:none;">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Emergency Contact</div>
+                    <div class="detail-value" id="display_emergency_contact">
+                        {{ driver.emergency_contact_name or 'N/A' }}
+                        {% if driver.emergency_contact_phone %}
+                        <br><span style="font-size:0.9rem;color:var(--text-light)">{{
+                            driver.emergency_contact_phone }}</span>
+                        {% endif %}
+                    </div>
+                    <div id="edit_emergency_contact" style="display:none;">
+                        <input type="text" id="edit_emergency_contact_name" class="form-input"
+                            value="{{ driver.emergency_contact_name }}" placeholder="Name" style="margin-bottom:5px;">
+                        <input type="tel" id="edit_emergency_contact_phone" class="form-input"
+                            value="{{ driver.emergency_contact_phone }}" placeholder="Phone">
                     </div>
                 </div>
-            </main>
+            </div>
+        </div>
+
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+            <h4 style="margin-bottom: 16px; color: var(--primary);">Trip History</h4>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Bus</th>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Students</th>
+                            <th>Duration</th>
+                            <th>Distance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trip in trip_history %}
+                        <tr>
+                            <td>{{ trip.date }}</td>
+                            <td>{{ trip.bus_number }}</td>
+                            <td>
+                                {{ trip.startTime[11:16] if trip.startTime|length > 16 else trip.startTime }}
+                                -
+                                {{ trip.endTime[11:16] if trip.endTime and trip.endTime|length > 16 else (trip.endTime
+                                or '-') }}
+                            </td>
+                            <td>{{ trip.type|capitalize }}</td>
+                            <td>
+                                {% if trip.status == 'completed' %}
+                                <span class="badge badge-success"
+                                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Completed</span>
+                                {% elif trip.status == 'tripstarted' or trip.status == 'started' %}
+                                <span class="badge"
+                                    style="color:#d97706;background:#fef3c7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">In
+                                    Progress</span>
+                                {% else %}
+                                <span class="badge"
+                                    style="color:var(--text-light);background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">{{
+                                    trip.status|capitalize }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ trip.boardedStudents }} / {{ trip.totalStudents }}</td>
+                            <td>{{ trip.durationMinutes }} min</td>
+                            <td>{{ trip.distanceKm }} km</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding: 20px; color: var(--text-light);">No trip
+                                history found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script>
-        let isEditing = false;
-        const editBtn = document.querySelector('.btn-primary');
+</div>
+{% endblock %}
 
-        editBtn.addEventListener('click', function () {
-            if (!isEditing) {
-                // Switch to Edit Mode
-                isEditing = true;
-                this.innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
-                this.style.backgroundColor = '#10b981'; // Green color
+{% block scripts %}
+<script>
+    let isEditing = false;
+    const editBtn = document.querySelector('.btn-primary');
 
-                // Toggle visibility
-                toggleFields(true);
-            } else {
-                // Save Changes
-                saveChanges();
+    editBtn.addEventListener('click', function () {
+        if (!isEditing) {
+            // Switch to Edit Mode
+            isEditing = true;
+            this.innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
+            this.style.backgroundColor = '#10b981'; // Green color
+
+            // Toggle visibility
+            toggleFields(true);
+        } else {
+            // Save Changes
+            saveChanges();
+        }
+    });
+
+    function toggleFields(showInput) {
+        const fields = [
+            'full_name', 'license_number', 'phone_number', 'address',
+            'date_of_birth', 'blood_group', 'assigned_bus',
+            'joining_date', 'license_expiry_date'
+        ];
+
+        fields.forEach(field => {
+            const displayEl = document.getElementById('display_' + field);
+            const inputEl = document.getElementById('edit_' + field);
+            if (displayEl && inputEl) {
+                displayEl.style.display = showInput ? 'none' : 'block';
+                inputEl.style.display = showInput ? 'block' : 'none';
             }
         });
 
-        function toggleFields(showInput) {
-            const fields = [
-                'full_name', 'license_number', 'phone_number', 'address',
-                'date_of_birth', 'blood_group', 'assigned_bus',
-                'joining_date', 'license_expiry_date'
-            ];
+        // Special handling for Emergency Contact
+        document.getElementById('display_emergency_contact').style.display = showInput ? 'none' : 'block';
+        document.getElementById('edit_emergency_contact').style.display = showInput ? 'block' : 'none';
 
-            fields.forEach(field => {
-                const displayEl = document.getElementById('display_' + field);
-                const inputEl = document.getElementById('edit_' + field);
-                if (displayEl && inputEl) {
-                    displayEl.style.display = showInput ? 'none' : 'block';
-                    inputEl.style.display = showInput ? 'block' : 'none';
-                }
-            });
+        // Photo Edit
+        const photoContainer = document.getElementById('edit_photo_container');
+        if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
+    }
 
-            // Special handling for Emergency Contact
-            document.getElementById('display_emergency_contact').style.display = showInput ? 'none' : 'block';
-            document.getElementById('edit_emergency_contact').style.display = showInput ? 'block' : 'none';
+    function saveChanges() {
+        const btn = document.querySelector('.btn-primary');
+        const originalText = '<span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile';
+        btn.innerText = 'Saving...';
+        btn.disabled = true;
 
-            // Photo Edit
-            const photoContainer = document.getElementById('edit_photo_container');
-            if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
+        const formData = new FormData();
+        formData.append('full_name', document.getElementById('edit_full_name').value);
+        formData.append('license_number', document.getElementById('edit_license_number').value);
+        formData.append('phone_number', document.getElementById('edit_phone_number').value);
+        formData.append('address', document.getElementById('edit_address').value);
+        formData.append('date_of_birth', document.getElementById('edit_date_of_birth').value);
+        formData.append('blood_group', document.getElementById('edit_blood_group').value);
+        formData.append('assigned_bus', document.getElementById('edit_assigned_bus').value);
+        formData.append('joining_date', document.getElementById('edit_joining_date').value);
+        formData.append('license_expiry_date', document.getElementById('edit_license_expiry_date').value);
+        formData.append('emergency_contact_name', document.getElementById('edit_emergency_contact_name').value);
+        formData.append('emergency_contact_phone', document.getElementById('edit_emergency_contact_phone').value);
+
+        const fileInput = document.getElementById('edit_driver_photo');
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('driver_photo', fileInput.files[0]);
         }
 
-        function saveChanges() {
-            const btn = document.querySelector('.btn-primary');
-            const originalText = '<span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile';
-            btn.innerText = 'Saving...';
-            btn.disabled = true;
-
-            const formData = new FormData();
-            formData.append('full_name', document.getElementById('edit_full_name').value);
-            formData.append('license_number', document.getElementById('edit_license_number').value);
-            formData.append('phone_number', document.getElementById('edit_phone_number').value);
-            formData.append('address', document.getElementById('edit_address').value);
-            formData.append('date_of_birth', document.getElementById('edit_date_of_birth').value);
-            formData.append('blood_group', document.getElementById('edit_blood_group').value);
-            formData.append('assigned_bus', document.getElementById('edit_assigned_bus').value);
-            formData.append('joining_date', document.getElementById('edit_joining_date').value);
-            formData.append('license_expiry_date', document.getElementById('edit_license_expiry_date').value);
-            formData.append('emergency_contact_name', document.getElementById('edit_emergency_contact_name').value);
-            formData.append('emergency_contact_phone', document.getElementById('edit_emergency_contact_phone').value);
-
-            const fileInput = document.getElementById('edit_driver_photo');
-            if (fileInput && fileInput.files.length > 0) {
-                formData.append('driver_photo', fileInput.files[0]);
-            }
-
-            fetch("{{ url_for('api.api_update_driver', driver_id=driver.id) }}", {
-                method: 'POST',
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Driver details updated successfully!');
-                        window.location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                        btn.disabled = false;
-                        btn.innerHTML = originalText;
-                        btn.style.backgroundColor = ''; // Reset color
-                        isEditing = false;
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+        fetch("{{ url_for('api.api_update_driver', driver_id=driver.id) }}", {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Driver details updated successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                     btn.style.backgroundColor = ''; // Reset color
                     isEditing = false;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                btn.style.backgroundColor = ''; // Reset color
+                isEditing = false;
+            });
+    }
+
+    function deleteDriver() {
+        if (confirm('Are you sure you want to delete this driver? This action cannot be undone.')) {
+            fetch("{{ url_for('api.api_delete_driver', driver_id=driver.id) }}", {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Driver deleted successfully.');
+                        window.location.href = "{{ url_for('drivers.drivers') }}";
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
                 });
         }
-    </script>
-</body>
-
-</html>
+    }
+</script>
+{% endblock %}

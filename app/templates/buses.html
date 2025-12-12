@@ -1,125 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Smart Bus Admin Panel - Buses</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% set active_page = 'buses' %}
 
-<body>
-    <div class="app">
-        <div class="sidebar-overlay"></div>
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                Smart Bus Admin
-                <button class="sidebar-close">&times;</button>
-            </div>
-            <ul class="nav-list">
-                <li class="nav-item"><a href="{{ url_for('main.index') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📊</span> Dashboard</a></li>
-                <li class="nav-item"><a href="{{ url_for('students.students') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🎓</span> Students</a></li>
-                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">👨‍✈️</span> Drivers</a></li>
-                <li class="nav-item active"><a href="{{ url_for('buses.buses') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🚌</span> Buses</a></li>
-                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🗺️</span> Routes</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📍</span> Live Tracking</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">✅</span> Attendance</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">⚙️</span> Settings</a></li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
-                <a href="{{ url_for('auth.login') }}"
-                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
-                    <span class="icon">🚪</span> Logout
-                </a>
-            </div>
-        </aside>
-        <div class="main">
-            <header class="topbar">
-                <button class="menu-toggle">☰</button>
-                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Buses</div>
-                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
-                    <div class="topbar-avatar">A</div>
-                </div>
-            </header>
+{% block title %}Smart Bus Admin Panel - Buses{% endblock %}
 
-            <main class="content">
-                <section id="page-buses" class="page-section active">
-                    <div class="card">
-                        <div class="card-title-row"
-                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                            <h3>Bus Fleet Management</h3>
-                            <a href="{{ url_for('buses.add_bus') }}" class="btn btn-primary"
-                                style="text-decoration: none;">
-                                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Bus
-                            </a>
-                        </div>
-                        <div class="table-wrapper">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Bus No</th>
-                                        <th>Registration No</th>
-                                        <th>Capacity</th>
-                                        <th>Driver</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for bus in buses %}
-                                    <tr>
-                                        <td>
-                                            <div style="font-weight:600">{{ bus.bus_number }}</div>
-                                        </td>
-                                        <td>{{ bus.registration_no }}</td>
-                                        <td>{{ bus.capacity }} Seats</td>
-                                        <td>{{ bus.driver_name }}</td>
-                                        <td><span class="badge badge-success"
-                                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Active</span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ url_for('buses.bus_details', bus_id=bus.id) }}" class="btn"
-                                                style="padding:4px 8px;color:var(--primary);text-decoration:none;">View</a>
-                                            <a href="{{ url_for('main.tracking') }}" class="btn"
-                                                style="padding:4px 8px;color:var(--success);text-decoration:none;">Live
-                                                Location</a>
-                                        </td>
-                                    </tr>
-                                    {% else %}
-                                    <tr>
-                                        <td colspan="6" style="text-align:center; padding: 20px;">No buses found. Add
-                                            one to get started!</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-            </main>
+{% block header_title %}Smart Bus Admin • Buses{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
+
+{% block content %}
+<section id="page-buses" class="page-section active">
+    <div class="card">
+        <div class="card-title-row"
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3>Bus Fleet Management</h3>
+            <a href="{{ url_for('buses.add_bus') }}" class="btn btn-primary" style="text-decoration: none;">
+                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Bus
+            </a>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bus ID</th>
+                        <th>Bus No</th>
+                        <th>Registration No</th>
+                        <th>Capacity</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bus in buses %}
+                    <tr>
+                        <td style="font-family:monospace; font-size:0.9em; color:#6b7280;">{{ bus.id }}
+                        </td>
+                        <td>
+                            <div style="font-weight:600">{{ bus.bus_number }}</div>
+                        </td>
+                        <td>{{ bus.registration_no }}</td>
+                        <td>{{ bus.capacity }} Seats</td>
+                        <td>{{ bus.driver_name_display }}</td>
+                        <td><span class="badge badge-success"
+                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Active</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('buses.bus_details', bus_id=bus.id) }}" class="btn"
+                                style="padding:4px 8px;color:var(--primary);text-decoration:none;">View</a>
+                            <a href="{{ url_for('main.tracking') }}" class="btn"
+                                style="padding:4px 8px;color:var(--success);text-decoration:none;">Live
+                                Location</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding: 20px;">No buses found. Add
+                            one to get started!</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-
-</html>
+</section>
+{% endblock %}

@@ -1,79 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Smart Bus Admin Panel - Live Tracking</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        #map {
-            height: calc(100vh - 100px);
-            width: 100%;
-        }
-    </style>
-</head>
+{% set active_page = 'tracking' %}
 
-<body>
-    <div class="app">
-        <div class="sidebar-overlay"></div>
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                Smart Bus Admin
-                <button class="sidebar-close">&times;</button>
-            </div>
-            <ul class="nav-list">
-                <li class="nav-item"><a href="{{ url_for('main.index') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📊</span> Dashboard</a></li>
-                <li class="nav-item"><a href="{{ url_for('students.students') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🎓</span> Students</a></li>
-                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">👨‍✈️</span> Drivers</a></li>
-                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🚌</span> Buses</a></li>
-                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🗺️</span> Routes</a></li>
-                <li class="nav-item active"><a href="{{ url_for('main.tracking') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📍</span> Live Tracking</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">✅</span> Attendance</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">⚙️</span> Settings</a></li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
-                <a href="{{ url_for('auth.login') }}"
-                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
-                    <span class="icon">🚪</span> Logout
-                </a>
-            </div>
-        </aside>
-        <div class="main">
-            <header class="topbar">
-                <button class="menu-toggle">☰</button>
-                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Live Tracking</div>
-                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
-                    <div class="topbar-avatar">A</div>
-                </div>
-            </header>
+{% block title %}Smart Bus Admin Panel - Live Tracking{% endblock %}
 
-            <main class="content" style="padding:0; overflow:hidden">
-                <div id="map"></div>
-            </main>
-        </div>
-    </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
+{% block header_title %}Smart Bus Admin • Live Tracking{% endblock %}
 
-</html>
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+    #map {
+        height: calc(100vh - 100px);
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Override content padding for full screen map if needed, but base.html has padding. 
+     If we want full screen map, we might need to override main.content style or live with padding.
+     In original tracking.html: <main class="content" style="padding:0; overflow:hidden">
+     I can't easily override the class attribute of the block parent. 
+     But I can add a style block to override .content for this page? 
+     Or just accept the padding. The original had specific style.
+-->
+<style>
+    /* Scoped style to remove padding from content area for this page only if possible, 
+       but since this is globally applied, it might be tricky. 
+       However, we can just put the map inside the block. 
+       If I want to match original exactly (padding:0), I might need to add a block to base.html for 'content_class' or similar.
+       For now, I will just put the map. The padding might look okay. 
+       Actually, let's try to override it via css in head block.
+    */
+    .content {
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+</style>
+<div id="map"></div>
+{% endblock %}

@@ -1,354 +1,303 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Smart Bus Admin Panel - Add Student</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% set active_page = 'students' %}
 
-<body>
-    <div class="app">
-        <div class="sidebar-overlay"></div>
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                Smart Bus Admin
-                <button class="sidebar-close">&times;</button>
-            </div>
-            <ul class="nav-list">
-                <li class="nav-item"><a href="{{ url_for('main.index') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📊</span> Dashboard</a></li>
-                <li class="nav-item active"><a href="{{ url_for('students.students') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🎓</span> Students</a></li>
-                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">👨‍✈️</span> Drivers</a></li>
-                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🚌</span> Buses</a></li>
-                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🗺️</span> Routes</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📍</span> Live Tracking</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">✅</span> Attendance</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">⚙️</span> Settings</a></li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
-                <a href="{{ url_for('auth.login') }}"
-                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
-                    <span class="icon">🚪</span> Logout
-                </a>
-            </div>
-        </aside>
-        <div class="main">
-            <header class="topbar">
-                <button class="menu-toggle">☰</button>
-                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Add Student</div>
-                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
-                    <div class="topbar-avatar">A</div>
-                </div>
-            </header>
+{% block title %}Smart Bus Admin Panel - Add Student{% endblock %}
 
-            <main class="content">
+{% block header_title %}Smart Bus Admin • Add Student{% endblock %}
 
-                <section class="page-section active">
-                    <div class="card" style="max-width: 800px; margin: 0 auto;">
-                        <div class="card-title-row" style="margin-bottom:20px">
-                            <h3>Add New Student</h3>
-                        </div>
-                        <form id="addStudentForm">
-
-                            <!-- Personal Details -->
-                            <h4
-                                style="margin-bottom: 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                                Personal Details</h4>
-
-                            <div class="form-group">
-                                <label class="form-label">Student Photo</label>
-                                <input type="file" id="student_photo" class="form-input" accept="image/*">
-                            </div>
-
-                            <div class="split-row">
-                                <div>
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" id="full_name" class="form-input" placeholder="e.g. John Doe"
-                                        required>
-                                </div>
-                                <div>
-                                    <label class="form-label">Date of Birth</label>
-                                    <input type="date" id="dob" class="form-input" required>
-                                </div>
-                            </div>
-
-                            <div class="split-row">
-                                <div>
-                                    <label class="form-label">Email Address</label>
-                                    <input type="email" id="email" class="form-input"
-                                        placeholder="e.g. student@example.com">
-                                </div>
-                                <div>
-                                    <label class="form-label">Roll Number</label>
-                                    <input type="text" id="roll_number" class="form-input" placeholder="e.g. CS-101"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Class/Batch</label>
-                                <input type="text" id="batch" class="form-input" placeholder="e.g. CS A">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Address</label>
-                                <textarea id="address" class="form-input" rows="3"
-                                    placeholder="Enter full address"></textarea>
-                            </div>
-
-                            <!-- Transport Details -->
-                            <h4
-                                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                                Transport Details</h4>
-
-                            <div class="split-row">
-                                <div>
-                                    <label class="form-label">Bus Number</label>
-                                    <select id="bus_number" class="form-input" required onchange="updateStops()">
-                                        <option value="">Select Bus...</option>
-                                        {% for bus in buses %}
-                                        <option value="{{ bus.bus_number }}">{{ bus.bus_number }} - {{ bus.route }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label">Bus Stop</label>
-                                    <select id="bus_stop" class="form-input" required>
-                                        <option value="">Select Bus First...</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Fee Details -->
-                            <h4
-                                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                                Fee Details</h4>
-
-                            <div class="split-row">
-                                <div>
-                                    <label class="form-label">Payment Type</label>
-                                    <select id="payment_type" class="form-input" required>
-                                        <option value="annual">Annual</option>
-                                        <option value="monthly">Monthly</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label">Fee Amount (₹)</label>
-                                    <input type="number" id="fee_amount" class="form-input" placeholder="e.g. 5000"
-                                        required>
-                                </div>
-                            </div>
-
-                            <!-- Parent Details -->
-                            <h4
-                                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                                Parent Details</h4>
-
-                            <div class="split-row">
-                                <div>
-                                    <label class="form-label">Parent Name</label>
-                                    <input type="text" id="parent_name" class="form-input" placeholder="e.g. Jane Doe"
-                                        required>
-                                </div>
-                                <div>
-                                    <label class="form-label">Parent Phone</label>
-                                    <input type="tel" id="parent_phone" class="form-input" placeholder="10-digit number"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <a href="{{ url_for('students.students') }}" class="btn"
-                                    style="background:#f3f4f6; color:#374151; text-decoration:none;">Cancel</a>
-                                <button type="submit" class="btn btn-primary">Save Student</button>
-                            </div>
-                        </form>
-                    </div>
-                </section>
-            </main>
+{% block content %}
+<section class="page-section active">
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-title-row" style="margin-bottom:20px">
+            <h3>Add New Student</h3>
         </div>
+        <form id="addStudentForm">
+
+            <!-- Personal Details -->
+            <h4
+                style="margin-bottom: 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                Personal Details</h4>
+
+            <div class="form-group">
+                <label class="form-label">Student Photo</label>
+                <input type="file" id="student_photo" class="form-input" accept="image/*">
+            </div>
+
+            <div class="split-row">
+                <div>
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="full_name" class="form-input" placeholder="e.g. John Doe" required>
+                </div>
+                <div>
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" id="dob" class="form-input" required>
+                </div>
+            </div>
+
+            <div class="split-row">
+                <div>
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="e.g. student@example.com">
+                </div>
+                <div>
+                    <label class="form-label">Roll Number</label>
+                    <input type="text" id="roll_number" class="form-input" placeholder="e.g. CS-101" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Class/Batch</label>
+                <input type="text" id="batch" class="form-input" placeholder="e.g. CS A">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <textarea id="address" class="form-input" rows="3" placeholder="Enter full address"></textarea>
+            </div>
+
+            <!-- Transport Details -->
+            <h4
+                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                Transport Details</h4>
+
+            <div class="split-row">
+                <div>
+                    <label class="form-label">Bus Number</label>
+                    <select id="bus_number" class="form-input" required onchange="updateStops()">
+                        <option value="">Select Bus...</option>
+                        {% for bus in buses %}
+                        <option value="{{ bus.bus_number }}">{{ bus.bus_number }} - {{ bus.route }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Bus Stop</label>
+                    <select id="bus_stop" class="form-input" required>
+                        <option value="">Select Bus First...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Fee Details -->
+            <h4
+                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                Fee Details</h4>
+
+            <div class="split-row">
+                <div>
+                    <label class="form-label">Payment Type</label>
+                    <select id="payment_type" class="form-input" required>
+                        <option value="annual">Annual</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Fee Amount (₹)</label>
+                    <input type="number" id="fee_amount" class="form-input" placeholder="e.g. 5000" required>
+                </div>
+            </div>
+
+            <!-- Parent Details -->
+            <h4
+                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                Parent Details</h4>
+
+            <div class="split-row">
+                <div>
+                    <label class="form-label">Parent Name</label>
+                    <input type="text" id="parent_name" class="form-input" placeholder="e.g. Jane Doe" required>
+                </div>
+                <div>
+                    <label class="form-label">Parent Phone</label>
+                    <input type="tel" id="parent_phone" class="form-input" placeholder="10-digit number" required>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('students.students') }}" class="btn"
+                    style="background:#f3f4f6; color:#374151; text-decoration:none;">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Student</button>
+            </div>
+        </form>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script id="buses-data" type="application/json">{{ buses | tojson }}</script>
-    <script id="routes-data" type="application/json">{{ routes | tojson }}</script>
-    <script>
-        const busesData = JSON.parse(document.getElementById('buses-data').textContent);
-        const routesData = JSON.parse(document.getElementById('routes-data').textContent);
+</section>
+{% endblock %}
 
-        function updateStops() {
-            const busSelect = document.getElementById('bus_number');
-            const stopSelect = document.getElementById('bus_stop');
-            const selectedBusNumber = busSelect.value;
+{% block scripts %}
+<script id="buses-data" type="application/json">{{ buses | tojson }}</script>
+<script id="routes-data" type="application/json">{{ routes | tojson }}</script>
+<script>
+    const busesData = JSON.parse(document.getElementById('buses-data').textContent);
+    const routesData = JSON.parse(document.getElementById('routes-data').textContent);
 
-            stopSelect.innerHTML = '<option value="">Select Stop...</option>';
+    function updateStops() {
+        const busSelect = document.getElementById('bus_number');
+        const stopSelect = document.getElementById('bus_stop');
+        const selectedBusNumber = busSelect.value;
 
-            if (!selectedBusNumber) return;
+        stopSelect.innerHTML = '<option value="">Select Stop...</option>';
 
-            // Find the selected bus object
-            const selectedBus = busesData.find(b => b.bus_number === selectedBusNumber);
+        if (!selectedBusNumber) return;
 
-            if (selectedBus && selectedBus.route) {
-                // Find the route object associated with the bus
-                // Assuming bus.route stores the route name as per add_bus.html
-                const route = routesData.find(r => r.route_name === selectedBus.route);
+        // Find the selected bus object
+        const selectedBus = busesData.find(b => b.bus_number === selectedBusNumber);
 
-                if (route && route.stops) {
-                    // Splits string by comma if it's a string, or uses it directly if it's an array
-                    let stops = [];
-                    if (typeof route.stops === 'string') {
-                        stops = route.stops.split(',').map(s => s.trim());
-                    } else if (Array.isArray(route.stops)) {
-                        stops = route.stops;
-                    }
+        if (selectedBus && selectedBus.route) {
+            // Find the route object associated with the bus
+            // Assuming bus.route stores the route name as per add_bus.html
+            const route = routesData.find(r => r.route_name === selectedBus.route);
 
-                    stops.forEach(stop => {
-                        const option = document.createElement('option');
-                        option.value = stop;
-                        option.textContent = stop;
-                        stopSelect.appendChild(option);
-                    });
-                } else {
-                    const option = document.createElement('option');
-                    option.textContent = "No stops found for this route";
-                    stopSelect.appendChild(option);
+            if (route && route.stops) {
+                // Splits string by comma if it's a string, or uses it directly if it's an array
+                let stops = [];
+                if (typeof route.stops === 'string') {
+                    stops = route.stops.split(',').map(s => s.trim());
+                } else if (Array.isArray(route.stops)) {
+                    stops = route.stops;
                 }
+
+                stops.forEach(stop => {
+                    const option = document.createElement('option');
+                    option.value = stop;
+                    option.textContent = stop;
+                    stopSelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.textContent = "No stops found for this route";
+                stopSelect.appendChild(option);
             }
         }
+    }
 
-        document.getElementById('addStudentForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+    document.getElementById('addStudentForm').addEventListener('submit', function (e) {
+        e.preventDefault();
 
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.innerText;
-            const rollNumber = document.getElementById('roll_number').value;
+        const btn = this.querySelector('button[type="submit"]');
+        const originalText = btn.innerText;
+        const rollNumber = document.getElementById('roll_number').value;
 
-            if (!rollNumber) {
-                alert("Please enter a roll number first.");
-                return;
-            }
+        if (!rollNumber) {
+            alert("Please enter a roll number first.");
+            return;
+        }
 
-            // UI State: Waiting for RFID
-            btn.disabled = true;
-            btn.innerText = 'Scan RFID Card Now...';
+        // 1. Get New Student ID First
+        fetch("{{ url_for('api.api_generate_student_id') }}")
+            .then(r => r.json())
+            .then(idData => {
+                if (idData.status !== 'success') throw new Error(idData.message);
+                const studentId = idData.student_id;
 
-            // 1. Initiate RFID Write
-            fetch("{{ url_for('api.api_rfid_initiate') }}", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ roll_number: rollNumber })
-            })
-                .then(res => res.json())
-                .then(initData => {
-                    if (initData.status !== 'success') {
-                        throw new Error(initData.message || 'Failed to initiate RFID write');
-                    }
+                // UI State: Waiting for RFID
+                btn.disabled = true;
+                btn.innerText = 'Scan RFID Card Now...';
 
-                    // 2. Poll for Status
-                    let attempts = 0;
-                    const maxAttempts = 30; // 30 seconds
-
-                    const pollInterval = setInterval(() => {
-                        attempts++;
-                        if (attempts > maxAttempts) {
-                            clearInterval(pollInterval);
-                            alert("RFID Write Timed Out. Please try again.");
-                            btn.disabled = false;
-                            btn.innerText = originalText;
-                            return;
+                // 2. Initiate RFID Write with Student ID and Roll Number
+                return fetch("{{ url_for('api.api_rfid_initiate') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ student_id: studentId, roll_number: rollNumber })
+                })
+                    .then(res => res.json())
+                    .then(initData => {
+                        if (initData.status !== 'success') {
+                            throw new Error(initData.message || 'Failed to initiate RFID write');
                         }
 
-                        fetch("{{ url_for('api.api_rfid_status') }}")
-                            .then(r => r.json())
-                            .then(statusData => {
-                                console.log("RFID Status:", statusData);
-                                if (statusData.status === 'success' && statusData.roll_number === rollNumber) {
-                                    clearInterval(pollInterval);
-                                    btn.innerText = 'Saving Student...';
-                                    submitStudentData(btn, originalText); // Proceed to save
-                                } else if (statusData.status === 'error') {
-                                    clearInterval(pollInterval);
-                                    alert("RFID Write Failed: " + (statusData.message || "Unknown error"));
-                                    btn.disabled = false;
-                                    btn.innerText = originalText;
-                                }
-                            })
-                            .catch(err => console.error("Polling error:", err));
-                    }, 1000);
+                        // 3. Poll for Status
+                        let attempts = 0;
+                        const maxAttempts = 30; // 30 seconds
 
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error initiating RFID: ' + error.message);
-                    btn.disabled = false;
-                    btn.innerText = originalText;
-                });
-        });
+                        const pollInterval = setInterval(() => {
+                            attempts++;
+                            if (attempts > maxAttempts) {
+                                clearInterval(pollInterval);
+                                alert("RFID Write Timed Out. Please try again.");
+                                btn.disabled = false;
+                                btn.innerText = originalText;
+                                return;
+                            }
 
-        function submitStudentData(btn, originalText) {
-            const formData = new FormData();
-            formData.append('full_name', document.getElementById('full_name').value);
-            formData.append('dob', document.getElementById('dob').value);
-            formData.append('email', document.getElementById('email').value);
-            formData.append('roll_number', document.getElementById('roll_number').value);
-            formData.append('batch', document.getElementById('batch').value);
-            formData.append('address', document.getElementById('address').value);
-            formData.append('bus_number', document.getElementById('bus_number').value);
-            formData.append('bus_stop', document.getElementById('bus_stop').value);
-            formData.append('payment_type', document.getElementById('payment_type').value);
-            formData.append('fee_amount', document.getElementById('fee_amount').value);
-            formData.append('parent_name', document.getElementById('parent_name').value);
-            formData.append('parent_phone', document.getElementById('parent_phone').value);
+                            fetch("{{ url_for('api.api_rfid_status') }}")
+                                .then(r => r.json())
+                                .then(statusData => {
+                                    console.log("RFID Status:", statusData);
+                                    // Check if status is success and the ID matched matches what we sent (Roll Number)
+                                    // api_rfid_initiate now puts rollNumber into the 'student_id' field of RTDB
+                                    if (statusData.status === 'success' && statusData.student_id === rollNumber) {
+                                        clearInterval(pollInterval);
+                                        btn.innerText = 'Saving Student...';
 
-            const busesData = JSON.parse(document.getElementById('buses-data').textContent);
-            const busId = busesData.find(b => b.bus_number === document.getElementById('bus_number').value)?.id || '';
-            formData.append('bus_id', busId);
-
-            const fileInput = document.getElementById('student_photo');
-            if (fileInput && fileInput.files.length > 0) {
-                formData.append('student_photo', fileInput.files[0]);
-            }
-
-            fetch("{{ url_for('api.api_add_student') }}", {
-                method: 'POST',
-                body: formData,
+                                        // Pass the generated ID to submit function (This is the DOC ID)
+                                        submitStudentData(btn, originalText, studentId);
+                                    } else if (statusData.status === 'error') {
+                                        clearInterval(pollInterval);
+                                        alert("RFID Write Failed: " + (statusData.message || "Unknown error"));
+                                        btn.disabled = false;
+                                        btn.innerText = originalText;
+                                    }
+                                })
+                                .catch(err => console.error("Polling error:", err));
+                        }, 1000);
+                    });
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Student Added Successfully!');
-                        window.location.href = "{{ url_for('students.students') }}";
-                    } else {
-                        alert('Error: ' + data.message);
-                        btn.disabled = false;
-                        btn.innerText = originalText;
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+                btn.disabled = false;
+                btn.innerText = originalText;
+            });
+    });
+
+    function submitStudentData(btn, originalText, studentId) {
+        const formData = new FormData();
+        if (studentId) formData.append('student_id', studentId);
+        formData.append('full_name', document.getElementById('full_name').value);
+        formData.append('dob', document.getElementById('dob').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('roll_number', document.getElementById('roll_number').value);
+        formData.append('batch', document.getElementById('batch').value);
+        formData.append('address', document.getElementById('address').value);
+        formData.append('bus_number', document.getElementById('bus_number').value);
+        formData.append('bus_stop', document.getElementById('bus_stop').value);
+        formData.append('payment_type', document.getElementById('payment_type').value);
+        formData.append('fee_amount', document.getElementById('fee_amount').value);
+        formData.append('parent_name', document.getElementById('parent_name').value);
+        formData.append('parent_phone', document.getElementById('parent_phone').value);
+
+        const busesData = JSON.parse(document.getElementById('buses-data').textContent);
+        const busId = busesData.find(b => b.bus_number === document.getElementById('bus_number').value)?.id || '';
+        formData.append('bus_id', busId);
+
+        const fileInput = document.getElementById('student_photo');
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('student_photo', fileInput.files[0]);
+        }
+
+        fetch("{{ url_for('api.api_add_student') }}", {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Student Added Successfully!');
+                    window.location.href = "{{ url_for('students.students') }}";
+                } else {
+                    alert('Error: ' + data.message);
                     btn.disabled = false;
                     btn.innerText = originalText;
-                });
-        }
-    </script>
-</body>
-
-</html>
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerText = originalText;
+            });
+    }
+</script>
+{% endblock %}

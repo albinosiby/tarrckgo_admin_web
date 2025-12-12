@@ -63,6 +63,19 @@ def student_details(student_id):
         fee_amount = float(student.get('fee_amount', 0))
         balance = fee_amount - total_paid
 
-        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance)
+        # Fetch attendance
+        attendance_ref = student_ref.collection('attendance')
+        attendance_records = []
+        for doc in attendance_ref.stream():
+            if doc.id == 'stats':
+                continue
+            a_data = doc.to_dict()
+            a_data['id'] = doc.id
+            attendance_records.append(a_data)
+        
+        # Sort by date descending
+        attendance_records.sort(key=lambda x: x.get('date', ''), reverse=True)
+
+        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance, attendance_records=attendance_records)
     else:
         return "Student not found", 404

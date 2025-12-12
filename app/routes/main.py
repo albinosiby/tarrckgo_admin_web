@@ -17,25 +17,50 @@ def index():
         org_data = org_doc.to_dict()
         org_name = org_data.get('name', 'Smart Bus Admin')
 
-    # Fetch Real-time Counts
-    try:
-        total_students = len(list(org_ref.collection('students').stream()))
-        active_buses = len(list(org_ref.collection('buses').stream()))
-        total_drivers = len(list(org_ref.collection('drivers').stream()))
-        # For attendance, ideally query by today's date. For now, we count total records or default to 0.
-        present_today = len(list(org_ref.collection('attendance').stream()))
-    except Exception as e:
-        print(f"Error fetching stats: {e}")
-        total_students = 0
-        active_buses = 0
-        total_drivers = 0
-        present_today = 0
+    # Fetch Routes for mapping
+    routes_ref = org_ref.collection('routes')
+    route_map = {}
+    for r in routes_ref.stream():
+        rd = r.to_dict()
+        route_map[r.id] = rd.get('route_name', 'Unknown Route')
+
+    # Fetch Buses
+    buses_ref = org_ref.collection('buses')
+    buses = []
+    
+    # Fetch Students for count
+    students_ref = org_ref.collection('students')
+    # Simple count for students (efficient enough for small datasets)
+    # For large datasets, use aggregation queries or counters.
+    total_students = len(list(students_ref.stream())) 
+    
+    # Fetch Drivers for count
+    drivers_ref = org_ref.collection('drivers')
+    total_drivers = len(list(drivers_ref.stream()))
+
+    for b in buses_ref.stream():
+        bus = b.to_dict()
+        bus['id'] = b.id
+        # Map route name
+        r_id = bus.get('route_id')
+        if r_id and r_id in route_map:
+            bus['route_name'] = route_map[r_id]
+        else:
+            bus['route_name'] = 'No Route Assigned'
+        
+        buses.append(bus)
+
+    active_buses_count = len(buses)
+    
+    # Placeholder for present_today until global attendance is implemented
+    present_today = 0
         
     return render_template('index.html', org_name=org_name,
                            total_students=total_students,
-                           active_buses=active_buses,
+                           active_buses=active_buses_count,
                            total_drivers=total_drivers,
-                           present_today=present_today)
+                           present_today=present_today,
+                           buses=buses)
 
 @main_bp.route('/profile')
 def profile():

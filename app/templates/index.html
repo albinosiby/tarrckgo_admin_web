@@ -1,141 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Smart Bus Admin Panel</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% set active_page = 'dashboard' %}
 
-<body>
-    <div class="app">
-        <div class="sidebar-overlay"></div>
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                Smart Bus Admin
-                <button class="sidebar-close">&times;</button>
-            </div>
-            <ul class="nav-list">
-                <li class="nav-item active"><a href="{{ url_for('main.index') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📊</span> Dashboard</a></li>
-                <li class="nav-item"><a href="{{ url_for('students.students') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🎓</span> Students</a></li>
-                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">👨‍✈️</span> Drivers</a></li>
-                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🚌</span> Buses</a></li>
-                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🗺️</span> Routes</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📍</span> Live Tracking</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">✅</span> Attendance</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">⚙️</span> Settings</a></li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
-                <a href="{{ url_for('auth.login') }}"
-                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
-                    <span class="icon">🚪</span> Logout
-                </a>
-            </div>
-        </aside>
-        <div class="main">
-            <header class="topbar">
-                <button class="menu-toggle">☰</button>
-                <div class="topbar-title" id="topbarTitle">{{ org_name }} • Dashboard</div>
+{% block title %}Smart Bus Admin Panel - Dashboard{% endblock %}
 
-            </header>
+{% block header_title %}{{ org_name }} • Dashboard{% endblock %}
 
-            <main class="content">
-                <section id="page-dashboard" class="page-section active">
-                    <div class="cards-row">
-                        <div class="card">
-                            <div class="stat-card-title">Total Students</div>
-                            <div class="stat-card-value">{{ total_students }}</div>
-                        </div>
-                        <div class="card">
-                            <div class="stat-card-title">Active Buses</div>
-                            <div class="stat-card-value">{{ active_buses }}</div>
-                        </div>
-                        <div class="card">
-                            <div class="stat-card-title">Drivers</div>
-                            <div class="stat-card-value">{{ total_drivers }}</div>
-                        </div>
-                        <div class="card">
-                            <div class="stat-card-title">Today Present</div>
-                            <div class="stat-card-value">{{ present_today }}</div>
-                        </div>
-                    </div>
-
-                    <div class="split-row">
-                        <div class="card">
-                            <div class="card-title-row">
-                                <h3>Live Trips</h3><span class="muted">Updated just now</span>
-                            </div>
-                            <div class="table-wrapper">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Bus</th>
-                                            <th>Route</th>
-                                            <th>Status</th>
-                                            <th>Students On Board</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Bus 1 • KL-10-4589</td>
-                                            <td>Chemberi → College</td>
-                                            <td><span class="badge badge-success">In Progress</span></td>
-                                            <td>38</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Bus 3 • KL-10-2201</td>
-                                            <td>Town → College</td>
-                                            <td><span class="badge badge-success">In Progress</span></td>
-                                            <td>30</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Bus 5 • KL-10-9988</td>
-                                            <td>Village Route</td>
-                                            <td><span class="badge badge-idle">Not Started</span></td>
-                                            <td>0</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="card" style="display:flex;flex-direction:column;">
-                            <div class="card-title-row">
-                                <h3>Live Bus Tracking (Preview)</h3>
-                            </div>
-                            <div id="map"></div>
-                            <div class="legend"><span><span class="dot"
-                                        style="background:#16a34a"></span>Moving</span><span><span class="dot"
-                                        style="background:#f97316"></span>Idle</span><span><span class="dot"
-                                        style="background:#ef4444"></span>Offline</span></div>
-                        </div>
-                    </div>
-                </section>
-            </main>
+{% block content %}
+<section id="page-dashboard" class="page-section active">
+    <div class="cards-row">
+        <div class="card">
+            <div class="stat-card-title">Total Students</div>
+            <div class="stat-card-value">{{ total_students }}</div>
+        </div>
+        <div class="card">
+            <div class="stat-card-title">Active Buses</div>
+            <div class="stat-card-value">{{ active_buses }}</div>
+        </div>
+        <div class="card">
+            <div class="stat-card-title">Drivers</div>
+            <div class="stat-card-value">{{ total_drivers }}</div>
+        </div>
+        <div class="card">
+            <div class="stat-card-title">Today Present</div>
+            <div class="stat-card-value">{{ present_today }}</div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
 
-</html>
+    <div class="split-row">
+        <div class="card">
+            <div class="card-title-row">
+                <h3>Live Trips</h3><span class="muted">Updated just now</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bus</th>
+                            <th>Route</th>
+                            <th>Status</th>
+                            <th>Students On Board</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bus in buses %}
+                        <tr>
+                            <td>Bus {{ bus.bus_number }} • <span style="color:var(--text-light); font-size:0.9em;">{{
+                                    bus.registration_no }}</span></td>
+                            <td>{{ bus.route_name }}</td>
+                            <td>
+                                {% if bus.trip_status == 'in_progress' %}
+                                <span class="badge badge-success" style="color:var(--success);background:#dcfce7;">In
+                                    Progress</span>
+                                {% elif bus.trip_status == 'completed' %}
+                                <span class="badge badge-idle"
+                                    style="color:#d97706;background:#fef3c7;">Completed</span>
+                                {% else %}
+                                <span class="badge badge-idle"
+                                    style="color:var(--text-light);background:var(--bg-light);">{{
+                                    bus.trip_status or 'Not Started' }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align:center;">{{ bus.on_board_count or 0 }} / {{
+                                bus.capacity or '-' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align:center; padding:15px; color:var(--text-light);">No
+                                active trips found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;">
+            <div class="card-title-row">
+                <h3>Live Bus Tracking (Preview)</h3>
+            </div>
+            <div id="map"></div>
+            <div class="legend"><span><span class="dot" style="background:#16a34a"></span>Moving</span><span><span
+                        class="dot" style="background:#f97316"></span>Idle</span><span><span class="dot"
+                        style="background:#ef4444"></span>Offline</span></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateLiveTrips() {
+        const updateSpan = document.querySelector('.card-title-row .muted');
+        if (updateSpan) updateSpan.innerText = 'Updating...';
+
+        fetch("{{ url_for('api.api_live_trips') }}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const tbody = document.querySelector('.table-wrapper table tbody');
+                    tbody.innerHTML = ''; // Clear current rows
+
+                    if (data.buses.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-light);">No active trips found.</td></tr>`;
+                    } else {
+                        data.buses.forEach(bus => {
+                            let statusBadge = '';
+                            if (bus.trip_status === 'in_progress' || bus.trip_status === 'tripstarted') {
+                                statusBadge = `<span class="badge badge-success" style="color:var(--success);background:#dcfce7;">In Progress</span>`;
+                            } else if (bus.trip_status === 'completed') {
+                                statusBadge = `<span class="badge badge-idle" style="color:#d97706;background:#fef3c7;">Completed</span>`;
+                            } else {
+                                statusBadge = `<span class="badge badge-idle" style="color:var(--text-light);background:var(--bg-light);">${bus.trip_status || 'Not Started'}</span>`;
+                            }
+
+                            const row = `
+                                <tr>
+                                    <td>Bus ${bus.bus_number} • <span style="color:var(--text-light); font-size:0.9em;">${bus.registration_no}</span></td>
+                                    <td>${bus.route_name}</td>
+                                    <td>${statusBadge}</td>
+                                    <td style="text-align:center;">${bus.on_board_count} / ${bus.capacity}</td>
+                                </tr>
+                            `;
+                            tbody.innerHTML += row;
+                        });
+                    }
+                    if (updateSpan) updateSpan.innerText = 'Updated just now';
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching live trips:', err);
+                if (updateSpan) updateSpan.innerText = 'Update failed';
+            });
+    }
+
+    // Poll every 5 seconds
+    setInterval(updateLiveTrips, 5000);
+</script>
+{% endblock %}

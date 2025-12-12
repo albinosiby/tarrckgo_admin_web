@@ -1,413 +1,519 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Smart Bus Admin Panel - Student Details</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        .detail-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-bottom: 4px;
-        }
+{% set active_page = 'students' %}
 
-        .detail-value {
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
+{% block title %}Smart Bus Admin Panel - Student Details{% endblock %}
 
-        .detail-group {
-            margin-bottom: 16px;
-        }
+{% block header_title %}Smart Bus Admin • Student Details{% endblock %}
 
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 24px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-        }
+{% block head %}
+<style>
+    .detail-label {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin-bottom: 4px;
+    }
 
-        .profile-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #9ca3af;
-            object-fit: cover;
-        }
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-dark);
+    }
 
-        .text-danger {
-            color: var(--danger);
-        }
+    .detail-group {
+        margin-bottom: 16px;
+    }
 
-        .text-default {
-            color: var(--text-dark);
-        }
-    </style>
-</head>
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+    }
 
-<body>
-    <div class="app">
-        <div class="sidebar-overlay"></div>
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                Smart Bus Admin
-                <button class="sidebar-close">&times;</button>
+    .profile-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #9ca3af;
+        object-fit: cover;
+    }
+
+    .text-danger {
+        color: var(--danger);
+    }
+
+    .text-default {
+        color: var(--text-dark);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <!-- Student Profile Card -->
+    <div class="card" style="margin-bottom: 20px;">
+        <div class="card-title-row"
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3>Student Profile</h3>
+            <!-- Placeholder for edit functionality -->
+            <button class="btn btn-primary">
+                <span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile
+            </button>
+        </div>
+
+        <div class="profile-header">
+            <div class="profile-img">
+                {% if student.profile_photo_url %}
+                <img src="{{ student.profile_photo_url }}" alt="Profile"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                {% else %}
+                👤
+                {% endif %}
             </div>
-            <ul class="nav-list">
-                <li class="nav-item"><a href="{{ url_for('main.index') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📊</span> Dashboard</a></li>
-                <li class="nav-item active"><a href="{{ url_for('students.students') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🎓</span> Students</a></li>
-                <li class="nav-item"><a href="{{ url_for('drivers.drivers') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">👨‍✈️</span> Drivers</a></li>
-                <li class="nav-item"><a href="{{ url_for('buses.buses') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🚌</span> Buses</a></li>
-                <li class="nav-item"><a href="{{ url_for('routes.routes') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">🗺️</span> Routes</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.tracking') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">📍</span> Live Tracking</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.attendance') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">✅</span> Attendance</a></li>
-                <li class="nav-item"><a href="{{ url_for('main.settings') }}"
-                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; width:100%"><span
-                            class="icon">⚙️</span> Settings</a></li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
-                <a href="{{ url_for('auth.login') }}"
-                    style="text-decoration:none; color:#ef4444; display:flex; align-items:center; gap:10px; font-weight:500;">
-                    <span class="icon">🚪</span> Logout
-                </a>
+            <div style="margin-left: -50px; margin-top: 80px; display: none;" id="edit_photo_container">
+                <label for="edit_student_photo"
+                    style="cursor: pointer; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Change
+                    Photo</label>
+                <input type="file" id="edit_student_photo" style="display: none;" accept="image/*">
             </div>
-        </aside>
-        <div class="main">
-            <header class="topbar">
-                <button class="menu-toggle">☰</button>
-                <div class="topbar-title" id="topbarTitle">Smart Bus Admin • Student Details</div>
-                <div class="topbar-right"><span style="font-size:1.1rem;color:#9ca3af">🔔</span>
-                    <div class="topbar-avatar">A</div>
+            <div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">
+                    <span id="display_full_name">{{ student.full_name }}</span>
+                    <input type="text" id="edit_full_name" class="form-input" value="{{ student.full_name }}"
+                        style="display:none; margin-top:5px;">
+                </h2>
+                <div style="color: var(--text-light);">Roll No:
+                    <span id="display_roll_number">{{ student.roll_number }}</span>
+                    <input type="text" id="edit_roll_number" class="form-input" value="{{ student.roll_number }}"
+                        style="display:none; margin-top:5px; width: 150px;">
                 </div>
-            </header>
+                <span class="badge badge-success"
+                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
+            </div>
+        </div>
 
-            <main class="content">
-                <div style="max-width: 1000px; margin: 0 auto;">
-                    <!-- Student Profile Card -->
-                    <div class="card" style="margin-bottom: 20px;">
-                        <div class="card-title-row"
-                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                            <h3>Student Profile</h3>
-                            <!-- Placeholder for edit functionality -->
-                            <button class="btn btn-primary">
-                                <span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile
-                            </button>
-                        </div>
+        <div class="split-row">
+            <!-- Personal Info -->
+            <div>
+                <h4 style="margin-bottom: 16px; color: var(--primary);">Personal Information</h4>
+                <div class="detail-group">
+                    <div class="detail-label">Email Address</div>
+                    <div class="detail-value" id="display_email">{{ student.email }}</div>
+                    <input type="email" id="edit_email" class="form-input" value="{{ student.email }}"
+                        style="display:none;">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Date of Birth</div>
+                    <div class="detail-value" id="display_dob">{{ student.dob }}</div>
+                    <input type="date" id="edit_dob" class="form-input" value="{{ student.dob }}" style="display:none;">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Class/Batch</div>
+                    <div class="detail-value" id="display_batch">{{ student.batch }}</div>
+                    <input type="text" id="edit_batch" class="form-input" value="{{ student.batch }}"
+                        style="display:none;">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Address</div>
+                    <div class="detail-value" id="display_address">{{ student.address }}</div>
+                    <textarea id="edit_address" class="form-input"
+                        style="display:none;">{{ student.address }}</textarea>
+                </div>
+            </div>
 
-                        <div class="profile-header">
-                            <div class="profile-img">👤</div>
-                            <div>
-                                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">{{ student.full_name }}</h2>
-                                <div style="color: var(--text-light);">Roll No: {{ student.roll_number }}</div>
-                                <span class="badge badge-success"
-                                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
-                            </div>
-                        </div>
-
-                        <div class="split-row">
-                            <!-- Personal Info -->
-                            <div>
-                                <h4 style="margin-bottom: 16px; color: var(--primary);">Personal Information</h4>
-                                <div class="detail-group">
-                                    <div class="detail-label">Email Address</div>
-                                    <div class="detail-value">{{ student.email }}</div>
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Date of Birth</div>
-                                    <div class="detail-value">{{ student.dob }}</div>
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Class/Batch</div>
-                                    <div class="detail-value">{{ student.batch }}</div>
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Address</div>
-                                    <div class="detail-value">{{ student.address }}</div>
-                                </div>
-                            </div>
-
-                            <!-- Transport & Fee Info -->
-                            <div>
-                                <h4 style="margin-bottom: 16px; color: var(--primary);">Transport & Fees</h4>
-                                <div class="split-row" style="margin-top: 0; gap: 20px;">
-                                    <div class="detail-group">
-                                        <div class="detail-label">Bus Number</div>
-                                        <div class="detail-value">{{ student.bus_number }}</div>
-                                    </div>
-                                    <div class="detail-group">
-                                        <div class="detail-label">Bus Stop</div>
-                                        <div class="detail-value">{{ student.bus_stop }}</div>
-                                    </div>
-                                </div>
-                                <div class="split-row" style="margin-top: 0; gap: 20px;">
-                                    <div class="detail-group">
-                                        <div class="detail-label">Payment Type</div>
-                                        <div class="detail-value">{{ student.payment_type }}</div>
-                                    </div>
-                                    <div class="detail-group">
-                                        <div class="detail-label">Fee Amount</div>
-                                        <div class="detail-value">₹ {{ student.fee_amount }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 16px;">
-                            <h4 style="margin-bottom: 16px; color: var(--primary);">Parent Information</h4>
-                            <div class="split-row" style="margin-top: 0;">
-                                <div class="detail-group">
-                                    <div class="detail-label">Parent Name</div>
-                                    <div class="detail-value">{{ student.parent_name }}</div>
-                                </div>
-                                <div class="detail-group">
-                                    <div class="detail-label">Parent Phone</div>
-                                    <div class="detail-value">{{ student.parent_phone }}</div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Transport & Fee Info -->
+            <div>
+                <h4 style="margin-bottom: 16px; color: var(--primary);">Transport & Fees</h4>
+                <div class="split-row" style="margin-top: 0; gap: 20px;">
+                    <div class="detail-group">
+                        <div class="detail-label">Bus Number</div>
+                        <div class="detail-value" id="display_bus_number">{{ student.bus_number }}</div>
+                        <input type="text" id="edit_bus_number" class="form-input" value="{{ student.bus_number }}"
+                            style="display:none;">
                     </div>
-
-                    <!-- Fee Management Card -->
-                    <div class="card" style="margin-bottom: 20px;">
-                        <div class="card-title-row"
-                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                            <h3>Fee Management</h3>
-                            <button id="show-payment-form-btn" class="btn btn-primary" onclick="togglePaymentForm()">
-                                <span style="font-size:1.2rem; margin-right:6px">+</span> Record Payment
-                            </button>
-                        </div>
-
-                        <!-- Fee Summary -->
-                        <div class="split-row" style="margin-bottom: 24px;">
-                            <div class="stat-card"
-                                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
-                                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Total Fee
-                                </div>
-                                <div style="font-size:1.5rem; font-weight:600; color:var(--text-dark);">₹ {{
-                                    student.fee_amount }}</div>
-                            </div>
-                            <div class="stat-card"
-                                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
-                                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Amount Paid
-                                </div>
-                                <div style="font-size:1.5rem; font-weight:600; color:var(--success);">₹ {{ total_paid }}
-                                </div>
-                            </div>
-                            <div class="stat-card"
-                                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
-                                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Balance Due
-                                </div>
-                                <div class="{{ 'text-danger' if balance > 0 else 'text-default' }}"
-                                    style="font-size:1.5rem; font-weight:600;">
-                                    ₹ {{ balance }}</div>
-                            </div>
-                        </div>
-
-                        <!-- Add Payment Form (Hidden by default) -->
-                        <div id="payment-form-container"
-                            style="display:none; background:var(--bg-light); padding:20px; border-radius:8px; margin-bottom:24px; border:1px solid var(--border);">
-                            <h4 style="margin-bottom:16px; color:var(--primary);">Record New Payment</h4>
-                            <form id="addPaymentForm">
-                                <div class="split-row">
-                                    <div>
-                                        <label class="form-label">Amount (₹)</label>
-                                        <input type="number" id="pay_amount" class="form-input" required
-                                            max="{{ balance }}">
-                                    </div>
-                                    <div>
-                                        <label class="form-label">Payment Date</label>
-                                        <input type="date" id="pay_date" class="form-input" required>
-                                    </div>
-                                </div>
-                                <div class="split-row">
-                                    <div>
-                                        <label class="form-label">Payment Mode</label>
-                                        <select id="pay_mode" class="form-input" required>
-                                            <option value="Cash">Cash</option>
-                                            <option value="UPI">UPI</option>
-                                            <option value="Bank Transfer">Bank Transfer</option>
-                                            <option value="Cheque">Cheque</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="form-label">Reference ID (Optional)</label>
-                                        <input type="text" id="pay_ref" class="form-input"
-                                            placeholder="e.g. Transaction ID">
-                                    </div>
-                                </div>
-                                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
-                                    <button type="button" class="btn" style="background:#e5e7eb; color:#374151;"
-                                        onclick="togglePaymentForm()">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Save Payment</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Payment History Table -->
-                        <div class="table-wrapper">
-                            <h4 style="margin-bottom:12px; font-size:1rem;">Payment History</h4>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Mode</th>
-                                        <th>Reference ID</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for payment in payments %}
-                                    <tr>
-                                        <td>{{ payment.date }}</td>
-                                        <td>{{ payment.mode }}</td>
-                                        <td>{{ payment.reference_id or '-' }}</td>
-                                        <td style="font-weight:500; color:var(--success);">+ ₹ {{ payment.amount }}</td>
-                                    </tr>
-                                    {% else %}
-                                    <tr>
-                                        <td colspan="4"
-                                            style="text-align:center; padding:20px; color:var(--text-light);">No payment
-                                            history found.</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Attendance History Card -->
-                    <div class="card">
-                        <div class="card-title-row" style="margin-bottom:20px">
-                            <h3>Attendance History</h3>
-                            <div style="font-size: 0.9rem; color: var(--text-light);">Overall Attendance: <span
-                                    style="color: var(--success); font-weight: 600;">92%</span></div>
-                        </div>
-                        <div class="table-wrapper">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Check-in Time</th>
-                                        <th>Check-out Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Dec 04, 2025</td>
-                                        <td><span
-                                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Present</span>
-                                        </td>
-                                        <td>08:15 AM</td>
-                                        <td>04:30 PM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dec 03, 2025</td>
-                                        <td><span
-                                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Present</span>
-                                        </td>
-                                        <td>08:20 AM</td>
-                                        <td>04:35 PM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dec 02, 2025</td>
-                                        <td><span
-                                                style="color:var(--danger);background:#fee2e2;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Absent</span>
-                                        </td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Bus Stop</div>
+                        <div class="detail-value" id="display_bus_stop">{{ student.bus_stop }}</div>
+                        <input type="text" id="edit_bus_stop" class="form-input" value="{{ student.bus_stop }}"
+                            style="display:none;">
                     </div>
                 </div>
-            </main>
+                <div class="split-row" style="margin-top: 0; gap: 20px;">
+                    <div class="detail-group">
+                        <div class="detail-label">Payment Type</div>
+                        <div class="detail-value" id="display_payment_type">{{ student.payment_type }}
+                        </div>
+                        <select id="edit_payment_type" class="form-input" style="display:none;">
+                            <option value="Monthly" {% if student.payment_type=='Monthly' %}selected{% endif %}>Monthly
+                            </option>
+                            <option value="Termly" {% if student.payment_type=='Termly' %}selected{% endif %}>Termly
+                            </option>
+                            <option value="Yearly" {% if student.payment_type=='Yearly' %}selected{% endif %}>Yearly
+                            </option>
+                        </select>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Fee Amount</div>
+                        <div class="detail-value" id="display_fee_amount">₹ {{ student.fee_amount }}
+                        </div>
+                        <input type="number" id="edit_fee_amount" class="form-input" value="{{ student.fee_amount }}"
+                            style="display:none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <h4 style="margin-bottom: 16px; color: var(--primary);">Parent Information</h4>
+            <div class="split-row" style="margin-top: 0;">
+                <div class="detail-group">
+                    <div class="detail-label">Parent Name</div>
+                    <div class="detail-value" id="display_parent_name">{{ student.parent_name }}</div>
+                    <input type="text" id="edit_parent_name" class="form-input" value="{{ student.parent_name }}"
+                        style="display:none;">
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Parent Phone</div>
+                    <div class="detail-value" id="display_parent_phone">{{ student.parent_phone }}</div>
+                    <input type="tel" id="edit_parent_phone" class="form-input" value="{{ student.parent_phone }}"
+                        style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;" disabled
+                        title="Parent phone/login cannot be changed.">
+                </div>
+            </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script>
-        function togglePaymentForm() {
-            const formContainer = document.getElementById('payment-form-container');
-            const showBtn = document.getElementById('show-payment-form-btn');
 
-            if (formContainer.style.display === 'none') {
-                formContainer.style.display = 'block';
-                showBtn.style.display = 'none';
+    <!-- Fee Management Card -->
+    <div class="card" style="margin-bottom: 20px;">
+        <div class="card-title-row"
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3>Fee Management</h3>
+            <button id="show-payment-form-btn" class="btn btn-primary" onclick="togglePaymentForm()">
+                <span style="font-size:1.2rem; margin-right:6px">+</span> Record Payment
+            </button>
+        </div>
 
-                // Set default date to today
-                document.getElementById('pay_date').valueAsDate = new Date();
+        <!-- Fee Summary -->
+        <div class="split-row" style="margin-bottom: 24px;">
+            <div class="stat-card"
+                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Total Fee
+                </div>
+                <div style="font-size:1.5rem; font-weight:600; color:var(--text-dark);">₹ {{
+                    student.fee_amount }}</div>
+            </div>
+            <div class="stat-card"
+                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Amount Paid
+                </div>
+                <div style="font-size:1.5rem; font-weight:600; color:var(--success);">₹ {{ total_paid }}
+                </div>
+            </div>
+            <div class="stat-card"
+                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Balance Due
+                </div>
+                <div class="{{ 'text-danger' if balance > 0 else 'text-default' }}"
+                    style="font-size:1.5rem; font-weight:600;">
+                    ₹ {{ balance }}</div>
+            </div>
+        </div>
+
+        <!-- Add Payment Form (Hidden by default) -->
+        <div id="payment-form-container"
+            style="display:none; background:var(--bg-light); padding:20px; border-radius:8px; margin-bottom:24px; border:1px solid var(--border);">
+            <h4 style="margin-bottom:16px; color:var(--primary);">Record New Payment</h4>
+            <form id="addPaymentForm">
+                <div class="split-row">
+                    <div>
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" id="pay_amount" class="form-input" required max="{{ balance }}">
+                    </div>
+                    <div>
+                        <label class="form-label">Payment Date</label>
+                        <input type="date" id="pay_date" class="form-input" required>
+                    </div>
+                </div>
+                <div class="split-row">
+                    <div>
+                        <label class="form-label">Payment Mode</label>
+                        <select id="pay_mode" class="form-input" required>
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Cheque">Cheque</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Reference ID (Optional)</label>
+                        <input type="text" id="pay_ref" class="form-input" placeholder="e.g. Transaction ID">
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+                    <button type="button" class="btn" style="background:#e5e7eb; color:#374151;"
+                        onclick="togglePaymentForm()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Payment</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Payment History Table -->
+        <div class="table-wrapper">
+            <h4 style="margin-bottom:12px; font-size:1rem;">Payment History</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Mode</th>
+                        <th>Reference ID</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.date }}</td>
+                        <td>{{ payment.mode }}</td>
+                        <td>{{ payment.reference_id or '-' }}</td>
+                        <td style="font-weight:500; color:var(--success);">+ ₹ {{ payment.amount }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding:20px; color:var(--text-light);">No payment
+                            history found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Attendance History Card -->
+    <div class="card">
+        <div class="card-title-row" style="margin-bottom:20px">
+            <h3>Attendance History</h3>
+            <div style="font-size: 0.9rem; color: var(--text-light);">Overall Attendance: <span
+                    style="color: var(--success); font-weight: 600;">92%</span></div>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>To Trip (Morning)</th>
+                        <th>Return Trip (Evening)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    <tr>
+                        <td>{{ record.date }}</td>
+                        <td>
+                            {% if record.morning_status == 'Present' %}
+                            <div style="font-weight:600; font-size: 0.9rem; color: var(--success);">
+                                Present</div>
+                            <div style="font-size: 0.8rem; color: var(--text-light);">{{
+                                record.morning_time }}</div>
+                            {% elif record.morning_status == 'Absent' %}
+                            <div style="font-weight:600; font-size: 0.9rem; color: var(--danger);">
+                                Absent</div>
+                            <div style="font-size: 0.8rem; color: var(--text-light);">-</div>
+                            {% else %}
+                            <div style="font-size: 0.9rem; color: var(--text-light);">{{
+                                record.morning_status or '-' }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.evening_status == 'Present' %}
+                            <div style="font-weight:600; font-size: 0.9rem; color: var(--success);">
+                                Present</div>
+                            <div style="font-size: 0.8rem; color: var(--text-light);">{{
+                                record.evening_time }}</div>
+                            {% elif record.evening_status == 'Absent' %}
+                            <div style="font-weight:600; font-size: 0.9rem; color: var(--danger);">
+                                Absent</div>
+                            <div style="font-size: 0.8rem; color: var(--text-light);">-</div>
+                            {% else %}
+                            <div style="font-size: 0.9rem; color: var(--text-light);">{{
+                                record.evening_status or '-' }}</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" style="text-align:center; padding:20px; color:var(--text-light);">No
+                            attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let isEditing = false;
+    // Select logic similar to driver_details
+    const editBtn = document.querySelector('.card-title-row .btn-primary'); // Be careful if multiple buttons
+
+    editBtn.addEventListener('click', function () {
+        // Check if this is indeed the edit profile button by text content or position
+        if (this.innerText.includes('Edit Profile') || this.innerText.includes('Save Changes')) {
+            if (!isEditing) {
+                // Switch to Edit Mode
+                isEditing = true;
+                this.innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
+                this.style.backgroundColor = '#10b981'; // Green color
+
+                // Toggle visibility
+                toggleFields(true);
             } else {
-                formContainer.style.display = 'none';
-                showBtn.style.display = 'block';
+                // Save Changes
+                saveChanges();
             }
+        } else {
+            // Must be the "Record Payment" button if not matched, ignore
+        }
+    });
+
+    function toggleFields(showInput) {
+        const fields = [
+            'full_name', 'roll_number', 'email', 'dob', 'batch', 'address',
+            'bus_number', 'bus_stop', 'payment_type', 'fee_amount',
+            'parent_name', 'parent_phone'
+        ];
+
+        fields.forEach(field => {
+            const displayEl = document.getElementById('display_' + field);
+            const inputEl = document.getElementById('edit_' + field);
+            if (displayEl && inputEl) {
+                displayEl.style.display = showInput ? 'none' : 'block';
+                inputEl.style.display = showInput ? 'block' : 'none';
+            }
+        });
+
+        // Photo Edit
+        const photoContainer = document.getElementById('edit_photo_container');
+        if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
+    }
+
+    function saveChanges() {
+        const btn = document.querySelector('.card-title-row .btn-primary');
+        const originalText = '<span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile';
+        btn.innerText = 'Saving...';
+        btn.disabled = true;
+
+        const formData = new FormData();
+        formData.append('full_name', document.getElementById('edit_full_name').value);
+        formData.append('roll_number', document.getElementById('edit_roll_number').value);
+        formData.append('email', document.getElementById('edit_email').value);
+        formData.append('dob', document.getElementById('edit_dob').value);
+        formData.append('batch', document.getElementById('edit_batch').value);
+        formData.append('address', document.getElementById('edit_address').value);
+        formData.append('bus_number', document.getElementById('edit_bus_number').value);
+        formData.append('bus_stop', document.getElementById('edit_bus_stop').value);
+        formData.append('payment_type', document.getElementById('edit_payment_type').value);
+        formData.append('fee_amount', document.getElementById('edit_fee_amount').value);
+        formData.append('parent_name', document.getElementById('edit_parent_name').value);
+        // parent_phone is disabled, but we can verify integrity or just not send it. API ignores updates if we want.
+
+        const fileInput = document.getElementById('edit_student_photo');
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append('student_photo', fileInput.files[0]);
         }
 
-        document.getElementById('addPaymentForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.innerText;
-            btn.disabled = true;
-            btn.innerText = 'Saving...';
-
-            const formData = {
-                amount: document.getElementById('pay_amount').value,
-                date: document.getElementById('pay_date').value,
-                mode: document.getElementById('pay_mode').value,
-                reference_id: document.getElementById('pay_ref').value
-            };
-
-            fetch("{{ url_for('api.api_add_payment', student_id=student.id) }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+        fetch("{{ url_for('api.api_update_student', student_id=student.id) }}", {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Student details updated successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = ''; // Reset color
+                    isEditing = false;
+                }
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Payment Added Successfully!');
-                        window.location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                        btn.disabled = false;
-                        btn.innerText = originalText;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                btn.style.backgroundColor = ''; // Reset color
+                isEditing = false;
+            });
+    }
+
+    function togglePaymentForm() {
+        const formContainer = document.getElementById('payment-form-container');
+        const showBtn = document.getElementById('show-payment-form-btn');
+
+        if (formContainer.style.display === 'none') {
+            formContainer.style.display = 'block';
+            showBtn.style.display = 'none';
+
+            // Set default date to today
+            document.getElementById('pay_date').valueAsDate = new Date();
+        } else {
+            formContainer.style.display = 'none';
+            showBtn.style.display = 'block';
+        }
+    }
+
+    document.getElementById('addPaymentForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const btn = this.querySelector('button[type="submit"]');
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Saving...';
+
+        const formData = {
+            amount: document.getElementById('pay_amount').value,
+            date: document.getElementById('pay_date').value,
+            mode: document.getElementById('pay_mode').value,
+            reference_id: document.getElementById('pay_ref').value
+        };
+
+        fetch("{{ url_for('api.api_add_payment', student_id=student.id) }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Payment Added Successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
                     btn.disabled = false;
                     btn.innerText = originalText;
-                });
-        });
-    </script>
-</body>
-
-</html>
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerText = originalText;
+            });
+    });
+</script>
+{% endblock %}
