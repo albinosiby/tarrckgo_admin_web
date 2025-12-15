@@ -194,7 +194,8 @@ def api_add_student():
         if data.get('student_id'):
              student_ref = db.collection('organizations').document(uid).collection('students').document(data['student_id'])
         else:
-             student_ref = db.collection('organizations').document(uid).collection('students').document()
+             # Use roll number as document ID
+             student_ref = db.collection('organizations').document(uid).collection('students').document(str(data['roll_number']))
         
         student_ref.set(student_data)
         
@@ -579,7 +580,7 @@ def api_add_payment(student_id):
         return jsonify({'status': 'success', 'id': payment_ref.id})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
-
+        
 @api_bp.route('/api/update_student/<student_id>', methods=['POST'])
 def api_update_student(student_id):
     if 'user' not in session or 'uid' not in session:
@@ -605,10 +606,17 @@ def api_update_student(student_id):
         if profile_photo_url:
             data['profile_photo_url'] = profile_photo_url
 
-        # Remove immutable fields from update data if present, just in case
-        # But for now we trust the payload mostly. 
-        # User said "parent phn number in no editable" which usually means UI.
-        
+        # [FIX] Update parent_uid if parent_phone is changing or being re-saved
+        if 'parent_phone' in data and data['parent_phone']:
+             # Reuse the existing create_firebase_user function to get/create the UID
+             parent_uid, error_msg = create_firebase_user(data['parent_phone'])
+             
+             if parent_uid:
+                 data['parent_uid'] = parent_uid
+                 print(f"Updated parent_uid for student {student_id} to {parent_uid}")
+             else:
+                 print(f"Warning: Could not link parent auth during update: {error_msg}")
+
         student_ref.update(data)
         return jsonify({'status': 'success'})
     except Exception as e:

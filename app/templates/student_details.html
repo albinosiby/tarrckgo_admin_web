@@ -136,14 +136,20 @@
                     <div class="detail-group">
                         <div class="detail-label">Bus Number</div>
                         <div class="detail-value" id="display_bus_number">{{ student.bus_number }}</div>
-                        <input type="text" id="edit_bus_number" class="form-input" value="{{ student.bus_number }}"
-                            style="display:none;">
+                        <select id="edit_bus_number" class="form-input" style="display:none;" onchange="updateStops()">
+                            <option value="">Select Bus...</option>
+                            {% for bus in buses %}
+                            <option value="{{ bus.bus_number }}" {% if student.bus_number==bus.bus_number %}selected{%
+                                endif %}>{{ bus.bus_number }} - {{ bus.route }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="detail-group">
                         <div class="detail-label">Bus Stop</div>
                         <div class="detail-value" id="display_bus_stop">{{ student.bus_stop }}</div>
-                        <input type="text" id="edit_bus_stop" class="form-input" value="{{ student.bus_stop }}"
-                            style="display:none;">
+                        <select id="edit_bus_stop" class="form-input" style="display:none;">
+                            <option value="{{ student.bus_stop }}">{{ student.bus_stop }}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="split-row" style="margin-top: 0; gap: 20px;">
@@ -361,6 +367,9 @@
 {% endblock %}
 
 {% block scripts %}
+<script id="buses-data" type="application/json">{{ buses | tojson }}</script>
+<script id="routes-data" type="application/json">{{ routes | tojson }}</script>
+<script id="student-bus-stop" type="application/json">{{ student.bus_stop | tojson }}</script>
 <script>
     let isEditing = false;
     // Select logic similar to driver_details
@@ -405,6 +414,55 @@
         // Photo Edit
         const photoContainer = document.getElementById('edit_photo_container');
         if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
+
+        if (showInput) {
+            const initialBusStop = JSON.parse(document.getElementById('student-bus-stop').textContent);
+            updateStops(initialBusStop);
+        }
+    }
+
+    const busesData = JSON.parse(document.getElementById('buses-data').textContent);
+    const routesData = JSON.parse(document.getElementById('routes-data').textContent);
+
+    function updateStops(currentStop = null) {
+        const busSelect = document.getElementById('edit_bus_number');
+        const stopSelect = document.getElementById('edit_bus_stop');
+        const selectedBusNumber = busSelect.value;
+        const currentVal = currentStop || stopSelect.value;
+
+        stopSelect.innerHTML = '<option value="">Select Stop...</option>';
+
+        if (!selectedBusNumber) return;
+
+        // Find the selected bus object
+        const selectedBus = busesData.find(b => b.bus_number === selectedBusNumber);
+
+        if (selectedBus && selectedBus.route) {
+            const route = routesData.find(r => r.route_name === selectedBus.route);
+
+            if (route && route.stops) {
+                let stops = [];
+                if (typeof route.stops === 'string') {
+                    stops = route.stops.split(',').map(s => s.trim());
+                } else if (Array.isArray(route.stops)) {
+                    stops = route.stops;
+                }
+
+                stops.forEach(stop => {
+                    const option = document.createElement('option');
+                    option.value = stop;
+                    option.textContent = stop;
+                    if (stop === currentVal) {
+                        option.selected = true;
+                    }
+                    stopSelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.textContent = "No stops found for this route";
+                stopSelect.appendChild(option);
+            }
+        }
     }
 
     function saveChanges() {
@@ -422,6 +480,10 @@
         formData.append('address', document.getElementById('edit_address').value);
         formData.append('bus_number', document.getElementById('edit_bus_number').value);
         formData.append('bus_stop', document.getElementById('edit_bus_stop').value);
+
+        const busId = busesData.find(b => b.bus_number === document.getElementById('edit_bus_number').value)?.id || '';
+        formData.append('bus_id', busId);
+
         formData.append('payment_type', document.getElementById('edit_payment_type').value);
         formData.append('fee_amount', document.getElementById('edit_fee_amount').value);
         formData.append('parent_name', document.getElementById('edit_parent_name').value);

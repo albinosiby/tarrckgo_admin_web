@@ -49,6 +49,22 @@ def student_details(student_id):
     student = student_ref.get().to_dict()
     if student:
         student['id'] = student_id
+
+        # Fetch buses
+        buses_ref = db.collection('organizations').document(uid).collection('buses')
+        buses = []
+        for doc in buses_ref.stream():
+            b_data = doc.to_dict()
+            b_data['id'] = doc.id
+            buses.append(b_data)
+
+        # Fetch routes
+        routes_ref = db.collection('organizations').document(uid).collection('routes')
+        routes = []
+        for doc in routes_ref.stream():
+            r_data = doc.to_dict()
+            r_data['id'] = doc.id
+            routes.append(r_data)
         
         # Fetch payments
         payments_ref = student_ref.collection('payments')
@@ -76,6 +92,6 @@ def student_details(student_id):
         # Sort by date descending
         attendance_records.sort(key=lambda x: x.get('date', ''), reverse=True)
 
-        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance, attendance_records=attendance_records)
+        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance, attendance_records=attendance_records, buses=buses, routes=routes)
     else:
         return "Student not found", 404
