@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for
+from flask import Blueprint, render_template, session, redirect, url_for, request
 from app.services.firebase_service import get_db
 
 students_bp = Blueprint('students', __name__)
@@ -8,13 +8,68 @@ def students():
     if 'user' not in session: return redirect(url_for('auth.login'))
     uid = session.get('uid')
     db = get_db()
+    
+    # Get Filter Params
+    search_query = request.args.get('q', '').lower()
+    assignment_filter = request.args.get('assignment', '')
+    bus_filter = request.args.get('bus', '')
+    route_filter = request.args.get('route', '')
+
+    # Fetch all students (Filter in memory for flexibility)
     students_ref = db.collection('organizations').document(uid).collection('students')
-    students = []
+    all_students = []
     for doc in students_ref.stream():
         student = doc.to_dict()
         student['id'] = doc.id
-        students.append(student)
-    return render_template('students.html', students=students)
+        all_students.append(student)
+
+    # Apply Filters
+    filtered_students = []
+    for s in all_students:
+        # Search (Name or Roll Number)
+        if search_query:
+            full_name = s.get('full_name', '').lower()
+            roll = s.get('roll_number', '').lower()
+            if search_query not in full_name and search_query not in roll:
+                continue
+        
+        # Assignment Filter
+        if assignment_filter == 'assigned':
+            if not s.get('bus_number'): continue
+        elif assignment_filter == 'unassigned':
+            if s.get('bus_number'): continue
+            
+        # Bus Filter
+        if bus_filter:
+            if s.get('bus_number') != bus_filter: continue
+            
+        # Route Filter
+        if route_filter:
+            # Route logic is a bit complex as it might be 'route_name' or derived from bus
+            # Basic check on stored route_name
+            if s.get('route_name') != route_filter: continue
+
+        filtered_students.append(s)
+
+    # Fetch Buses and Routes for Filter Dropdowns
+    buses_ref = db.collection('organizations').document(uid).collection('buses')
+    buses = [d.to_dict() for d in buses_ref.stream()]
+    buses.sort(key=lambda x: x.get('bus_number', ''))
+
+    routes_ref = db.collection('organizations').document(uid).collection('routes')
+    routes = [d.to_dict() for d in routes_ref.stream()]
+    routes.sort(key=lambda x: x.get('route_name', ''))
+
+    return render_template('students.html', 
+                           students=filtered_students, 
+                           buses=buses, 
+                           routes=routes,
+                           filters={
+                               'q': request.args.get('q', ''),
+                               'assignment': assignment_filter,
+                               'bus': bus_filter,
+                               'route': route_filter
+                           })
 
 @students_bp.route('/add_student')
 def add_student():

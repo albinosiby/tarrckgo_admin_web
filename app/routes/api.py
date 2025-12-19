@@ -770,6 +770,7 @@ def api_live_trips():
             route_name = route_map.get(r_id, 'No Route Assigned') if r_id else 'No Route Assigned'
             
             buses_data.append({
+                'id': bus_id,
                 'bus_number': bus.get('bus_number', ''),
                 'registration_no': bus.get('registration_no', ''),
                 'route_name': route_name,
