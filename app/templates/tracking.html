@@ -42,3 +42,53 @@
 </style>
 <div id="map"></div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const map = L.map('map').setView([12.096, 75.558], 14); // Default center (Chemperi)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        const markers = {};
+        const uid = "{{ session['uid'] }}"; // Get Organization ID
+
+        // Listen to all buses in the organization
+        const locationRef = rtdb.ref(`organizations/${uid}/bus_location`);
+
+        locationRef.on('value', (snapshot) => {
+            const buses = snapshot.val();
+            console.log("[DEBUG Tracker] Received buses data:", buses);
+            if (buses) {
+                // Clear markers not in data anymore (optional, handled by update)
+
+                Object.keys(buses).forEach(busId => {
+                    const data = buses[busId];
+                    if (data && data.latitude != null && data.longitude != null) {
+                        const lat = parseFloat(data.latitude);
+                        const lng = parseFloat(data.longitude);
+
+                        if (isNaN(lat) || isNaN(lng)) return;
+
+                        // Update or Create Marker
+                        if (markers[busId]) {
+                            markers[busId].setLatLng([lat, lng]);
+                            markers[busId].setPopupContent(`<b>Bus ${data.bus_number}</b><br>Speed: ${data.speed} km/h`);
+                        } else {
+                            const marker = L.marker([lat, lng]).addTo(map)
+                                .bindPopup(`<b>Bus ${data.bus_number}</b><br>Speed: ${data.speed} km/h`);
+                            markers[busId] = marker;
+
+                            // Auto-center on first bus found if map not moved yet? 
+                            // Or leave it valid.
+                        }
+                    }
+                });
+            }
+        }, (error) => {
+            console.error("Error fetching bus locations:", error);
+        });
+    });
+</script>
+{% endblock %}

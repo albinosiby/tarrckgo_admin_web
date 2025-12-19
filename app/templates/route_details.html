@@ -147,12 +147,18 @@
                         {% if route.stops is string %}
                         {% for stop in route.stops.split(',') %}
                         {% if stop.strip() %}
-                        <span class="stop-tile">{{ stop.strip() }}</span>
+                        <span class="stop-tile" data-name="{{ stop.strip() }}" data-fee="0">{{ stop.strip() }}</span>
                         {% endif %}
                         {% endfor %}
                         {% else %}
                         {% for stop in route.stops %}
-                        <span class="stop-tile">{{ stop }}</span>
+                        {% if stop is string %}
+                        <span class="stop-tile" data-name="{{ stop }}" data-fee="0">{{ stop }}</span>
+                        {% else %}
+                        <span class="stop-tile" data-name="{{ stop.name }}" data-fee="{{ stop.fee }}">
+                            {{ stop.name }} <small style="opacity:0.8">(₹{{ stop.fee }})</small>
+                        </span>
+                        {% endif %}
                         {% endfor %}
                         {% endif %}
                         {% else %}
@@ -161,7 +167,7 @@
                     </div>
                     <div id="edit_stops_container" style="display:none;">
                         <div id="stops_list"></div>
-                        <button type="button" class="add-stop-btn" onclick="addStopInput('')">+ Add
+                        <button type="button" class="add-stop-btn" onclick="addStopInput('', 0)">+ Add
                             Stop</button>
                     </div>
                 </div>
@@ -263,7 +269,11 @@
 
             const tiles = document.querySelectorAll('#display_stops .stop-tile');
             if (tiles.length > 0) {
-                tiles.forEach(tile => addStopInput(tile.innerText));
+                tiles.forEach(tile => {
+                    const name = tile.getAttribute('data-name');
+                    const fee = tile.getAttribute('data-fee');
+                    addStopInput(name, fee);
+                });
             } else {
                 // If no tiles (empty), maybe add one empty input
                 // Check if it says "No stops defined"
@@ -275,12 +285,13 @@
         }
     }
 
-    function addStopInput(value) {
+    function addStopInput(value, fee) {
         const container = document.getElementById('stops_list');
         const div = document.createElement('div');
         div.className = 'edit-stop-item';
         div.innerHTML = `
-            <input type="text" class="form-input stop-input" value="${value}" placeholder="Stop Name">
+            <input type="text" class="form-input stop-name-input" value="${value}" placeholder="Stop Name" style="flex:2">
+            <input type="number" class="form-input stop-fee-input" value="${fee || 0}" placeholder="Fee" style="flex:1" min="0">
             <button type="button" class="remove-stop-btn" onclick="this.parentElement.remove()">&times;</button>
         `;
         container.appendChild(div);
@@ -293,8 +304,18 @@
         btn.disabled = true;
 
         // Collect stops
-        const stopInputs = document.querySelectorAll('.stop-input');
-        const stops = Array.from(stopInputs).map(input => input.value).filter(val => val.trim() !== '');
+        const stopItems = document.querySelectorAll('.edit-stop-item');
+        const stops = [];
+        stopItems.forEach(item => {
+            const nameInput = item.querySelector('.stop-name-input');
+            const feeInput = item.querySelector('.stop-fee-input');
+            if (nameInput && nameInput.value.trim() !== '') {
+                stops.push({
+                    name: nameInput.value.trim(),
+                    fee: feeInput ? (parseFloat(feeInput.value) || 0) : 0
+                });
+            }
+        });
 
         const data = {
             route_name: document.getElementById('edit_route_name').value,

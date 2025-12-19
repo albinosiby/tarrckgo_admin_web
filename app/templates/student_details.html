@@ -53,6 +53,17 @@
     .text-default {
         color: var(--text-dark);
     }
+
+    .history-payment {
+        text-decoration: line-through;
+        color: #9ca3af !important;
+        font-weight: 500;
+    }
+
+    .active-payment {
+        color: var(--success);
+        font-weight: 500;
+    }
 </style>
 {% endblock %}
 
@@ -111,6 +122,13 @@
                         style="display:none;">
                 </div>
                 <div class="detail-group">
+                    <div class="detail-label">Student Phone</div>
+                    <div class="detail-value" id="display_student_phone">{{ student.student_phone }}</div>
+                    <input type="tel" id="edit_student_phone" class="form-input" value="{{ student.student_phone }}"
+                        style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;" disabled
+                        title="Student phone/login cannot be changed.">
+                </div>
+                <div class="detail-group">
                     <div class="detail-label">Date of Birth</div>
                     <div class="detail-value" id="display_dob">{{ student.dob }}</div>
                     <input type="date" id="edit_dob" class="form-input" value="{{ student.dob }}" style="display:none;">
@@ -135,447 +153,527 @@
                 <div class="split-row" style="margin-top: 0; gap: 20px;">
                     <div class="detail-group">
                         <div class="detail-label">Bus Number</div>
-                        <div class="detail-value" id="display_bus_number">{{ student.bus_number }}</div>
+                        <div class="detail-value" id="display_bus_number">{{ student.bus_number or 'No Bus' }}</div>
                         <select id="edit_bus_number" class="form-input" style="display:none;" onchange="updateStops()">
                             <option value="">Select Bus...</option>
                             {% for bus in buses %}
                             <option value="{{ bus.bus_number }}" {% if student.bus_number==bus.bus_number %}selected{%
-                                endif %}>{{ bus.bus_number }} - {{ bus.route }}</option>
+                                endif %}>
+                                {{ bus.bus_number }} - {{ bus.route }}
+                            </option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="detail-group">
+                        <div class="detail-label">Route Name</div>
+                        <div class="detail-value" id="display_route_name">{{ student.route_name or '-' }}</div>
+                        <!-- Valid Route is auto-determined by Bus Selection, so no edit input needed here, it updates on backend -->
+                    </div>
+                    <div class="detail-group">
                         <div class="detail-label">Bus Stop</div>
-                        <div class="detail-value" id="display_bus_stop">{{ student.bus_stop }}</div>
-                        <select id="edit_bus_stop" class="form-input" style="display:none;">
+                        <div class="detail-value" id="display_bus_stop">{{ student.bus_stop or 'No Stop Selected' }}
+                        </div>
+                        <select id="edit_bus_stop" class="form-input" style="display:none;" onchange="updateFee()">
                             <option value="{{ student.bus_stop }}">{{ student.bus_stop }}</option>
                         </select>
                     </div>
                 </div>
-                <div class="split-row" style="margin-top: 0; gap: 20px;">
-                    <div class="detail-group">
-                        <div class="detail-label">Payment Type</div>
-                        <div class="detail-value" id="display_payment_type">{{ student.payment_type }}
+                <div class="split-row" style="margin-top: 0;">
+
+                    <div class="split-row" style="margin-top: 0; gap: 20px;">
+                        <div class="detail-group">
+                            <div class="detail-label">Payment Type</div>
+                            <div class="detail-value" id="display_payment_type">{{ student.payment_type }}
+                            </div>
+                            {% if org_payment_type %}
+                            <input type="text" id="edit_payment_type" class="form-input" value="{{ org_payment_type }}"
+                                readonly style="display:none; background-color: #f3f4f6; cursor: not-allowed;">
+                            {% else %}
+                            <select id="edit_payment_type" class="form-input" style="display:none;">
+                                <option value="Monthly" {% if student.payment_type=='Monthly' %}selected{% endif %}>
+                                    Monthly
+                                </option>
+                                <option value="Annual" {% if student.payment_type=='Annual' %}selected{% endif %}>Annual
+                                </option>
+                            </select>
+                            {% endif %}
                         </div>
-                        <select id="edit_payment_type" class="form-input" style="display:none;">
-                            <option value="Monthly" {% if student.payment_type=='Monthly' %}selected{% endif %}>Monthly
-                            </option>
-                            <option value="Termly" {% if student.payment_type=='Termly' %}selected{% endif %}>Termly
-                            </option>
-                            <option value="Yearly" {% if student.payment_type=='Yearly' %}selected{% endif %}>Yearly
-                            </option>
-                        </select>
+                        <div class="detail-group">
+                            <div class="detail-label">Fee Amount</div>
+                            <div class="detail-value" id="display_fee_amount">₹ {{ student.fee_amount }}
+                            </div>
+                            <input type="number" id="edit_fee_amount" class="form-input"
+                                value="{{ student.fee_amount }}" style="display:none;">
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 16px;">
+                <h4 style="margin-bottom: 16px; color: var(--primary);">Parent Information</h4>
+                <div class="split-row" style="margin-top: 0;">
                     <div class="detail-group">
-                        <div class="detail-label">Fee Amount</div>
-                        <div class="detail-value" id="display_fee_amount">₹ {{ student.fee_amount }}
-                        </div>
-                        <input type="number" id="edit_fee_amount" class="form-input" value="{{ student.fee_amount }}"
+                        <div class="detail-label">Parent Name</div>
+                        <div class="detail-value" id="display_parent_name">{{ student.parent_name }}</div>
+                        <input type="text" id="edit_parent_name" class="form-input" value="{{ student.parent_name }}"
                             style="display:none;">
                     </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Parent Phone</div>
+                        <div class="detail-value" id="display_parent_phone">{{ student.parent_phone }}</div>
+                        <input type="tel" id="edit_parent_phone" class="form-input" value="{{ student.parent_phone }}"
+                            style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;"
+                            disabled title="Parent phone/login cannot be changed.">
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 16px;">
-            <h4 style="margin-bottom: 16px; color: var(--primary);">Parent Information</h4>
-            <div class="split-row" style="margin-top: 0;">
-                <div class="detail-group">
-                    <div class="detail-label">Parent Name</div>
-                    <div class="detail-value" id="display_parent_name">{{ student.parent_name }}</div>
-                    <input type="text" id="edit_parent_name" class="form-input" value="{{ student.parent_name }}"
-                        style="display:none;">
+        <!-- Fee Management Card -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="card-title-row"
+                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                <h3>Fee Management</h3>
+                <button id="show-payment-form-btn" class="btn btn-primary" onclick="togglePaymentForm()">
+                    <span style="font-size:1.2rem; margin-right:6px">+</span> Record Payment
+                </button>
+            </div>
+
+            <!-- Fee Summary -->
+            <div class="split-row" style="margin-bottom: 24px;">
+                <div class="stat-card"
+                    style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                    <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Total Fee
+                    </div>
+                    <div style="font-size:1.5rem; font-weight:600; color:var(--text-dark);">₹ {{ student.fee_amount }}
+                    </div>
                 </div>
-                <div class="detail-group">
-                    <div class="detail-label">Parent Phone</div>
-                    <div class="detail-value" id="display_parent_phone">{{ student.parent_phone }}</div>
-                    <input type="tel" id="edit_parent_phone" class="form-input" value="{{ student.parent_phone }}"
-                        style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;" disabled
-                        title="Parent phone/login cannot be changed.">
+                <div class="stat-card"
+                    style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                    <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Amount Paid
+                    </div>
+                    <div style="font-size:1.5rem; font-weight:600; color:var(--success);">₹ {{ total_paid }}
+                    </div>
                 </div>
+                <div class="stat-card"
+                    style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
+                    <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Balance Due
+                    </div>
+                    <div class="{{ 'text-danger' if balance > 0 else 'text-default' }}"
+                        style="font-size:1.5rem; font-weight:600;">
+                        ₹ {{ balance }}</div>
+                </div>
+            </div>
+
+            <!-- Add Payment Form (Hidden by default) -->
+            <div id="payment-form-container"
+                style="display:none; background:var(--bg-light); padding:20px; border-radius:8px; margin-bottom:24px; border:1px solid var(--border);">
+                <h4 style="margin-bottom:16px; color:var(--primary);">Record New Payment</h4>
+                <form id="addPaymentForm">
+                    <div class="split-row">
+                        <div>
+                            <label class="form-label">Amount (₹)</label>
+                            <input type="number" id="pay_amount" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Payment Date</label>
+                            <input type="date" id="pay_date" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="split-row">
+                        <div>
+                            <label class="form-label">Payment Mode</label>
+                            <select id="pay_mode" class="form-input" required>
+                                <option value="Cash">Cash</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Reference ID (Optional)</label>
+                            <input type="text" id="pay_ref" class="form-input" placeholder="e.g. Transaction ID">
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+                        <button type="button" class="btn" style="background:#e5e7eb; color:#374151;"
+                            onclick="togglePaymentForm()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Payment</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Payment History Table -->
+            <div class="table-wrapper">
+                <h4 style="margin-bottom:12px; font-size:1rem;">Payment History</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Mode</th>
+                            <th>Reference ID</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr {% if payment.is_history %}style="opacity: 0.5; background: #f9fafb;" {% endif %}>
+                            <td>{{ payment.date }} {% if payment.is_history %}<small>(Prev. Year)</small>{% endif %}
+                            </td>
+                            <td>{{ payment.mode }}</td>
+                            <td>{{ payment.reference_id or '-' }}</td>
+                            <td class="{{ 'history-payment' if payment.is_history else 'active-payment' }}">
+                                + ₹ {{ payment.amount }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align:center; padding:20px; color:var(--text-light);">No payment
+                                history found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Attendance History Card -->
+        <div class="card">
+            <div class="card-title-row" style="margin-bottom:20px">
+                <h3>Attendance History</h3>
+                <div style="font-size: 0.9rem; color: var(--text-light);">Overall Attendance: <span
+                        style="color: var(--success); font-weight: 600;">92%</span></div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Check-in Time</th>
+                            <th>Check-out Time</th>
+                            <th>Trip Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_records %}
+                        <tr>
+                            <td>{{ record.date }}</td>
+                            <td>{{ record.check_in }}</td>
+                            <td>{{ record.check_out }}</td>
+                            <td>
+                                {% if record.type == 'Morning' %}
+                                <span class="badge" style="background:#dbeafe;color:#1e40af;">Morning</span>
+                                {% else %}
+                                <span class="badge" style="background:#fae8ff;color:#86198f;">Evening</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align:center; padding:20px; color:var(--text-light);">No
+                                attendance records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top: 16px; text-align: center;">
+                <a href="{{ url_for('students.student_attendance_history', student_id=student.id) }}" class="btn"
+                    style="background: #e0e7ff; color: var(--primary); text-decoration: none; display: inline-block;">
+                    View Full Attendance &rarr;
+                </a>
             </div>
         </div>
     </div>
+    {% endblock %}
 
-    <!-- Fee Management Card -->
-    <div class="card" style="margin-bottom: 20px;">
-        <div class="card-title-row"
-            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-            <h3>Fee Management</h3>
-            <button id="show-payment-form-btn" class="btn btn-primary" onclick="togglePaymentForm()">
-                <span style="font-size:1.2rem; margin-right:6px">+</span> Record Payment
-            </button>
-        </div>
+    {% block scripts %}
+    <script id="buses-data" type="application/json">{{ buses | tojson }}</script>
+    <script id="routes-data" type="application/json">{{ routes | tojson }}</script>
+    <script id="student-bus-stop" type="application/json">{{ student.bus_stop | tojson }}</script>
+    <script>
+        const busesData = JSON.parse(document.getElementById('buses-data').textContent);
+        const routesData = JSON.parse(document.getElementById('routes-data').textContent);
 
-        <!-- Fee Summary -->
-        <div class="split-row" style="margin-bottom: 24px;">
-            <div class="stat-card"
-                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Total Fee
-                </div>
-                <div style="font-size:1.5rem; font-weight:600; color:var(--text-dark);">₹ {{
-                    student.fee_amount }}</div>
-            </div>
-            <div class="stat-card"
-                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Amount Paid
-                </div>
-                <div style="font-size:1.5rem; font-weight:600; color:var(--success);">₹ {{ total_paid }}
-                </div>
-            </div>
-            <div class="stat-card"
-                style="background:var(--bg-light); padding:16px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">Balance Due
-                </div>
-                <div class="{{ 'text-danger' if balance > 0 else 'text-default' }}"
-                    style="font-size:1.5rem; font-weight:600;">
-                    ₹ {{ balance }}</div>
-            </div>
-        </div>
+        let isEditing = false;
+        // Select logic similar to driver_details
+        const editBtn = document.querySelector('.card-title-row .btn-primary'); // Be careful if multiple buttons
 
-        <!-- Add Payment Form (Hidden by default) -->
-        <div id="payment-form-container"
-            style="display:none; background:var(--bg-light); padding:20px; border-radius:8px; margin-bottom:24px; border:1px solid var(--border);">
-            <h4 style="margin-bottom:16px; color:var(--primary);">Record New Payment</h4>
-            <form id="addPaymentForm">
-                <div class="split-row">
-                    <div>
-                        <label class="form-label">Amount (₹)</label>
-                        <input type="number" id="pay_amount" class="form-input" required max="{{ balance }}">
-                    </div>
-                    <div>
-                        <label class="form-label">Payment Date</label>
-                        <input type="date" id="pay_date" class="form-input" required>
-                    </div>
-                </div>
-                <div class="split-row">
-                    <div>
-                        <label class="form-label">Payment Mode</label>
-                        <select id="pay_mode" class="form-input" required>
-                            <option value="Cash">Cash</option>
-                            <option value="UPI">UPI</option>
-                            <option value="Bank Transfer">Bank Transfer</option>
-                            <option value="Cheque">Cheque</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="form-label">Reference ID (Optional)</label>
-                        <input type="text" id="pay_ref" class="form-input" placeholder="e.g. Transaction ID">
-                    </div>
-                </div>
-                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
-                    <button type="button" class="btn" style="background:#e5e7eb; color:#374151;"
-                        onclick="togglePaymentForm()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Payment</button>
-                </div>
-            </form>
-        </div>
+        editBtn.addEventListener('click', function () {
+            // Check if this is indeed the edit profile button by text content or position
+            if (this.innerText.includes('Edit Profile') || this.innerText.includes('Save Changes')) {
+                if (!isEditing) {
+                    // Switch to Edit Mode
+                    isEditing = true;
+                    this.innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
+                    this.style.backgroundColor = '#10b981'; // Green color
 
-        <!-- Payment History Table -->
-        <div class="table-wrapper">
-            <h4 style="margin-bottom:12px; font-size:1rem;">Payment History</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Mode</th>
-                        <th>Reference ID</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for payment in payments %}
-                    <tr>
-                        <td>{{ payment.date }}</td>
-                        <td>{{ payment.mode }}</td>
-                        <td>{{ payment.reference_id or '-' }}</td>
-                        <td style="font-weight:500; color:var(--success);">+ ₹ {{ payment.amount }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding:20px; color:var(--text-light);">No payment
-                            history found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Attendance History Card -->
-    <div class="card">
-        <div class="card-title-row" style="margin-bottom:20px">
-            <h3>Attendance History</h3>
-            <div style="font-size: 0.9rem; color: var(--text-light);">Overall Attendance: <span
-                    style="color: var(--success); font-weight: 600;">92%</span></div>
-        </div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>To Trip (Morning)</th>
-                        <th>Return Trip (Evening)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for record in attendance_records %}
-                    <tr>
-                        <td>{{ record.date }}</td>
-                        <td>
-                            {% if record.morning_status == 'Present' %}
-                            <div style="font-weight:600; font-size: 0.9rem; color: var(--success);">
-                                Present</div>
-                            <div style="font-size: 0.8rem; color: var(--text-light);">{{
-                                record.morning_time }}</div>
-                            {% elif record.morning_status == 'Absent' %}
-                            <div style="font-weight:600; font-size: 0.9rem; color: var(--danger);">
-                                Absent</div>
-                            <div style="font-size: 0.8rem; color: var(--text-light);">-</div>
-                            {% else %}
-                            <div style="font-size: 0.9rem; color: var(--text-light);">{{
-                                record.morning_status or '-' }}</div>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if record.evening_status == 'Present' %}
-                            <div style="font-weight:600; font-size: 0.9rem; color: var(--success);">
-                                Present</div>
-                            <div style="font-size: 0.8rem; color: var(--text-light);">{{
-                                record.evening_time }}</div>
-                            {% elif record.evening_status == 'Absent' %}
-                            <div style="font-weight:600; font-size: 0.9rem; color: var(--danger);">
-                                Absent</div>
-                            <div style="font-size: 0.8rem; color: var(--text-light);">-</div>
-                            {% else %}
-                            <div style="font-size: 0.9rem; color: var(--text-light);">{{
-                                record.evening_status or '-' }}</div>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="3" style="text-align:center; padding:20px; color:var(--text-light);">No
-                            attendance records found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block scripts %}
-<script id="buses-data" type="application/json">{{ buses | tojson }}</script>
-<script id="routes-data" type="application/json">{{ routes | tojson }}</script>
-<script id="student-bus-stop" type="application/json">{{ student.bus_stop | tojson }}</script>
-<script>
-    let isEditing = false;
-    // Select logic similar to driver_details
-    const editBtn = document.querySelector('.card-title-row .btn-primary'); // Be careful if multiple buttons
-
-    editBtn.addEventListener('click', function () {
-        // Check if this is indeed the edit profile button by text content or position
-        if (this.innerText.includes('Edit Profile') || this.innerText.includes('Save Changes')) {
-            if (!isEditing) {
-                // Switch to Edit Mode
-                isEditing = true;
-                this.innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
-                this.style.backgroundColor = '#10b981'; // Green color
-
-                // Toggle visibility
-                toggleFields(true);
+                    // Toggle visibility
+                    toggleFields(true);
+                } else {
+                    // Save Changes
+                    saveChanges();
+                }
             } else {
-                // Save Changes
-                saveChanges();
-            }
-        } else {
-            // Must be the "Record Payment" button if not matched, ignore
-        }
-    });
-
-    function toggleFields(showInput) {
-        const fields = [
-            'full_name', 'roll_number', 'email', 'dob', 'batch', 'address',
-            'bus_number', 'bus_stop', 'payment_type', 'fee_amount',
-            'parent_name', 'parent_phone'
-        ];
-
-        fields.forEach(field => {
-            const displayEl = document.getElementById('display_' + field);
-            const inputEl = document.getElementById('edit_' + field);
-            if (displayEl && inputEl) {
-                displayEl.style.display = showInput ? 'none' : 'block';
-                inputEl.style.display = showInput ? 'block' : 'none';
+                // Must be the "Record Payment" button if not matched, ignore
             }
         });
 
-        // Photo Edit
-        const photoContainer = document.getElementById('edit_photo_container');
-        if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
+        function toggleFields(showInput) {
+            // Check balance for transport fields - REMOVED per user request
+            // const balance = Number('{{ balance }}');
+            // const canEditTransport = balance <= 0;
+            const canEditTransport = true; // Always allow editing
 
-        if (showInput) {
-            const initialBusStop = JSON.parse(document.getElementById('student-bus-stop').textContent);
-            updateStops(initialBusStop);
-        }
-    }
+            const fields = [
+                'full_name', 'roll_number', 'email', 'student_phone', 'dob', 'batch', 'address',
+                'parent_name', 'parent_phone'
+            ];
 
-    const busesData = JSON.parse(document.getElementById('buses-data').textContent);
-    const routesData = JSON.parse(document.getElementById('routes-data').textContent);
+            // Transport fields separate
+            const transportFields = ['route', 'bus_number', 'bus_stop', 'payment_type', 'fee_amount'];
 
-    function updateStops(currentStop = null) {
-        const busSelect = document.getElementById('edit_bus_number');
-        const stopSelect = document.getElementById('edit_bus_stop');
-        const selectedBusNumber = busSelect.value;
-        const currentVal = currentStop || stopSelect.value;
-
-        stopSelect.innerHTML = '<option value="">Select Stop...</option>';
-
-        if (!selectedBusNumber) return;
-
-        // Find the selected bus object
-        const selectedBus = busesData.find(b => b.bus_number === selectedBusNumber);
-
-        if (selectedBus && selectedBus.route) {
-            const route = routesData.find(r => r.route_name === selectedBus.route);
-
-            if (route && route.stops) {
-                let stops = [];
-                if (typeof route.stops === 'string') {
-                    stops = route.stops.split(',').map(s => s.trim());
-                } else if (Array.isArray(route.stops)) {
-                    stops = route.stops;
+            fields.forEach(field => {
+                const displayEl = document.getElementById('display_' + field);
+                const inputEl = document.getElementById('edit_' + field);
+                if (displayEl && inputEl) {
+                    displayEl.style.display = showInput ? 'none' : 'block';
+                    inputEl.style.display = showInput ? 'block' : 'none';
                 }
+            });
 
-                stops.forEach(stop => {
-                    const option = document.createElement('option');
-                    option.value = stop;
-                    option.textContent = stop;
-                    if (stop === currentVal) {
-                        option.selected = true;
+            transportFields.forEach(field => {
+                const displayEl = document.getElementById('display_' + field);
+                const inputEl = document.getElementById('edit_' + field);
+                if (displayEl && inputEl) {
+                    displayEl.style.display = showInput ? 'none' : 'block';
+                    // Always show input if we are in edit mode
+                    if (showInput) {
+                        inputEl.style.display = 'block';
+                    } else {
+                        inputEl.style.display = 'none';
                     }
-                    stopSelect.appendChild(option);
-                });
-            } else {
-                const option = document.createElement('option');
-                option.textContent = "No stops found for this route";
-                stopSelect.appendChild(option);
+                }
+            });
+
+            // Alert removed
+            // if (showInput && !canEditTransport) {
+            //    alert("Transport details cannot be edited until the fee balance is cleared.");
+            // }
+
+            // Photo Edit
+            const photoContainer = document.getElementById('edit_photo_container');
+            if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
+
+            if (showInput) {
+                const busSelect = document.getElementById('edit_bus_number');
+                const currentStop = JSON.parse(document.getElementById('student-bus-stop').textContent);
+
+                // Trigger initial stop population based on current route
+                if (busSelect.value) {
+                    updateStops(currentStop);
+                }
             }
         }
-    }
 
-    function saveChanges() {
-        const btn = document.querySelector('.card-title-row .btn-primary');
-        const originalText = '<span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile';
-        btn.innerText = 'Saving...';
-        btn.disabled = true;
+        function updateStops(currentStop = null) {
+            const busSelect = document.getElementById('edit_bus_number');
+            const stopSelect = document.getElementById('edit_bus_stop');
+            const busNumber = busSelect.value;
+            const currentVal = currentStop || stopSelect.value;
 
-        const formData = new FormData();
-        formData.append('full_name', document.getElementById('edit_full_name').value);
-        formData.append('roll_number', document.getElementById('edit_roll_number').value);
-        formData.append('email', document.getElementById('edit_email').value);
-        formData.append('dob', document.getElementById('edit_dob').value);
-        formData.append('batch', document.getElementById('edit_batch').value);
-        formData.append('address', document.getElementById('edit_address').value);
-        formData.append('bus_number', document.getElementById('edit_bus_number').value);
-        formData.append('bus_stop', document.getElementById('edit_bus_stop').value);
+            stopSelect.innerHTML = '<option value="">Select Stop...</option>';
 
-        const busId = busesData.find(b => b.bus_number === document.getElementById('edit_bus_number').value)?.id || '';
-        formData.append('bus_id', busId);
+            if (!busNumber) return;
 
-        formData.append('payment_type', document.getElementById('edit_payment_type').value);
-        formData.append('fee_amount', document.getElementById('edit_fee_amount').value);
-        formData.append('parent_name', document.getElementById('edit_parent_name').value);
-        // parent_phone is disabled, but we can verify integrity or just not send it. API ignores updates if we want.
+            // Find the selected bus object
+            const selectedBus = busesData.find(b => b.bus_number === busNumber);
+            if (!selectedBus || !selectedBus.route) return;
 
-        const fileInput = document.getElementById('edit_student_photo');
-        if (fileInput && fileInput.files.length > 0) {
-            formData.append('student_photo', fileInput.files[0]);
+            // Find route
+            const selectedRoute = routesData.find(r => r.route_name === selectedBus.route);
+
+            if (selectedRoute) {
+                let stops = selectedRoute.stops || [];
+                if (typeof stops === 'string') {
+                    stops = stops.split(',').map(s => s.trim());
+                }
+
+                if (Array.isArray(stops)) {
+                    stops.forEach(stop => {
+                        const option = document.createElement('option');
+                        let stopName = stop;
+                        let stopFee = 0;
+
+                        if (typeof stop === 'object') {
+                            stopName = stop.name || '';
+                            stopFee = stop.fee || 0;
+                        }
+
+                        option.value = stopName;
+                        option.textContent = stopName;
+                        option.setAttribute('data-fee', stopFee);
+
+                        if (stopName === currentVal) {
+                            option.selected = true;
+                        }
+                        stopSelect.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.textContent = "No stops found for this route";
+                    stopSelect.appendChild(option);
+                }
+            }
         }
 
-        fetch("{{ url_for('api.api_update_student', student_id=student.id) }}", {
-            method: 'POST',
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Student details updated successfully!');
-                    window.location.reload();
-                } else {
-                    alert('Error: ' + data.message);
+        function updateFee() {
+            const stopSelect = document.getElementById('edit_bus_stop');
+            const feeInput = document.getElementById('edit_fee_amount');
+
+            const selectedOption = stopSelect.options[stopSelect.selectedIndex];
+            if (selectedOption) {
+                const fee = selectedOption.getAttribute('data-fee');
+                if (fee) {
+                    feeInput.value = fee;
+                }
+            }
+        }
+
+        function saveChanges() {
+            const btn = document.querySelector('.card-title-row .btn-primary');
+            const originalText = '<span style="font-size:1rem; margin-right:6px">✎</span> Edit Profile';
+            btn.innerText = 'Saving...';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('full_name', document.getElementById('edit_full_name').value);
+            formData.append('roll_number', document.getElementById('edit_roll_number').value);
+            formData.append('email', document.getElementById('edit_email').value);
+            formData.append('dob', document.getElementById('edit_dob').value);
+            formData.append('batch', document.getElementById('edit_batch').value);
+            formData.append('address', document.getElementById('edit_address').value);
+
+            // Transport
+            formData.append('bus_number', document.getElementById('edit_bus_number').value);
+            formData.append('bus_stop', document.getElementById('edit_bus_stop').value);
+
+            const busId = busesData.find(b => b.bus_number === document.getElementById('edit_bus_number').value)?.id || '';
+            formData.append('bus_id', busId);
+
+            formData.append('payment_type', document.getElementById('edit_payment_type').value);
+            formData.append('fee_amount', document.getElementById('edit_fee_amount').value);
+            formData.append('parent_name', document.getElementById('edit_parent_name').value);
+            // parent_phone is disabled
+
+            const fileInput = document.getElementById('edit_student_photo');
+            if (fileInput && fileInput.files.length > 0) {
+                formData.append('student_photo', fileInput.files[0]);
+            }
+
+            fetch("{{ url_for('api.api_update_student', roll_number=student.id) }}", {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Student details updated successfully!');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                        btn.style.backgroundColor = ''; // Reset color
+                        isEditing = false;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                     btn.style.backgroundColor = ''; // Reset color
                     isEditing = false;
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-                btn.style.backgroundColor = ''; // Reset color
-                isEditing = false;
-            });
-    }
-
-    function togglePaymentForm() {
-        const formContainer = document.getElementById('payment-form-container');
-        const showBtn = document.getElementById('show-payment-form-btn');
-
-        if (formContainer.style.display === 'none') {
-            formContainer.style.display = 'block';
-            showBtn.style.display = 'none';
-
-            // Set default date to today
-            document.getElementById('pay_date').valueAsDate = new Date();
-        } else {
-            formContainer.style.display = 'none';
-            showBtn.style.display = 'block';
+                });
         }
-    }
 
-    document.getElementById('addPaymentForm').addEventListener('submit', function (e) {
-        e.preventDefault();
+        function togglePaymentForm() {
+            const formContainer = document.getElementById('payment-form-container');
+            const showBtn = document.getElementById('show-payment-form-btn');
 
-        const btn = this.querySelector('button[type="submit"]');
-        const originalText = btn.innerText;
-        btn.disabled = true;
-        btn.innerText = 'Saving...';
+            if (formContainer.style.display === 'none') {
+                formContainer.style.display = 'block';
+                showBtn.style.display = 'none';
 
-        const formData = {
-            amount: document.getElementById('pay_amount').value,
-            date: document.getElementById('pay_date').value,
-            mode: document.getElementById('pay_mode').value,
-            reference_id: document.getElementById('pay_ref').value
-        };
+                // Set default date to today
+                document.getElementById('pay_date').valueAsDate = new Date();
+            } else {
+                formContainer.style.display = 'none';
+                showBtn.style.display = 'block';
+            }
+        }
 
-        fetch("{{ url_for('api.api_add_payment', student_id=student.id) }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Payment Added Successfully!');
-                    window.location.reload();
-                } else {
-                    alert('Error: ' + data.message);
+        document.getElementById('addPaymentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            const formData = {
+                amount: document.getElementById('pay_amount').value,
+                date: document.getElementById('pay_date').value,
+                mode: document.getElementById('pay_mode').value,
+                reference_id: document.getElementById('pay_ref').value
+            };
+
+            fetch("{{ url_for('api.api_add_payment', student_id=student.id) }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Payment Added Successfully!');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
                     btn.disabled = false;
                     btn.innerText = originalText;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-                btn.disabled = false;
-                btn.innerText = originalText;
-            });
-    });
-</script>
-{% endblock %}
+                });
+        });
+
+        function resetFeeStatus() {
+            if (confirm("Are you sure you want to RESET the fee status for this student?\n\nThis will set:\n- Paid Amount to 0\n- Due Amount to Full Fee\n- Travel Permission to FALSE\n\nThis action cannot be undone.")) {
+                fetch("{{ url_for('api.api_reset_fee_status', student_id=student.id) }}", {
+                    method: 'POST'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                    });
+            }
+        }
+    </script>
+    {% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% set active_page = 'students' %}
+
+{% block title %}Smart Bus Admin Panel - Student Attendance History{% endblock %}
+
+{% block header_title %}Smart Bus Admin • Attendance History{% endblock %}
+
+{% block content %}
+<section id="page-attendance-history" class="page-section active">
+    <!-- Breadcrumb -->
+    <div style="margin-bottom: 20px;">
+        <a href="{{ url_for('students.student_details', student_id=student.id) }}"
+            style="text-decoration: none; color: var(--text-light); font-size: 0.9rem;">
+            &larr; Back to Student {{ student.full_name }}
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-title-row"
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3>Attendance History: {{ student.full_name }}</h3>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Check-in Time</th>
+                        <th>Check-out Time</th>
+                        <th>Trip Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    <tr>
+                        <td>{{ record.date }}</td>
+                        <td>{{ record.check_in }}</td>
+                        <td>{{ record.check_out }}</td>
+                        <td>
+                            {% if record.type == 'Morning' %}
+                            <span class="badge" style="background:#dbeafe;color:#1e40af;">Morning</span>
+                            {% else %}
+                            <span class="badge" style="background:#fae8ff;color:#86198f;">Evening</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding:20px; color:var(--text-light);">No
+                            attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

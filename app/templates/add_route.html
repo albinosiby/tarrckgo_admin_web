@@ -94,7 +94,10 @@
                 <!-- Stops will be added here -->
                 <div class="stop-item">
                     <span style="color:var(--text-light); font-weight:500; width: 20px;">1.</span>
-                    <input type="text" class="form-input stop-input" placeholder="Stop Name" required>
+                    <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required
+                        style="flex: 2;">
+                    <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required
+                        style="flex: 1;" min="0">
                 </div>
             </div>
             <button type="button" class="add-stop-btn" onclick="addStop()">
@@ -121,7 +124,8 @@
         div.className = 'stop-item';
         div.innerHTML = `
             <span style="color:var(--text-light); font-weight:500; width: 20px;">${count}.</span>
-            <input type="text" class="form-input stop-input" placeholder="Stop Name" required>
+            <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required style="flex: 2;">
+            <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required style="flex: 1;" min="0">
             <button type="button" class="remove-stop-btn" onclick="removeStop(this)">&times;</button>
         `;
         container.appendChild(div);
@@ -139,16 +143,26 @@
     document.getElementById('addRouteForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
-        // Collect stops
-        const stopInputs = document.querySelectorAll('.stop-input');
-        const stops = Array.from(stopInputs).map(input => input.value).filter(val => val.trim() !== '');
-
         const formData = {
             route_name: document.getElementById('route_name').value,
             start_point: document.getElementById('start_point').value,
             end_point: document.getElementById('end_point').value,
-            stops: stops
+            stops: []
         };
+
+        // Collect stops and fees
+        const stopItems = document.querySelectorAll('.stop-item');
+        stopItems.forEach(item => {
+            const nameInput = item.querySelector('.stop-name-input');
+            const feeInput = item.querySelector('.stop-fee-input');
+
+            if (nameInput && nameInput.value.trim() !== '') {
+                formData.stops.push({
+                    name: nameInput.value.trim(),
+                    fee: feeInput ? parseFloat(feeInput.value) || 0 : 0
+                });
+            }
+        });
 
         const btn = this.querySelector('button[type="submit"]');
         const originalText = btn.innerText;

@@ -37,7 +37,23 @@
                         </td>
                         <td>{{ route.start_point }}</td>
                         <td>{{ route.end_point }}</td>
-                        <td>{{ route.stops }}</td>
+                        <td>
+                            {% if route.stops %}
+                            {% if route.stops is string %}
+                            {{ route.stops }}
+                            {% else %}
+                            {% for stop in route.stops %}
+                            {% if stop is string %}
+                            {{ stop }}{% if not loop.last %}, {% endif %}
+                            {% else %}
+                            {{ stop.name }}{% if not loop.last %}, {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            {% else %}
+                            <span style="color:var(--text-light)">-</span>
+                            {% endif %}
+                        </td>
                         <td>{{ route.assigned_bus_name or 'Unassigned' }}</td>
                         <td>
                             <a href="{{ url_for('routes.route_details', route_id=route.id) }}" class="btn"

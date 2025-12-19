@@ -1,28 +1,23 @@
 {% extends "base.html" %}
 
-{% set active_page = 'students' %}
+{% set active_page = 'add_student' %}
 
 {% block title %}Smart Bus Admin Panel - Add Student{% endblock %}
 
-{% block header_title %}Smart Bus Admin • Add Student{% endblock %}
-
 {% block content %}
-<section class="page-section active">
+<section class="section">
+    <div class="section-header">
+        <h1 class="page-title">Add New Student</h1>
+    </div>
+
     <div class="card" style="max-width: 800px; margin: 0 auto;">
-        <div class="card-title-row" style="margin-bottom:20px">
-            <h3>Add New Student</h3>
-        </div>
-        <form id="addStudentForm">
+        <form id="addStudentForm" class="form-grid">
+            <!-- Student ID (Hidden or Readonly) -->
+            <!-- We will generate this via API before submitting -->
 
-            <!-- Personal Details -->
             <h4
-                style="margin-bottom: 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                Personal Details</h4>
-
-            <div class="form-group">
-                <label class="form-label">Student Photo</label>
-                <input type="file" id="student_photo" class="form-input" accept="image/*">
-            </div>
+                style="margin: 0 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                Student Details</h4>
 
             <div class="split-row">
                 <div>
@@ -37,23 +32,34 @@
 
             <div class="split-row">
                 <div>
-                    <label class="form-label">Email Address</label>
-                    <input type="email" id="email" class="form-input" placeholder="e.g. student@example.com">
+                    <label class="form-label">Email Address (Optional)</label>
+                    <input type="email" id="email" class="form-input" placeholder="student@school.com">
                 </div>
                 <div>
                     <label class="form-label">Roll Number</label>
-                    <input type="text" id="roll_number" class="form-input" placeholder="e.g. CS-101" required>
+                    <input type="text" id="roll_number" class="form-input" placeholder="e.g. 2023-001" required>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Class/Batch</label>
-                <input type="text" id="batch" class="form-input" placeholder="e.g. CS A">
+            <div class="split-row">
+                <div>
+                    <label class="form-label">Batch / Class</label>
+                    <input type="text" id="batch" class="form-input" placeholder="e.g. Class 10-A" required>
+                </div>
+                <div>
+                    <label class="form-label">Student Phone (Optional)</label>
+                    <input type="tel" id="student_phone" class="form-input" placeholder="10-digit number">
+                </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Address</label>
-                <textarea id="address" class="form-input" rows="3" placeholder="Enter full address"></textarea>
+                <textarea id="address" class="form-input" rows="3" placeholder="Full Address" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Profile Photo</label>
+                <input type="file" id="student_photo" class="form-input" accept="image/*">
             </div>
 
             <!-- Transport Details -->
@@ -63,18 +69,17 @@
 
             <div class="split-row">
                 <div>
-                    <label class="form-label">Bus Number</label>
-                    <select id="bus_number" class="form-input" required onchange="updateStops()">
+                    <label class="form-label">Select Bus</label>
+                    <select id="bus_select" class="form-input" onchange="updateStops()">
                         <option value="">Select Bus...</option>
                         {% for bus in buses %}
-                        <option value="{{ bus.bus_number }}">{{ bus.bus_number }} - {{ bus.route }}
-                        </option>
+                        <option value="{{ bus.bus_number }}">{{ bus.bus_number }} - {{ bus.route }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div>
-                    <label class="form-label">Bus Stop</label>
-                    <select id="bus_stop" class="form-input" required>
+                    <label class="form-label">Select Stop</label>
+                    <select id="bus_stop" class="form-input" onchange="updateFee()">
                         <option value="">Select Bus First...</option>
                     </select>
                 </div>
@@ -88,18 +93,15 @@
             <div class="split-row">
                 <div>
                     <label class="form-label">Payment Type</label>
-                    <select id="payment_type" class="form-input" required>
-                        <option value="annual">Annual</option>
-                        <option value="monthly">Monthly</option>
-                    </select>
+                    <input type="text" id="payment_type" class="form-input" value="{{ payment_type }}" readonly
+                        style="background-color: #f3f4f6; cursor: not-allowed;">
                 </div>
                 <div>
                     <label class="form-label">Fee Amount (₹)</label>
-                    <input type="number" id="fee_amount" class="form-input" placeholder="e.g. 5000" required>
+                    <input type="number" id="fee_amount" class="form-input" placeholder="0" required min="0">
                 </div>
             </div>
 
-            <!-- Parent Details -->
             <h4
                 style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
                 Parent Details</h4>
@@ -126,51 +128,13 @@
 {% endblock %}
 
 {% block scripts %}
+
 <script id="buses-data" type="application/json">{{ buses | tojson }}</script>
 <script id="routes-data" type="application/json">{{ routes | tojson }}</script>
+
 <script>
     const busesData = JSON.parse(document.getElementById('buses-data').textContent);
     const routesData = JSON.parse(document.getElementById('routes-data').textContent);
-
-    function updateStops() {
-        const busSelect = document.getElementById('bus_number');
-        const stopSelect = document.getElementById('bus_stop');
-        const selectedBusNumber = busSelect.value;
-
-        stopSelect.innerHTML = '<option value="">Select Stop...</option>';
-
-        if (!selectedBusNumber) return;
-
-        // Find the selected bus object
-        const selectedBus = busesData.find(b => b.bus_number === selectedBusNumber);
-
-        if (selectedBus && selectedBus.route) {
-            // Find the route object associated with the bus
-            // Assuming bus.route stores the route name as per add_bus.html
-            const route = routesData.find(r => r.route_name === selectedBus.route);
-
-            if (route && route.stops) {
-                // Splits string by comma if it's a string, or uses it directly if it's an array
-                let stops = [];
-                if (typeof route.stops === 'string') {
-                    stops = route.stops.split(',').map(s => s.trim());
-                } else if (Array.isArray(route.stops)) {
-                    stops = route.stops;
-                }
-
-                stops.forEach(stop => {
-                    const option = document.createElement('option');
-                    option.value = stop;
-                    option.textContent = stop;
-                    stopSelect.appendChild(option);
-                });
-            } else {
-                const option = document.createElement('option');
-                option.textContent = "No stops found for this route";
-                stopSelect.appendChild(option);
-            }
-        }
-    }
 
     document.getElementById('addStudentForm').addEventListener('submit', function (e) {
         e.preventDefault();
@@ -252,6 +216,67 @@
             });
     });
 
+    function updateStops() {
+        const busSelect = document.getElementById('bus_select');
+        const stopSelect = document.getElementById('bus_stop');
+        const busNumber = busSelect.value;
+        // Reset
+        stopSelect.innerHTML = '<option value="">Select Stop...</option>';
+        document.getElementById('fee_amount').value = '';
+
+        if (!busNumber) return;
+
+        // Find bus
+        const selectedBus = busesData.find(b => b.bus_number === busNumber);
+        if (!selectedBus || !selectedBus.route) {
+            const opt = document.createElement('option');
+            opt.innerText = "No route assigned to this bus";
+            stopSelect.appendChild(opt);
+            return;
+        }
+
+        // Find route
+        const selectedRoute = routesData.find(r => r.route_name === selectedBus.route);
+        if (selectedRoute) {
+            let stops = selectedRoute.stops || [];
+            if (typeof stops === 'string') {
+                stops = stops.split(',').map(s => s.trim());
+            }
+
+            if (Array.isArray(stops)) {
+                stops.forEach(stop => {
+                    const opt = document.createElement('option');
+                    // Check if stop is an object (new format) or string (old format)
+                    let stopName = stop;
+                    let stopFee = 0;
+
+                    if (typeof stop === 'object') {
+                        stopName = stop.name || '';
+                        stopFee = stop.fee || 0;
+                    }
+
+                    opt.value = stopName;
+                    opt.innerText = stopName;
+                    opt.setAttribute('data-fee', stopFee);
+                    stopSelect.appendChild(opt);
+                });
+            }
+        }
+    }
+
+    function updateFee() {
+        const stopSelect = document.getElementById('bus_stop');
+        const feeInput = document.getElementById('fee_amount');
+
+        const selectedOption = stopSelect.options[stopSelect.selectedIndex];
+        if (selectedOption) {
+            const fee = selectedOption.getAttribute('data-fee');
+            if (fee) {
+                feeInput.value = fee;
+            }
+        }
+    }
+
     function submitStudentData(btn, originalText, studentId) {
         const formData = new FormData();
         if (studentId) formData.append('student_id', studentId);
@@ -260,17 +285,17 @@
         formData.append('email', document.getElementById('email').value);
         formData.append('roll_number', document.getElementById('roll_number').value);
         formData.append('batch', document.getElementById('batch').value);
+        formData.append('student_phone', document.getElementById('student_phone').value);
         formData.append('address', document.getElementById('address').value);
-        formData.append('bus_number', document.getElementById('bus_number').value);
+
+        // Transport Details
+        formData.append('bus_number', document.getElementById('bus_select').value);
         formData.append('bus_stop', document.getElementById('bus_stop').value);
-        formData.append('payment_type', document.getElementById('payment_type').value);
-        formData.append('fee_amount', document.getElementById('fee_amount').value);
+
         formData.append('parent_name', document.getElementById('parent_name').value);
         formData.append('parent_phone', document.getElementById('parent_phone').value);
-
-        const busesData = JSON.parse(document.getElementById('buses-data').textContent);
-        const busId = busesData.find(b => b.bus_number === document.getElementById('bus_number').value)?.id || '';
-        formData.append('bus_id', busId);
+        formData.append('fee_amount', document.getElementById('fee_amount').value);
+        formData.append('payment_type', document.getElementById('payment_type').value);
 
         const fileInput = document.getElementById('student_photo');
         if (fileInput && fileInput.files.length > 0) {

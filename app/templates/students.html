@@ -12,67 +12,122 @@
         <div class="card-title-row"
             style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
             <h3>Students Directory</h3>
-            <a href="{{ url_for('students.add_student') }}" class="btn btn-primary" style="text-decoration: none;">
-                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Student
-            </a>
+            <div>
+                <button onclick="resetAllFees()" class="btn"
+                    style="background:#ef4444; color:white; margin-right: 10px; border: none;">
+                    <span style="font-size:1.2rem; margin-right:6px">↻</span> Reset Academic Year
+                </button>
+                <a href="{{ url_for('students.add_student') }}" class="btn btn-primary" style="text-decoration: none;">
+                    <span style="font-size:1.2rem; margin-right:6px">+</span> Add Student
+                </a>
+            </div>
         </div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Roll No</th>
-                        <th>Class</th>
-                        <th>Stop</th>
-                        <th>Parent Contact</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for student in students %}
-                    <tr>
-                        <td>
-                            <div style="display:flex;align-items:center;gap:12px">
-                                <div class="avatar" style="width:32px;height:32px;font-size:0.8rem">
-                                    {{ student.full_name[0] if student.full_name else '?' }}
-                                </div>
-                                <div>
-                                    <div style="font-weight:500">{{ student.full_name }}</div>
-                                    <div style="font-size:0.75rem;color:var(--text-light)">{{
-                                        student.email }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ student.roll_number }}</td>
-                        <td>{{ student.batch }}</td>
-                        <td>{{ student.bus_stop }}</td>
-                        <td>
-                            <div>{{ student.parent_name }}</div>
-                            <div style="font-size:0.75rem;color:var(--text-light)">{{
-                                student.parent_phone }}</div>
-                        </td>
-                        <td>
-                            <span
-                                style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Active</span>
-                        </td>
-                        <td>
-                            <a href="{{ url_for('students.student_details', student_id=student.id) }}" class="btn"
-                                style="padding:4px 8px;color:var(--primary);text-decoration:none">View</a>
-                            <button onclick="deleteStudent('{{ student.id }}', '{{ student.full_name }}')" class="btn"
-                                style="padding:4px 8px;color:#ef4444;text-decoration:none;background:none;border:none;cursor:pointer;font-size:inherit;">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
+        <style>
+            .student-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+                padding: 10px 0;
+            }
+
+            .student-card {
+                background: white;
+                border-radius: 12px;
+                padding: 20px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border);
+                transition: transform 0.2s, box-shadow 0.2s;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .student-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            }
+
+            .student-avatar-lg {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: #f3f4f6;
+                color: var(--primary);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                font-weight: 600;
+                margin-bottom: 16px;
+                overflow: hidden;
+            }
+
+            .student-avatar-lg img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .card-meta {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin: 10px 0;
+                font-size: 0.85rem;
+                color: var(--text-light);
+            }
+
+            .card-tag {
+                background: #f3f4f6;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+        </style>
+
+        <div class="student-grid">
+            {% for student in students %}
+            <div class="student-card">
+                <div class="student-avatar-lg">
+                    {% if student.profile_photo_url %}
+                    <img src="{{ student.profile_photo_url }}" alt="{{ student.full_name }}">
                     {% else %}
-                    <tr>
-                        <td colspan="7" style="text-align:center; padding: 20px;">No students found. Add
-                            one to get started!</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    {{ student.full_name[0] if student.full_name else '?' }}
+                    {% endif %}
+                </div>
+
+                <h4 style="margin:0 0 4px 0; font-size:1.1rem; color: var(--text)">{{ student.full_name }}</h4>
+                <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 4px;">{{ student.email }}</div>
+
+                <div class="card-meta">
+                    <span class="card-tag">🆔 {{ student.roll_number }}</span>
+                    <span class="card-tag">📚 {{ student.batch or '-' }}</span>
+                </div>
+
+                <div style="margin-bottom: 16px; font-size: 0.9rem;">
+                    {% if student.student_phone %}
+                    <div style="color: var(--text-light);">📞 {{ student.student_phone }}</div>
+                    {% endif %}
+                </div>
+
+                <div style="margin-top: auto; display: flex; gap: 10px; width: 100%;">
+                    <a href="{{ url_for('students.student_details', student_id=student.id) }}" class="btn"
+                        style="flex:1; background: #e0e7ff; color: var(--primary); text-decoration: none; border:none;">
+                        View Profile
+                    </a>
+                    <button onclick="deleteStudent('{{ student.id }}', '{{ student.full_name }}')" class="btn"
+                        style="width: 40px; background: #fee2e2; color: #ef4444; border:none; padding: 0; display:flex; align-items:center; justify-content:center;">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-light);">
+                <div style="font-size: 3rem; margin-bottom: 10px;">🎓</div>
+                <p>No students found. Click "Add Student" to get started!</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -101,6 +156,29 @@
                     console.error('Error:', error);
                     alert('An error occurred while deleting the student.');
                 });
+        }
+    }
+
+    function resetAllFees() {
+        if (confirm("⚠️ WARNING: This will reset the fee status for ALL students in your organization.\n\n- Paid Amount -> 0\n- Due Amount -> Full Fee\n- Travel Permission -> FALSE\n\nUse this only at the start of a new academic year. Are you sure?")) {
+            if (confirm("Double check: This action cannot be undone. Do you really want to proceed?")) {
+                fetch("{{ url_for('api.api_reset_all_fees') }}", {
+                    method: 'POST'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                    });
+            }
         }
     }
 </script>

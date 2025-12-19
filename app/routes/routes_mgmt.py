@@ -3,26 +3,7 @@ from app.services.firebase_service import get_db
 
 routes_bp = Blueprint('routes', __name__)
 
-SAMPLE_ROUTES = [
-    {
-        'id': 'sample_1',
-        'route_name': 'Route 1 (Sample)',
-        'start_point': 'Central Station',
-        'end_point': 'University Campus',
-        'stops': 'Main Square, City Park, Library',
-        'assigned_bus': 'KL-11-AX-1234',
-        'distance': '12 km'
-    },
-    {
-        'id': 'sample_2',
-        'route_name': 'Route 2 (Sample)',
-        'start_point': 'North Terminal',
-        'end_point': 'Tech Park',
-        'stops': 'Hospital, Shopping Mall, Stadium',
-        'assigned_bus': 'Unassigned',
-        'distance': '8.5 km'
-    }
-]
+
 
 @routes_bp.route('/routes')
 def routes():
@@ -38,7 +19,7 @@ def routes():
     
     # Use sample data if no routes found
     if not routes:
-        routes = SAMPLE_ROUTES
+        pass # No routes, just empty list
     else:
         # Fetch buses to map IDs to Names
         buses_ref = db.collection('organizations').document(uid).collection('buses')
@@ -66,9 +47,9 @@ def route_details(route_id):
     uid = session.get('uid')
     db = get_db()
     
-    # Check if it's a sample route
-    if route_id.startswith('sample_'):
-        route = next((r for r in SAMPLE_ROUTES if r['id'] == route_id), None)
+    # Check if it's a sample route (REMOVED)
+    if False: 
+        pass
     else:
         route_ref = db.collection('organizations').document(uid).collection('routes').document(route_id)
         route = route_ref.get().to_dict()

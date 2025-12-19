@@ -72,16 +72,66 @@ def bus_details(bus_id):
         else:
              bus['driver_name_display'] = bus.get('driver_name') if bus.get('driver_name') else 'Unassigned'
 
-    # Fetch Trip History
+    # Fetch Trip History (Top 10 only)
     trip_history = []
+    latest_trip = None
     try:
-        trips_ref = bus_ref.collection('trip_history').order_by('timestamp', direction=firestore.Query.DESCENDING)
-        for t_doc in trips_ref.stream():
+        trips_ref = bus_ref.collection('trip_history').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(10)
+        trips_stream = list(trips_ref.stream())
+        
+        for t_doc in trips_stream:
             t_data = t_doc.to_dict()
             t_data['id'] = t_doc.id
             trip_history.append(t_data)
+            
+        if trip_history:
+            latest_trip = trip_history[0]
     except Exception as e:
         print(f"Error fetching trip history: {e}")
+
+    # Fetch all assigned students
+    assigned_students = []
+    try:
+        students_ref = db.collection('organizations').document(uid).collection('students').where('bus_id', '==', bus_id)
+        for s_doc in students_ref.stream():
+            s_data = s_doc.to_dict()
+            s_data['id'] = s_doc.id
+            assigned_students.append(s_data)
+    except Exception as e:
+        print(f"Error fetching assigned students: {e}")
+
+    # Fetch boarded students if there is an active trip
+    boarded_students = []
+    if latest_trip and latest_trip.get('status') in ['started', 'tripstarted']:
+        try:
+             # Option 1: Check for explicit list in trip doc
+             student_ids = latest_trip.get('boarded_student_ids', [])
+             
+             # Option 2: If no list, check for 'scans' map/list
+             if not student_ids and 'scans' in latest_trip:
+                 scans = latest_trip.get('scans')
+                 if isinstance(scans, list):
+                     student_ids = [s.get('student_id') for s in scans if s.get('type') == 'entry'] # Simplistic logic
+                 elif isinstance(scans, dict):
+                     student_ids = list(scans.keys())
+
+             if student_ids:
+                 # Filter from assigned_students or fetch if not in list (though they should be)
+                 for s_data in assigned_students:
+                     # Logic to determine if boarded:
+                     # 1. ID in student_ids list found above
+                     if s_data['id'] in student_ids or str(s_data.get('roll_number')) in student_ids:
+                         s_data_copy = s_data.copy()
+                         s_data_copy['boarding_status'] = 'On Board'
+                         boarded_students.append(s_data_copy)
+                     # 2. Or check if student has a 'current_status' field (fallback)
+                     elif s_data.get('current_status') == 'on_board' or s_data.get('status') == 'boarded':
+                         s_data_copy = s_data.copy()
+                         s_data_copy['boarding_status'] = 'On Board'
+                         boarded_students.append(s_data_copy)
+                     
+        except Exception as e:
+             print(f"Error fetching boarded students: {e}")
 
     # Fetch drivers
     drivers_ref = db.collection('organizations').document(uid).collection('drivers')
@@ -99,7 +149,31 @@ def bus_details(bus_id):
         r_data['id'] = doc.id
         routes.append(r_data)
 
-    return render_template('bus_details.html', bus=bus, drivers=drivers, routes=routes, trip_history=trip_history)
+    return render_template('bus_details.html', bus=bus, drivers=drivers, routes=routes, trip_history=trip_history, boarded_students=boarded_students, assigned_students=assigned_students)
+
+@buses_bp.route('/bus/<bus_id>/history')
+def bus_trip_history(bus_id):
+    if 'user' not in session: return redirect(url_for('auth.login'))
+    uid = session.get('uid')
+    db = get_db()
+    bus_ref = db.collection('organizations').document(uid).collection('buses').document(bus_id)
+    bus = bus_ref.get().to_dict()
+    if bus: bus['id'] = bus_id
+    
+    trip_history = []
+    try:
+        # Fetch ALL history (or reasonably large limit)
+        trips_ref = bus_ref.collection('trip_history').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(100)
+        trips_stream = trips_ref.stream()
+        
+        for t_doc in trips_stream:
+            t_data = t_doc.to_dict()
+            t_data['id'] = t_doc.id
+            trip_history.append(t_data)
+    except Exception as e:
+        print(f"Error fetching full trip history: {e}")
+        
+    return render_template('bus_trip_history.html', bus=bus, trip_history=trip_history)
 
 @buses_bp.route('/add_bus')
 def add_bus():

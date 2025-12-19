@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% set active_page = 'buses' %}
+
+{% block title %}Smart Bus Admin Panel - Bus {{ bus.bus_number }} Trip History{% endblock %}
+
+{% block header_title %}Smart Bus Admin • Trip History{% endblock %}
+
+{% block content %}
+<section id="page-trip-history" class="page-section active">
+    <!-- Breadcrumb -->
+    <div style="margin-bottom: 20px;">
+        <a href="{{ url_for('buses.bus_details', bus_id=bus.id) }}"
+            style="text-decoration: none; color: var(--text-light); font-size: 0.9rem;">
+            &larr; Back to Bus {{ bus.bus_number }}
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-title-row"
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3>Trip History: Bus {{ bus.bus_number }}</h3>
+            <!-- Optional export button could go here -->
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Students</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trip in trip_history %}
+                    <tr>
+                        <td>{{ trip.date }}</td>
+                        <td>
+                            {{ trip.startTime[11:16] if trip.startTime|length > 16 else trip.startTime }}
+                            -
+                            {{ trip.endTime[11:16] if trip.endTime and trip.endTime|length > 16 else (trip.endTime
+                            or '-') }}
+                        </td>
+                        <td>{{ trip.type|capitalize }}</td>
+                        <td>{{ trip.boardedStudents }} / {{ trip.totalStudents }}</td>
+                        <td>{{ trip.durationMinutes }} min</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding: 20px; color: var(--text-light);">No trip
+                            history found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -38,7 +38,15 @@ def add_student():
         r_data['id'] = doc.id
         routes.append(r_data)
 
-    return render_template('add_student.html', buses=buses, routes=routes)
+    # Fetch Organization Settings
+    org_ref = db.collection('organizations').document(uid)
+    org_doc = org_ref.get()
+    payment_type = 'Monthly' # Default
+    if org_doc.exists:
+        org_data = org_doc.to_dict()
+        payment_type = org_data.get('feeDetails', 'Monthly')
+
+    return render_template('add_student.html', buses=buses, routes=routes, payment_type=payment_type)
 
 @students_bp.route('/student_details/<student_id>')
 def student_details(student_id):
@@ -53,10 +61,18 @@ def student_details(student_id):
         # Fetch buses
         buses_ref = db.collection('organizations').document(uid).collection('buses')
         buses = []
+        bus_route_map = {}
         for doc in buses_ref.stream():
             b_data = doc.to_dict()
             b_data['id'] = doc.id
             buses.append(b_data)
+            bus_route_map[doc.id] = b_data.get('route', '') # Map ID to Route Name
+        
+        # Fallback: If student doesn't have route_name, try to get it from assigned bus
+        if not student.get('route_name'):
+             bus_id = student.get('bus_id')
+             if bus_id and bus_id in bus_route_map:
+                 student['route_name'] = bus_route_map[bus_id]
 
         # Fetch routes
         routes_ref = db.collection('organizations').document(uid).collection('routes')
@@ -70,28 +86,123 @@ def student_details(student_id):
         payments_ref = student_ref.collection('payments')
         payments = []
         total_paid = 0
+        
         for doc in payments_ref.order_by('date', direction='DESCENDING').stream():
             p_data = doc.to_dict()
             p_data['id'] = doc.id
-            total_paid += float(p_data.get('amount', 0))
+            p_date = p_data.get('date')
+            
+            # Logic Changed: Use explicit 'archived' flag. 
+            # If a payment is archived, it's history. If not, it's active.
+            if not p_data.get('archived'):
+                total_paid += float(p_data.get('amount', 0))
+            else:
+                 # Mark as archived/history for UI
+                 p_data['is_history'] = True
+                 
             payments.append(p_data)
             
         fee_amount = float(student.get('fee_amount', 0))
         balance = fee_amount - total_paid
 
-        # Fetch attendance
+        # Fetch attendance (Optimize: Limit to recent docs for main view, though we need to parse them)
         attendance_ref = student_ref.collection('attendance')
+        # We fetch a reasonable buffer (e.g. 15 days) to ensure we get 10 trips
+        # Firestore querying limitations mean we can't easily query 'inside' the doc structure for trips.
+        # So we fetch recent days.
         attendance_records = []
-        for doc in attendance_ref.stream():
-            if doc.id == 'stats':
-                continue
-            a_data = doc.to_dict()
-            a_data['id'] = doc.id
-            attendance_records.append(a_data)
+        try:
+            # Assuming 'date' field exists for sorting.
+            q = attendance_ref.order_by('date', direction='DESCENDING').limit(20)
+            for doc in q.stream():
+                if doc.id == 'stats': continue
+                a_data = doc.to_dict()
+                a_data['id'] = doc.id
+                
+                # Transform Day Record into Trip Records
+                date = a_data.get('date')
+                
+                # Morning Trip
+                if a_data.get('morning_status') in ['Present', 'exited']: # Check for existence
+                     attendance_records.append({
+                         'date': date,
+                         'check_in': a_data.get('morning_time', '-'),
+                         'check_out': a_data.get('morning_exit_time', '-'), # Hypothetical field
+                         'type': 'Morning',
+                         'timestamp': f"{date} {a_data.get('morning_time', '00:00')}" # Helper for sort
+                     })
+                     
+                # Evening Trip
+                if a_data.get('evening_status') in ['Present', 'exited']:
+                     attendance_records.append({
+                         'date': date,
+                         'check_in': a_data.get('evening_time', '-'),
+                         'check_out': a_data.get('evening_exit_time', '-'),
+                         'type': 'Evening',
+                         'timestamp': f"{date} {a_data.get('evening_time', '00:00')}"
+                     })
+        except Exception as e:
+            print(f"Error fetching attendance: {e}")
         
-        # Sort by date descending
-        attendance_records.sort(key=lambda x: x.get('date', ''), reverse=True)
+        # Sort by timestamp descending
+        attendance_records.sort(key=lambda x: x['timestamp'], reverse=True)
+        
+        # Slice Top 10
+        recent_attendance = attendance_records[:10]
 
-        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance, attendance_records=attendance_records, buses=buses, routes=routes)
+        # Fetch Organization Settings for Payment Type
+        org_ref = db.collection('organizations').document(uid)
+        org_doc = org_ref.get()
+        org_payment_type = 'Monthly' # Default
+        if org_doc.exists:
+            org_data = org_doc.to_dict()
+            org_payment_type = org_data.get('feeDetails', 'Monthly')
+
+        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance, attendance_records=recent_attendance, buses=buses, routes=routes, org_payment_type=org_payment_type)
     else:
         return "Student not found", 404
+
+@students_bp.route('/student_details/<student_id>/attendance')
+def student_attendance_history(student_id):
+    if 'user' not in session: return redirect(url_for('auth.login'))
+    uid = session.get('uid')
+    db = get_db()
+    student_ref = db.collection('organizations').document(uid).collection('students').document(student_id)
+    student = student_ref.get().to_dict()
+    
+    if not student:
+        return "Student not found", 404
+    student['id'] = student_id
+    
+    attendance_records = []
+    try:
+        attendance_ref = student_ref.collection('attendance').order_by('date', direction='DESCENDING').limit(100) # Fetch more for full history
+        for doc in attendance_ref.stream():
+            if doc.id == 'stats': continue
+            a_data = doc.to_dict()
+            
+            date = a_data.get('date')
+             # Morning Trip
+            if a_data.get('morning_status'):
+                 attendance_records.append({
+                     'date': date,
+                     'check_in': a_data.get('morning_time', '-'),
+                     'check_out': a_data.get('morning_exit_time', '-'),
+                     'type': 'Morning',
+                     'timestamp': f"{date} {a_data.get('morning_time', '00:00')}"
+                 })
+            # Evening Trip
+            if a_data.get('evening_status'):
+                 attendance_records.append({
+                     'date': date,
+                     'check_in': a_data.get('evening_time', '-'),
+                     'check_out': a_data.get('evening_exit_time', '-'),
+                     'type': 'Evening',
+                     'timestamp': f"{date} {a_data.get('evening_time', '00:00')}"
+                 })
+                 
+        attendance_records.sort(key=lambda x: x['timestamp'], reverse=True)
+    except Exception as e:
+        print(f"Error fetching full attendance: {e}")
+        
+    return render_template('student_attendance_history.html', student=student, attendance_records=attendance_records)

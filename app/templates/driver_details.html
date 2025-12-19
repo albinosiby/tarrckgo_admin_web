@@ -205,13 +205,11 @@
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Bus</th>
-                            <th>Time</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Students</th>
-                            <th>Duration</th>
-                            <th>Distance</th>
+                            <th>Bus No</th>
+                            <th>Trip Type</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -219,30 +217,15 @@
                         <tr>
                             <td>{{ trip.date }}</td>
                             <td>{{ trip.bus_number }}</td>
+                            <td>{{ trip.type|capitalize }}</td>
                             <td>
                                 {{ trip.startTime[11:16] if trip.startTime|length > 16 else trip.startTime }}
-                                -
+                            </td>
+                            <td>
                                 {{ trip.endTime[11:16] if trip.endTime and trip.endTime|length > 16 else (trip.endTime
                                 or '-') }}
                             </td>
-                            <td>{{ trip.type|capitalize }}</td>
-                            <td>
-                                {% if trip.status == 'completed' %}
-                                <span class="badge badge-success"
-                                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">Completed</span>
-                                {% elif trip.status == 'tripstarted' or trip.status == 'started' %}
-                                <span class="badge"
-                                    style="color:#d97706;background:#fef3c7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">In
-                                    Progress</span>
-                                {% else %}
-                                <span class="badge"
-                                    style="color:var(--text-light);background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">{{
-                                    trip.status|capitalize }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ trip.boardedStudents }} / {{ trip.totalStudents }}</td>
                             <td>{{ trip.durationMinutes }} min</td>
-                            <td>{{ trip.distanceKm }} km</td>
                         </tr>
                         {% else %}
                         <tr>
