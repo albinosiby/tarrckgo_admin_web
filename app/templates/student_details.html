@@ -6,200 +6,12 @@
 
 {% block header_title %}Smart Bus Admin • Student Details{% endblock %}
 
-{% block head %}
-
-<style>
-    :root {
-        --card-bg: #ffffff;
-        --border-color: #e5e7eb;
-        --text-primary: #111827;
-        --text-secondary: #6b7280;
-        --accent-color: #6366f1;
-        --danger-color: #ef4444;
-        --success-color: #10b981;
-    }
-
-    .page-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 24px;
-        align-items: start;
-    }
-
-    @media (max-width: 850px) {
-        .page-container {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* Cards */
-    .modern-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        padding: 24px;
-        overflow: hidden;
-    }
-
-    /* Profile Side Card */
-    .profile-sidebar {
-        text-align: center;
-    }
-
-    .profile-avatar-large {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: #f3f4f6;
-        margin: 0 auto 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        color: #9ca3af;
-        overflow: hidden;
-        border: 4px solid white;
-        box-shadow: 0 0 0 1px var(--border-color);
-    }
-
-    .profile-avatar-large img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .profile-name {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 4px;
-    }
-
-    .profile-meta {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-    }
-
-    .status-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        background: #dcfce7;
-        color: #166534;
-        border: 1px solid #bbf7d0;
-    }
-
-    /* Info Sections */
-    .section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 16px;
-        padding-bottom: 8px;
-        border-bottom: 2px solid #f3f4f6;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .detail-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-    }
-
-    .info-group label {
-        display: block;
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 4px;
-        font-weight: 600;
-    }
-
-    .info-group .value {
-        font-size: 1rem;
-        font-weight: 500;
-        color: var(--text-primary);
-    }
-
-    .form-input-edit {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        background: #f9fafb;
-    }
-
-    /* Stats Row */
-    .stats-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .stat-box {
-        background: #f8fafc;
-        border-radius: 12px;
-        padding: 16px;
-        border: 1px solid var(--border-color);
-    }
-
-    .stat-label {
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        margin-bottom: 4px;
-    }
-
-    .stat-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
-    }
-
-    /* Table */
-    .modern-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-
-    .modern-table th {
-        text-align: left;
-        padding: 12px;
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-        border-bottom: 1px solid var(--border-color);
-        background: #f9fafb;
-    }
-
-    .modern-table td {
-        padding: 12px;
-        border-bottom: 1px solid #f3f4f6;
-        font-size: 0.95rem;
-    }
-
-    .history-row {
-        opacity: 0.6;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="page-container">
+<div class="detail-layout">
 
     <!-- LEFT COLUMN: Profile Summary -->
     <div class="profile-sidebar">
-        <div class="modern-card">
+        <div class="card">
             <div class="profile-avatar-large">
                 {% if student.profile_photo_url %}
                 <img src="{{ student.profile_photo_url }}" alt="Profile">
@@ -209,8 +21,8 @@
             </div>
 
             <div id="edit_photo_container" style="display:none; margin-bottom: 10px;">
-                <label for="edit_student_photo" class="btn"
-                    style="background:#f3f4f6; color:#374151; font-size:0.8rem; padding:4px 8px;">Change Photo</label>
+                <label for="edit_student_photo" class="btn btn-secondary"
+                    style="font-size:0.8rem; padding:4px 8px;">Change Photo</label>
                 <input type="file" id="edit_student_photo" style="display: none;" accept="image/*">
             </div>
 
@@ -231,7 +43,7 @@
                     style="display:none; margin-top:4px;">
             </div>
 
-            <div class="status-badge">Active Student</div>
+            <div class="badge badge-success" style="font-size: 0.9rem; padding: 6px 16px;">Active Student</div>
 
             <div style="margin-top: 24px;">
                 <button id="edit-profile-btn" class="btn btn-primary" style="width:100%; justify-content:center;">
@@ -240,23 +52,23 @@
             </div>
 
             <div style="margin-top: 12px;">
-                <button onclick="deleteStudent('{{ student.id }}', '{{ student.full_name }}')" class="btn"
-                    style="width:100%; justify-content:center; background:#fee2e2; color:#ef4444; border:none;">
+                <button onclick="deleteStudent('{{ student.id }}', '{{ student.full_name }}')" class="btn btn-danger"
+                    style="width:100%; justify-content:center;">
                     🗑️ Delete Student
                 </button>
             </div>
         </div>
 
         <!-- Attendance Summary Card could go here -->
-        <div class="modern-card" style="margin-top: 20px; text-align: left;">
+        <div class="card" style="margin-top: 20px; text-align: left;">
             <div class="section-title">Attendance</div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+            <!-- <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div>Overall</div>
-                <div style="font-weight:700; color:#10b981;">92%</div>
-            </div>
+                <div style="font-weight:700; color:var(--success);">92%</div>
+            </div> -->
             <div style="margin-top:10px;">
                 <a href="{{ url_for('students.student_attendance_history', student_id=student.id) }}"
-                    style="font-size:0.85rem; color:var(--accent-color); text-decoration:none;">View Full History →</a>
+                    style="font-size:0.85rem; color:var(--primary); text-decoration:none;">View Full History →</a>
             </div>
         </div>
     </div>
@@ -265,58 +77,58 @@
     <div class="main-content">
 
         <!-- Personal & Transport Details -->
-        <div class="modern-card" style="margin-bottom: 24px;">
+        <div class="card" style="margin-bottom: 24px;">
             <div class="section-title">
                 Personal & Transport Details
             </div>
 
             <div class="detail-grid">
                 <div class="info-group">
-                    <label>Batch / Class</label>
+                    <label class="info-label">Batch / Class</label>
                     <div class="value" id="display_batch">{{ student.batch }}</div>
                     <input type="text" id="edit_batch" class="form-input-edit" value="{{ student.batch }}"
                         style="display:none;">
                 </div>
                 <div class="info-group">
-                    <label>Phone Number</label>
+                    <label class="info-label">Phone Number</label>
                     <div class="value" id="display_student_phone">{{ student.student_phone }}</div>
                     <input type="tel" id="edit_student_phone" class="form-input-edit"
                         value="{{ student.student_phone }}" disabled
                         style="display:none; opacity:0.6; cursor:not-allowed">
                 </div>
                 <div class="info-group">
-                    <label>Date of Birth</label>
+                    <label class="info-label">Date of Birth</label>
                     <div class="value" id="display_dob">{{ student.dob }}</div>
                     <input type="date" id="edit_dob" class="form-input-edit" value="{{ student.dob }}" disabled
                         style="display:none;">
                 </div>
                 <div class="info-group">
-                    <label>Parent Name</label>
+                    <label class="info-label">Parent Name</label>
                     <div class="value" id="display_parent_name">{{ student.parent_name }}</div>
                     <input type="text" id="edit_parent_name" class="form-input-edit" value="{{ student.parent_name }}"
                         disabled style="display:none;">
                 </div>
                 <div class="info-group">
-                    <label>Parent Phone</label>
+                    <label class="info-label">Parent Phone</label>
                     <div class="value" id="display_parent_phone">{{ student.parent_phone }}</div>
                     <input type="tel" id="edit_parent_phone" class="form-input-edit" value="{{ student.parent_phone }}"
                         style="display:none;">
                 </div>
                 <div class="info-group" style="grid-column: 1 / -1">
-                    <label>Address</label>
+                    <label class="info-label">Address</label>
                     <div class="value" id="display_address">{{ student.address }}</div>
                     <textarea id="edit_address" class="form-input-edit"
                         style="display:none;">{{ student.address }}</textarea>
                 </div>
             </div>
 
-            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f3f4f6;">
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">
                 <h4
                     style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px; text-transform:uppercase;">
                     Transport Assignment</h4>
                 <div class="detail-grid">
                     <div class="info-group">
-                        <label>Assigned Bus</label>
+                        <label class="info-label">Assigned Bus</label>
                         <div class="value" id="display_bus_number">{{ student.bus_number or 'No Bus' }}</div>
                         <select id="edit_bus_number" class="form-input-edit" style="display:none;"
                             onchange="updateStops()">
@@ -330,14 +142,14 @@
                         </select>
                     </div>
                     <div class="info-group">
-                        <label>Bus Stop</label>
+                        <label class="info-label">Bus Stop</label>
                         <div class="value" id="display_bus_stop">{{ student.bus_stop or '-' }}</div>
                         <select id="edit_bus_stop" class="form-input-edit" style="display:none;" onchange="updateFee()">
                             <option value="{{ student.bus_stop }}">{{ student.bus_stop }}</option>
                         </select>
                     </div>
                     <div class="info-group">
-                        <label>Route</label>
+                        <label class="info-label">Route</label>
                         <div class="value" id="display_route_name">{{ student.route_name or '-' }}</div>
                         <!-- Route is derived from bus -->
                     </div>
@@ -346,12 +158,11 @@
         </div>
 
         <!-- Fees Section -->
-        <div class="modern-card">
+        <div class="card">
             <div class="section-title">
                 <span>Fee & Payments</span>
-                <button onclick="togglePaymentForm()" id="show-payment-form-btn" class="btn"
-                    style="padding:4px 12px; font-size:0.85rem; background:#dbeafe; color:#1e40af; border:none;">+
-                    Record Payment</button>
+                <button onclick="togglePaymentForm()" id="show-payment-form-btn" class="btn btn-secondary"
+                    style="padding:4px 12px; font-size:0.85rem;">+ Record Payment</button>
             </div>
 
             <div class="stats-row">
@@ -361,7 +172,8 @@
                     <input type="number" id="edit_fee_amount" class="form-input-edit" value="{{ student.fee_amount }}"
                         style="display:none;">
 
-                    <div id="display_payment_type" style="font-size:0.75rem; color:#6b7280; margin-top:4px">{{
+                    <div id="display_payment_type"
+                        style="font-size:0.75rem; color:var(--text-secondary); margin-top:4px">{{
                         student.payment_type }}</div>
                     {% if org_payment_type %}
                     <input type="text" id="edit_payment_type" class="form-input-edit" value="{{ org_payment_type }}"
@@ -377,31 +189,31 @@
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">Amount Paid</div>
-                    <div class="stat-value" style="color:var(--success-color)">₹ {{ total_paid }}</div>
+                    <div class="stat-value" style="color:var(--success)">₹ {{ total_paid }}</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">Balance Due</div>
-                    <div class="stat-value" style="color:  '#10b981' ">₹ {{ balance }}
+                    <div class="stat-value" style="color:var(--warning)">₹ {{ balance }}
                     </div>
                 </div>
             </div>
 
             <!-- Add Payment Form -->
             <div id="payment-form-container"
-                style="display:none; background:#f8fafc; padding:20px; border-radius:12px; margin-bottom:24px; border:1px solid #e2e8f0;">
+                style="display:none; background:rgba(255,255,255,0.03); padding:20px; border-radius:12px; margin-bottom:24px; border:1px solid var(--glass-border);">
                 <h4 style="margin-bottom:16px; color:var(--text-primary); font-size:1rem;">New Payment</h4>
                 <form id="addPaymentForm">
                     <div class="detail-grid">
                         <div class="info-group">
-                            <label>Amount (₹)</label>
+                            <label class="info-label">Amount (₹)</label>
                             <input type="number" id="pay_amount" class="form-input-edit" required>
                         </div>
                         <div class="info-group">
-                            <label>Date</label>
+                            <label class="info-label">Date</label>
                             <input type="date" id="pay_date" class="form-input-edit" required>
                         </div>
                         <div class="info-group">
-                            <label>Mode</label>
+                            <label class="info-label">Mode</label>
                             <select id="pay_mode" class="form-input-edit" required>
                                 <option value="Cash">Cash</option>
                                 <option value="UPI">UPI</option>
@@ -409,13 +221,12 @@
                             </select>
                         </div>
                         <div class="info-group">
-                            <label>Ref / Transaction ID</label>
+                            <label class="info-label">Ref / Transaction ID</label>
                             <input type="text" id="pay_ref" class="form-input-edit">
                         </div>
                     </div>
                     <div style="display:flex; justify-content:flex-end; margin-top:16px; gap:12px;">
-                        <button type="button" class="btn" style="background:white; border:1px solid #d1d5db;"
-                            onclick="togglePaymentForm()">Cancel</button>
+                        <button type="button" class="btn btn-secondary" onclick="togglePaymentForm()">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save Record</button>
                     </div>
                 </form>
@@ -438,11 +249,11 @@
                             <td>{{ payment.date }}</td>
                             <td>{{ payment.mode }}</td>
                             <td>{{ payment.reference_id or '-' }}</td>
-                            <td style="color:var(--success-color); font-weight:600;">+ ₹ {{ payment.amount }}</td>
+                            <td style="color:var(--success); font-weight:600;">+ ₹ {{ payment.amount }}</td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" style="text-align:center;color:#9ca3af;">No payment history.</td>
+                            <td colspan="4" style="text-align:center;color:var(--text-muted);">No payment history.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -547,15 +358,22 @@
     function updateStops(currentStop = null) {
         const busSelect = document.getElementById('edit_bus_number');
         const stopSelect = document.getElementById('edit_bus_stop');
+        const routeDisplay = document.getElementById('display_route_name');
         const busNumber = busSelect.value;
         const currentVal = currentStop || stopSelect.value;
 
         stopSelect.innerHTML = '<option value="">Select Stop...</option>';
+        if (routeDisplay) routeDisplay.textContent = '-';
 
         if (!busNumber) return;
 
         // Find the selected bus object
         const selectedBus = busesData.find(b => b.bus_number === busNumber);
+
+        if (selectedBus && selectedBus.route && routeDisplay) {
+            routeDisplay.textContent = selectedBus.route;
+        }
+
         if (!selectedBus || !selectedBus.route) return;
 
         // Find route

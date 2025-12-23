@@ -323,7 +323,8 @@ def api_add_driver():
             'emergency_contact_phone': data.get('emergency_contact_phone', ''),
             'blood_group': data.get('blood_group', ''),
             'address': data.get('address', ''),
-            'driver_uid': driver_uid # explicit field
+            'driver_uid': driver_uid, # explicit field
+            'can_add_stop': str(data.get('can_add_stop', 'false')).lower() == 'true'
         }
         
         if profile_photo_url:
@@ -571,7 +572,14 @@ def api_update_driver(driver_id):
                          'driver_name': driver_name
                      })
 
-        driver_ref.update(data)
+        # Prepare update data, excluding special fields handled above
+        update_data = {k: v for k, v in data.items() if k not in ['driver_photo', 'assigned_bus']}
+        
+        # Handle boolean field specifically
+        if 'can_add_stop' in data:
+             update_data['can_add_stop'] = str(data.get('can_add_stop', 'false')).lower() == 'true'
+
+        driver_ref.update(update_data)
         return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
@@ -797,6 +805,82 @@ def api_fix_bus_seats():
         
         updated_count = 0
         details = []
+        
+        for doc in buses:
+            data = doc.to_dict()
+            capacity = int(data.get('capacity', 0))
+            # If avail_seats is missing or 0 (and capacity > 0), reset it.
+            # You might want more complex logic (e.g. check actual students), 
+            # but for a quick fix, resetting to capacity (assuming empty) is a start.
+            if 'avail_seats' not in data:
+                 doc.reference.update({'avail_seats': capacity})
+                 updated_count += 1
+        
+        return jsonify({'status': 'success', 'updated': updated_count})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/api/add_stop', methods=['POST'])
+def api_add_stop():
+    if 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        data = request.get_json()
+        uid = session['uid']
+        db = get_db()
+        
+        # Basic Validation
+        if not data.get('stop_name'):
+             return jsonify({'status': 'error', 'message': 'Stop Name is required'}), 400
+
+        stop_ref = db.collection('organizations').document(uid).collection('stops').document()
+        
+        stop_data = {
+            'stop_name': data.get('stop_name'),
+            'lat': float(data.get('lat', 0.0)),
+            'long': float(data.get('long', 0.0)),
+            'fee': float(data.get('fee', 0)),
+            'created_at': firestore.SERVER_TIMESTAMP
+        }
+        
+        stop_ref.set(stop_data)
+        return jsonify({'status': 'success', 'id': stop_ref.id})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/api/update_stop/<stop_id>', methods=['POST'])
+def api_update_stop(stop_id):
+    if 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        data = request.get_json()
+        uid = session['uid']
+        db = get_db()
+        stop_ref = db.collection('organizations').document(uid).collection('stops').document(stop_id)
+        
+        updates = {}
+        if 'stop_name' in data: updates['stop_name'] = data['stop_name']
+        if 'lat' in data: updates['lat'] = float(data['lat'])
+        if 'long' in data: updates['long'] = float(data['long'])
+        if 'fee' in data: updates['fee'] = float(data['fee'])
+        
+        stop_ref.update(updates)
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/api/delete_stop/<stop_id>', methods=['POST'])
+def api_delete_stop(stop_id):
+    if 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        uid = session['uid']
+        db = get_db()
+        stop_ref = db.collection('organizations').document(uid).collection('stops').document(stop_id)
+        stop_ref.delete()
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
         for bus in buses:
             bus_data = bus.to_dict()

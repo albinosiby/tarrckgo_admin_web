@@ -6,78 +6,16 @@
 
 {% block header_title %}Smart Bus Admin • Add Route{% endblock %}
 
-{% block head %}
-<style>
-    .form-container {
-        max-width: 800px;
-        margin: 0 auto;
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .stop-item {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
-        align-items: center;
-    }
-
-    .stop-item input {
-        flex: 1;
-    }
-
-    .remove-stop-btn {
-        background: #fee2e2;
-        color: #ef4444;
-        border: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 6px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        transition: all 0.2s;
-    }
-
-    .remove-stop-btn:hover {
-        background: #fecaca;
-    }
-
-    .add-stop-btn {
-        background: #e0e7ff;
-        color: #4f46e5;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.2s;
-        margin-top: 10px;
-    }
-
-    .add-stop-btn:hover {
-        background: #c7d2fe;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="form-container">
-    <h2 style="margin-bottom: 24px; color: var(--text-dark);">Add New Route</h2>
-    <form id="addRouteForm">
+    <h2 class="form-section-title">Add New Route</h2>
+    <form id="addRouteForm" class="form-grid">
         <div class="form-group">
             <label class="form-label">Route Name</label>
             <input type="text" id="route_name" class="form-input" placeholder="e.g. Route 1" required>
         </div>
 
-        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+        <div class="split-row">
             <div>
                 <label class="form-label">Start Point</label>
                 <input type="text" id="start_point" class="form-input" placeholder="Start Location" required>
@@ -93,11 +31,9 @@
             <div id="stops-container">
                 <!-- Stops will be added here -->
                 <div class="stop-item">
-                    <span style="color:var(--text-light); font-weight:500; width: 20px;">1.</span>
-                    <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required
-                        style="flex: 2;">
-                    <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required
-                        style="flex: 1;" min="0">
+                    <span class="stop-number">1.</span>
+                    <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required>
+                    <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required min="0">
                 </div>
             </div>
             <button type="button" class="add-stop-btn" onclick="addStop()">
@@ -105,9 +41,8 @@
             </button>
         </div>
 
-        <div class="form-actions" style="margin-top: 30px;">
-            <a href="{{ url_for('routes.routes') }}" class="btn"
-                style="background:#f3f4f6; color:#374151; text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
+        <div class="form-actions">
+            <a href="{{ url_for('routes.routes') }}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">Save Route</button>
         </div>
     </form>
@@ -123,9 +58,9 @@
         const div = document.createElement('div');
         div.className = 'stop-item';
         div.innerHTML = `
-            <span style="color:var(--text-light); font-weight:500; width: 20px;">${count}.</span>
-            <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required style="flex: 2;">
-            <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required style="flex: 1;" min="0">
+            <span class="stop-number">${count}.</span>
+            <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required>
+            <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required min="0">
             <button type="button" class="remove-stop-btn" onclick="removeStop(this)">&times;</button>
         `;
         container.appendChild(div);

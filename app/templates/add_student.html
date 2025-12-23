@@ -10,14 +10,12 @@
         <h1 class="page-title">Add New Student</h1>
     </div>
 
-    <div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div class="card form-container">
         <form id="addStudentForm" class="form-grid">
             <!-- Student ID (Hidden or Readonly) -->
             <!-- We will generate this via API before submitting -->
 
-            <h4
-                style="margin: 0 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                Student Details</h4>
+            <h4 class="form-section-title">Student Details</h4>
 
             <div class="split-row">
                 <div>
@@ -63,9 +61,7 @@
             </div>
 
             <!-- Transport Details -->
-            <h4
-                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                Transport Details</h4>
+            <h4 class="form-section-title">Transport Details</h4>
 
             <div class="split-row">
                 <div>
@@ -86,15 +82,12 @@
             </div>
 
             <!-- Fee Details -->
-            <h4
-                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                Fee Details</h4>
+            <h4 class="form-section-title">Fee Details</h4>
 
             <div class="split-row">
                 <div>
                     <label class="form-label">Payment Type</label>
-                    <input type="text" id="payment_type" class="form-input" value="{{ payment_type }}" readonly
-                        style="background-color: #f3f4f6; cursor: not-allowed;">
+                    <input type="text" id="payment_type" class="form-input" value="{{ payment_type }}" readonly>
                 </div>
                 <div>
                     <label class="form-label">Fee Amount (₹)</label>
@@ -102,9 +95,7 @@
                 </div>
             </div>
 
-            <h4
-                style="margin: 24px 0 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                Parent Details</h4>
+            <h4 class="form-section-title">Parent Details</h4>
 
             <div class="split-row">
                 <div>
@@ -118,8 +109,7 @@
             </div>
 
             <div class="form-actions">
-                <a href="{{ url_for('students.students') }}" class="btn"
-                    style="background:#f3f4f6; color:#374151; text-decoration:none;">Cancel</a>
+                <a href="{{ url_for('students.students') }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Save Student</button>
             </div>
         </form>

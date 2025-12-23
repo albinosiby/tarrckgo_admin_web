@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% set active_page = 'stops' %}
+
+{% block title %}Smart Bus Admin Panel - Stops{% endblock %}
+
+{% block header_title %}Smart Bus Admin • Stops{% endblock %}
+
+{% block content %}
+<section id="page-stops" class="page-section active">
+    <!-- Using block content to inject only the specific page content -->
+
+    <div class="card">
+        <div class="card-title-row"
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3>Stops Library</h3>
+            <button onclick="openAddStopModal()" class="btn btn-primary">
+                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Stop
+            </button>
+        </div>
+
+        <div class="stops-grid">
+            {% for stop in all_stops %}
+            <div class="stop-card">
+                <div class="stop-icon">🚏</div>
+                <div class="stop-info">
+                    <div class="stop-name">{{ stop.stop_name }}</div>
+                    <div class="stop-meta">
+                        <span class="fee-badge">₹{{ stop.fee }}</span>
+                    </div>
+                </div>
+                <div class="stop-actions">
+                    <button class="action-btn edit-btn" data-id="{{ stop.id }}" data-name="{{ stop.stop_name }}"
+                        data-fee="{{ stop.fee }}" onclick="editStop(this)">
+                        ✏️
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteStop('{{ stop.id }}')">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div class="no-stops">
+                <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                <div style="color: var(--text-secondary);">No stops found in library.</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</section>
+
+<style>
+    .stops-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 10px 0;
+    }
+
+    .stop-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stop-card:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .stop-icon {
+        font-size: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+    }
+
+    .stop-info {
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .stop-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .stop-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
+
+    .fee-badge {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .stop-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 5px;
+        border-radius: 6px;
+        transition: background 0.2s;
+        opacity: 0.6;
+    }
+
+    .action-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 1;
+    }
+
+    .edit-btn:hover {
+        color: var(--primary);
+    }
+
+    .delete-btn:hover {
+        color: #ef4444;
+    }
+
+    .no-stops {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        border: 2px dashed var(--glass-border);
+    }
+</style>
+
+<!-- STOP MODAL (Add/Edit) -->
+<div id="stopModal" class="modal"
+    style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-content card" style="margin: 10% auto; padding: 20px; width: 400px; position: relative;">
+        <span onclick="closeStopModal()"
+            style="position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 1.5rem;">&times;</span>
+        <h3 id="modalTitle" style="margin-bottom: 20px;">Add New Stop</h3>
+
+        <input type="hidden" id="stop_id">
+        <div class="form-group">
+            <label class="form-label">Stop Name</label>
+            <input type="text" id="stop_name" class="form-input" placeholder="e.g. Town Hall">
+        </div>
+        <div class="split-row">
+            <div style="width: 100%;">
+                <label class="form-label">Fee (₹)</label>
+                <input type="number" id="stop_fee" class="form-input" placeholder="0" min="0">
+            </div>
+        </div>
+        <!-- Coordinates inputs removed -->
+
+        <div style="margin-top: 20px; text-align: right;">
+            <button onclick="saveStop()" class="btn btn-primary" id="saveStopBtn">Save Stop</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Modal Logic
+    const modal = document.getElementById('stopModal');
+
+    function openAddStopModal() {
+        document.getElementById('modalTitle').innerText = "Add New Stop";
+        document.getElementById('stop_id').value = "";
+        document.getElementById('stop_name').value = "";
+        document.getElementById('stop_fee').value = "";
+        modal.style.display = "block";
+    }
+
+    function editStop(btn) {
+        // Construct stop object from data attributes
+        const stop = {
+            id: btn.dataset.id,
+            stop_name: btn.dataset.name,
+            fee: btn.dataset.fee
+        };
+        openEditStopModal(stop);
+    }
+
+    function openEditStopModal(stop) {
+        document.getElementById('modalTitle').innerText = "Edit Stop";
+        document.getElementById('stop_id').value = stop.id;
+        document.getElementById('stop_name').value = stop.stop_name;
+        document.getElementById('stop_fee').value = stop.fee;
+        modal.style.display = "block";
+    }
+
+    function closeStopModal() {
+        modal.style.display = "none";
+    }
+
+    function saveStop() {
+        const id = document.getElementById('stop_id').value;
+        const name = document.getElementById('stop_name').value;
+        const fee = document.getElementById('stop_fee').value;
+
+        if (!name) { alert("Stop Name is required"); return; }
+
+        const payload = {
+            stop_name: name,
+            fee: fee
+        };
+
+        const url = id ? `/api/update_stop/${id}` : '/api/add_stop';
+        const btn = document.getElementById('saveStopBtn');
+        const originalText = btn.innerText;
+        btn.innerText = "Saving...";
+        btn.disabled = true;
+
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert("Saved successfully!");
+                    location.reload();
+                } else {
+                    alert("Error: " + data.message);
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Error occurred");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+    }
+
+    function deleteStop(id) {
+        if (confirm("Are you sure you want to delete this stop? It may affect routes using it.")) {
+            fetch(`/api/delete_stop/${id}`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload();
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                });
+        }
+    }
+
+    // Close modal on outside click
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            closeStopModal();
+        }
+    }
+</script>
+{% endblock %}

@@ -16,156 +16,52 @@
 {% block content %}
 <section id="page-buses" class="page-section active">
     <div class="card">
-        <div class="card-title-row"
-            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-            <h3>Bus Fleet Management</h3>
-            <a href="{{ url_for('buses.add_bus') }}" class="btn btn-primary" style="text-decoration: none;">
-                <span style="font-size:1.2rem; margin-right:6px">+</span> Add Bus
-            </a>
-        </div>
-        <style>
-            .bus-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 24px;
-                margin-top: 20px;
-            }
-
-            .bus-card {
-                background: white;
-                border: 1px solid #e5e7eb;
-                border-radius: 16px;
-                padding: 24px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                text-decoration: none;
-                color: inherit;
-                transition: all 0.2s ease;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-                position: relative;
-                overflow: hidden;
-            }
-
-            .bus-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-                border-color: #d1d5db;
-            }
-
-            .bus-card::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 4px;
-                height: 100%;
-                background: linear-gradient(to bottom, #3b82f6, #2563eb);
-            }
-
-            .bus-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 16px;
-            }
-
-            .bus-number {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: #111827;
-                line-height: 1;
-            }
-
-            .bus-reg {
-                font-size: 0.875rem;
-                color: #6b7280;
-                margin-top: 4px;
-                font-family: monospace;
-            }
-
-            .status-badge {
-                padding: 4px 10px;
-                border-radius: 20px;
-                font-size: 0.75rem;
-                font-weight: 600;
-                background: #d1fae5;
-                color: #059669;
-                border: 1px solid #a7f3d0;
-            }
-
-            .bus-details {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-                border-top: 1px solid #f3f4f6;
-                padding-top: 16px;
-                margin-top: 12px;
-            }
-
-            .detail-item {
-                font-size: 0.875rem;
-            }
-
-            .detail-label {
-                color: #9ca3af;
-                font-size: 0.75rem;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                margin-bottom: 2px;
-            }
-
-            .detail-value {
-                color: #374151;
-                font-weight: 500;
-            }
-
-            .empty-state {
-                text-align: center;
-                grid-column: 1 / -1;
-                padding: 40px;
-                color: #9ca3af;
-            }
-        </style>
-
-        <div class="bus-grid">
-            {% for bus in buses %}
-            <a href="{{ url_for('buses.bus_details', bus_id=bus.id) }}" class="bus-card">
-                <div class="bus-header">
-                    <div>
-                        <div class="bus-number">{{ bus.bus_number }}</div>
-                        <div class="bus-reg">{{ bus.registration_no }}</div>
-                    </div>
-                    <span class="status-badge">Active</span>
-                </div>
-
-                <div class="bus-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Driver</div>
-                        <div class="detail-value">{{ bus.driver_name_display or 'Unassigned' }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Capacity</div>
-                        <div class="detail-value">{{ bus.capacity }} Seats</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Route</div>
-                        <div class="detail-value">{{ bus.route or 'None' }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Seats Avail</div>
-                        <div class="detail-value">{{ bus.avail_seats if bus.avail_seats is defined else '-' }}</div>
-                    </div>
-                </div>
-            </a>
-            {% else %}
-            <div class="empty-state">
-                <div style="font-size: 3rem; margin-bottom: 12px;">🚌</div>
-                <h3>No buses found</h3>
-                <p>Add your first bus to start tracking.</p>
+        <div class="card">
+            <div class="card-title-row">
+                <h3>Bus Fleet Management</h3>
+                <a href="{{ url_for('buses.add_bus') }}" class="btn btn-primary">
+                    <span>+</span> Add Bus
+                </a>
             </div>
-            {% endfor %}
+
+            <div class="bus-grid">
+                {% for bus in buses %}
+                <a href="{{ url_for('buses.bus_details', bus_id=bus.id) }}" class="bus-card">
+                    <div class="bus-header">
+                        <div>
+                            <div class="bus-number">{{ bus.bus_number }}</div>
+                            <div class="bus-reg">{{ bus.registration_no }}</div>
+                        </div>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+
+                    <div class="bus-details">
+                        <div class="info-group">
+                            <div class="info-label">Driver</div>
+                            <div class="info-value">{{ bus.driver_name_display or 'Unassigned' }}</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Capacity</div>
+                            <div class="info-value">{{ bus.capacity }} Seats</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Route</div>
+                            <div class="info-value">{{ bus.route or 'None' }}</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Seats Avail</div>
+                            <div class="info-value">{{ bus.avail_seats if bus.avail_seats is defined else '-' }}</div>
+                        </div>
+                    </div>
+                </a>
+                {% else %}
+                <div class="empty-state">
+                    <div style="font-size: 3rem; margin-bottom: 12px;">🚌</div>
+                    <h3>No buses found</h3>
+                    <p>Add your first bus to start tracking.</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
 </section>
 {% endblock %}

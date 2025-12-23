@@ -62,28 +62,26 @@ def driver_details(driver_id):
             driver['assigned_bus_name'] = bid if bid else 'Unassigned'
 
     # Fetch Trip History
-    # Strategy: Iterate all buses and find trips where driverId matches current driver
-    # Note: This might be slow if there are many buses/trips. Ideally use CollectionGroup query if index exists.
-    # We'll try manual aggregation for safety within org scope.
     trip_history = []
     try:
-        # We already fetched buses above
-        for bus_data in buses:
-            bus_id = bus_data['id']
-            bus_num = bus_data.get('bus_number', 'Unknown')
-            
-            # Query trip_history subcollection of this bus
-            trips_ref = db.collection('organizations').document(uid).collection('buses').document(bus_id).collection('trip_history').where('driverId', '==', driver_id).order_by('timestamp', direction=firestore.Query.DESCENDING).limit(10)
-            
-            for t_doc in trips_ref.stream():
-                t_data = t_doc.to_dict()
-                t_data['id'] = t_doc.id
-                t_data['bus_number'] = bus_num # Add bus number to display
-                trip_history.append(t_data)
+        # Direct query to driver's trip_history subcollection
+        trips_ref = driver_ref.collection('trip_history').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(50)
         
-        # Sort combined results by timestamp desc
-        trip_history.sort(key=lambda x: x.get('timestamp', 0), reverse=True)
-        
+        for t_doc in trips_ref.stream():
+            t_data = t_doc.to_dict()
+            
+            # Map fields for template
+            trip = {
+                'id': t_doc.id,
+                'date': t_data.get('date', '-'),
+                'bus_number': t_data.get('busNumber', '-'), # CamelCase from Firestore
+                'type': t_data.get('type', '-'),
+                'startTime': t_data.get('startTime'),
+                'endTime': t_data.get('endTime'),
+                'durationMinutes': t_data.get('durationMinutes', 0)
+            }
+            trip_history.append(trip)
+            
     except Exception as e:
         print(f"Error fetching driver trip history: {e}")
 

@@ -8,207 +8,7 @@
 
 {% block content %}
 <section id="page-dashboard" class="page-section active">
-    <style>
-        /* Dashboard Specific Premium Styles */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
 
-        .stat-card {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            position: relative;
-            border: none;
-            text-decoration: none;
-            /* For anchor tags */
-            cursor: pointer;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--color-start), var(--color-end));
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 12px;
-            opacity: 0.8;
-        }
-
-        .stat-value {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: #111827;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Gradient Accents */
-        .card-students {
-            --color-start: #3b82f6;
-            --color-end: #8b5cf6;
-        }
-
-        /* Blue to Purple */
-        .card-buses {
-            --color-start: #10b981;
-            --color-end: #3b82f6;
-        }
-
-        /* Emerald to Blue */
-        .card-drivers {
-            --color-start: #f59e0b;
-            --color-end: #ef4444;
-        }
-
-        /* Amber to Red */
-        .card-attendance {
-            --color-start: #ec4899;
-            --color-end: #8b5cf6;
-        }
-
-        /* Pink to Purple */
-
-        /* Enhanced Content Layout */
-        .dashboard-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-        }
-
-        @media (max-width: 1024px) {
-            .dashboard-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .dashboard-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            padding: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            height: 100%;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-header h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin: 0;
-        }
-
-        .dashboard-header .badge {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: #f3f4f6;
-            color: #6b7280;
-        }
-
-        /* Interactive Map Container */
-        #map {
-            height: 350px;
-            width: 100%;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-        }
-
-        /* Improved Table */
-        .premium-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .premium-table th {
-            text-align: left;
-            padding: 12px 16px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #6b7280;
-            border-bottom: 1px solid #f3f4f6;
-            font-weight: 600;
-        }
-
-        .premium-table td {
-            padding: 16px;
-            border-bottom: 1px solid #f9fafb;
-            color: #374151;
-            font-size: 0.95rem;
-        }
-
-        .premium-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .premium-table tr:hover td {
-            background-color: #f9fafb;
-        }
-
-        /* Floating Legend */
-        .map-legend {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-            justify-content: center;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            font-size: 0.8rem;
-            color: #4b5563;
-            background: #f9fafb;
-            padding: 4px 10px;
-            border-radius: 20px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .dot {
-            height: 8px;
-            width: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-        }
-    </style>
 
     <!-- Top Stats Row -->
     <div class="dashboard-grid">
@@ -263,35 +63,33 @@
                     </thead>
                     <tbody>
                         {% for bus in buses %}
-                        <tr style="cursor: pointer;"
-                            onclick="window.location.href='{{ url_for('buses.bus_details', bus_id=bus.id) }}'">
+                        <tr style="cursor: pointer;" data-url="{{ url_for('buses.bus_details', bus_id=bus.id) }}"
+                            onclick="window.location.href=this.dataset.url;">
                             <td>
-                                <div style="font-weight: 600; color: #111827;">Bus {{ bus.bus_number }}</div>
-                                <div style="font-size: 0.8rem; color: #9ca3af;">{{ bus.registration_no }}</div>
+                                <div style="font-weight: 600; color: var(--text-primary);">Bus {{ bus.bus_number }}
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ bus.registration_no }}
+                                </div>
                             </td>
                             <td>{{ bus.route_name }}</td>
                             <td>
                                 {% if bus.trip_status == 'in_progress' %}
-                                <span class="badge"
-                                    style="color:#065f46; background:#d1fae5; border: 1px solid #a7f3d0;">In
-                                    Progress</span>
+                                <span class="badge badge-success">In Progress</span>
                                 {% elif bus.trip_status == 'completed' %}
-                                <span class="badge"
-                                    style="color:#92400e; background:#fef3c7; border: 1px solid #fde68a;">Completed</span>
+                                <span class="badge badge-warning">Completed</span>
                                 {% else %}
-                                <span class="badge"
-                                    style="color:#6b7280; background:#f3f4f6; border: 1px solid #e5e7eb;">{{
-                                    bus.trip_status or 'Not Started' }}</span>
+                                <span class="badge badge-neutral">{{ bus.trip_status or 'Not Started' }}</span>
                                 {% endif %}
                             </td>
                             <td style="text-align:center; font-weight: 600;">
-                                {{ bus.on_board_count or 0 }} <span style="color:#9ca3af; font-weight:400;">/ {{
+                                {{ bus.on_board_count or 0 }} <span style="color:var(--text-muted); font-weight:400;">/
+                                    {{
                                     bus.capacity or '-' }}</span>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" style="text-align:center; padding:32px; color:#9ca3af;">
+                            <td colspan="4" style="text-align:center; padding:32px; color:var(--text-muted);">
                                 <div style="font-size: 2rem; margin-bottom: 8px;">📭</div>
                                 No active trips found at the moment.
                             </td>
@@ -338,16 +136,16 @@
                     tbody.innerHTML = '';
 
                     if (data.buses.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:32px; color:#9ca3af;"><div style="font-size: 2rem; margin-bottom: 8px;">📭</div>No active trips found at the moment.</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:32px; color:var(--text-muted);"><div style="font-size: 2rem; margin-bottom: 8px;">📭</div>No active trips found at the moment.</td></tr>`;
                     } else {
                         data.buses.forEach(bus => {
                             let statusBadge = '';
                             if (bus.trip_status === 'in_progress' || bus.trip_status === 'tripstarted') {
-                                statusBadge = `<span class="badge" style="color:#065f46; background:#d1fae5; border: 1px solid #a7f3d0;">In Progress</span>`;
+                                statusBadge = `<span class="badge badge-success">In Progress</span>`;
                             } else if (bus.trip_status === 'completed') {
-                                statusBadge = `<span class="badge" style="color:#92400e; background:#fef3c7; border: 1px solid #fde68a;">Completed</span>`;
+                                statusBadge = `<span class="badge badge-warning">Completed</span>`;
                             } else {
-                                statusBadge = `<span class="badge" style="color:#6b7280; background:#f3f4f6; border: 1px solid #e5e7eb;">${bus.trip_status || 'Not Started'}</span>`;
+                                statusBadge = `<span class="badge badge-neutral">${bus.trip_status || 'Not Started'}</span>`;
                             }
 
                             const link = busDetailsBaseUrl.replace('BUS_ID_PH', bus.id);
@@ -355,13 +153,13 @@
                             const row = `
                                 <tr style="cursor: pointer;" onclick="window.location.href='${link}'">
                                     <td>
-                                        <div style="font-weight: 600; color: #111827;">Bus ${bus.bus_number}</div>
-                                        <div style="font-size: 0.8rem; color: #9ca3af;">${bus.registration_no}</div>
+                                        <div style="font-weight: 600; color: var(--text-primary);">Bus ${bus.bus_number}</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">${bus.registration_no}</div>
                                     </td>
                                     <td>${bus.route_name}</td>
                                     <td>${statusBadge}</td>
                                     <td style="text-align:center; font-weight: 600;">
-                                        ${bus.on_board_count || 0} <span style="color:#9ca3af; font-weight:400;">/ ${bus.capacity || '-'}</span>
+                                        ${bus.on_board_count || 0} <span style="color:var(--text-muted); font-weight:400;">/ ${bus.capacity || '-'}</span>
                                     </td>
                                 </tr>
                             `;

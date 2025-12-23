@@ -9,66 +9,224 @@
 {% block content %}
 <section id="page-routes" class="page-section active">
     <!-- Using block content to inject only the specific page content -->
+
     <div class="card">
         <div class="card-title-row"
             style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
             <h3>Route Management</h3>
-            <a href="{{ url_for('routes.add_route') }}" class="btn btn-primary" style="text-decoration:none;">
+            <a href="{{ url_for('routes.add_route') }}" class="btn btn-primary">
                 <span style="font-size:1.2rem; margin-right:6px">+</span> Add Route
             </a>
         </div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Route Name</th>
-                        <th>Start Point</th>
-                        <th>End Point</th>
-                        <th>Stops</th>
-                        <th>Assigned Bus</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for route in routes %}
-                    <tr>
-                        <td>
-                            <div style="font-weight:600">{{ route.route_name }}</div>
-                        </td>
-                        <td>{{ route.start_point }}</td>
-                        <td>{{ route.end_point }}</td>
-                        <td>
+        <div class="routes-grid">
+            {% for route in routes %}
+            <div class="route-card">
+                <div class="route-header">
+                    <div class="route-icon">🗺️</div>
+                    <div class="route-name">{{ route.route_name }}</div>
+                </div>
+
+                <div class="route-path">
+                    <div class="path-point">
+                        <span class="point-dot start"></span>
+                        <span class="point-text">{{ route.start_point }}</span>
+                    </div>
+                    <div class="path-line"></div>
+                    <div class="path-point">
+                        <span class="point-dot end"></span>
+                        <span class="point-text">{{ route.end_point }}</span>
+                    </div>
+                </div>
+
+                <div class="route-meta">
+                    <div class="meta-item">
+                        <span class="meta-icon">🚏</span>
+                        <span>
                             {% if route.stops %}
                             {% if route.stops is string %}
-                            {{ route.stops }}
+                            {{ route.stops.split(',')|length }} Stops
                             {% else %}
-                            {% for stop in route.stops %}
-                            {% if stop is string %}
-                            {{ stop }}{% if not loop.last %}, {% endif %}
-                            {% else %}
-                            {{ stop.name }}{% if not loop.last %}, {% endif %}
-                            {% endif %}
-                            {% endfor %}
+                            {{ route.stops|length }} Stops
                             {% endif %}
                             {% else %}
-                            <span style="color:var(--text-light)">-</span>
+                            0 Stops
                             {% endif %}
-                        </td>
-                        <td>{{ route.assigned_bus_name or 'Unassigned' }}</td>
-                        <td>
-                            <a href="{{ url_for('routes.route_details', route_id=route.id) }}" class="btn"
-                                style="padding:4px 8px;color:var(--primary);text-decoration:none;">View</a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="6" style="text-align:center; padding: 20px;">No routes found. Add
-                            one to get started!</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">🚌</span>
+                        <span class="{{ 'text-success' if route.assigned_bus_name else 'text-muted' }}">
+                            {{ route.assigned_bus_name or 'Unassigned' }}
+                        </span>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('routes.route_details', route_id=route.id) }}" class="view-btn">
+                    View Details
+                </a>
+            </div>
+            {% else %}
+            <div class="no-routes">
+                <div style="font-size: 3rem; margin-bottom: 10px;">🗺️</div>
+                <div style="color: var(--text-secondary);">No routes found. Add one to get started!</div>
+            </div>
+            {% endfor %}
         </div>
     </div>
+
 </section>
+
+<style>
+    .routes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 10px 0;
+    }
+
+    .route-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .route-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .route-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 5px;
+    }
+
+    .route-icon {
+        font-size: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+    }
+
+    .route-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+    }
+
+    .route-path {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 12px;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .path-point {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .point-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: block;
+    }
+
+    .point-dot.start {
+        background: #10b981;
+        box-shadow: 0 0 5px #10b981;
+    }
+
+    .point-dot.end {
+        background: #ef4444;
+        box-shadow: 0 0 5px #ef4444;
+    }
+
+    .path-line {
+        width: 2px;
+        height: 14px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-left: 4px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    .point-text {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+
+    .route-meta {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 5px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .view-btn {
+        margin-top: auto;
+        display: block;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        padding: 10px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .view-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    .text-success {
+        color: #10b981;
+    }
+
+    .text-muted {
+        color: var(--text-secondary);
+    }
+
+    .no-routes {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        border: 2px dashed var(--glass-border);
+    }
+</style>
 {% endblock %}

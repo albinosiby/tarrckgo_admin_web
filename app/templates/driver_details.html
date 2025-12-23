@@ -6,202 +6,173 @@
 
 {% block header_title %}Smart Bus Admin • Driver Details{% endblock %}
 
-{% block head %}
-<style>
-    .detail-label {
-        font-size: 0.85rem;
-        color: var(--text-light);
-        margin-bottom: 4px;
-    }
-
-    .detail-value {
-        font-size: 1rem;
-        font-weight: 500;
-        color: var(--text-dark);
-    }
-
-    .detail-group {
-        margin-bottom: 16px;
-    }
-
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 24px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .profile-img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background-color: #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        color: #9ca3af;
-        object-fit: cover;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div style="max-width: 1000px; margin: 0 auto;">
-    <!-- Driver Profile Card -->
-    <div class="card" style="margin-bottom: 20px;">
-        <div class="card-title-row"
-            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-            <h3>Driver Profile</h3>
-            <div>
-                <button class="btn btn-primary">
-                    <span style="font-size:1rem; margin-right:6px">✎</span> Edit
-                </button>
-                <button class="btn" style="background-color: #ef4444; color: white; margin-left: 10px;"
-                    onclick="deleteDriver()">
-                    <span style="font-size:1rem; margin-right:6px">🗑️</span> Delete
-                </button>
-            </div>
-        </div>
+<div class="detail-layout">
 
-        <div class="profile-header">
-            <div class="profile-img">
+    <!-- LEFT COLUMN: Profile Summary -->
+    <div class="profile-sidebar">
+        <div class="card">
+            <div class="profile-avatar-large">
                 {% if driver.profile_photo_url %}
-                <img src="{{ driver.profile_photo_url }}" alt="Profile"
-                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                <img src="{{ driver.profile_photo_url }}" alt="Profile">
                 {% else %}
-                👨‍✈️
+                {{ driver.full_name[0] if driver.full_name else '?' }}
                 {% endif %}
             </div>
-            <div style="margin-left: -50px; margin-top: 80px; display: none;" id="edit_photo_container">
-                <label for="edit_driver_photo"
-                    style="cursor: pointer; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Change
-                    Photo</label>
+
+            <div id="edit_photo_container" style="display:none; margin-bottom: 10px;">
+                <label for="edit_driver_photo" class="btn btn-secondary"
+                    style="font-size:0.8rem; padding:4px 8px;">Change Photo</label>
                 <input type="file" id="edit_driver_photo" style="display: none;" accept="image/*">
             </div>
-            <div>
-                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">
-                    <span id="display_full_name">{{ driver.full_name }}</span>
-                    <input type="text" id="edit_full_name" class="form-input" value="{{ driver.full_name }}"
-                        style="display:none; margin-top:5px;">
-                </h2>
-                <div style="color: var(--text-light);">License:
-                    <span id="display_license_number">{{ driver.license_number }}</span>
-                    <input type="text" id="edit_license_number" class="form-input" value="{{ driver.license_number }}"
-                        style="display:none; margin-top:5px;">
+
+            <h2 class="profile-name">
+                <span id="display_full_name">{{ driver.full_name }}</span>
+                <input type="text" id="edit_full_name" class="form-input-edit" value="{{ driver.full_name }}"
+                    style="display:none;">
+            </h2>
+
+            <div class="profile-meta">
+                <div>License: <span id="display_license_number" style="font-family:monospace">{{ driver.license_number
+                        }}</span>
+                    <input type="text" id="edit_license_number" class="form-input-edit"
+                        value="{{ driver.license_number }}" style="display:none;">
                 </div>
-                <span class="badge badge-success"
-                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
+            </div>
+
+            <div class="badge badge-success" style="font-size: 0.9rem; padding: 6px 16px;">Active Driver</div>
+
+            <div style="margin-top: 24px;">
+                <button id="edit-profile-btn" class="btn btn-primary" style="width:100%; justify-content:center;">
+                    <span style="margin-right:8px">✏️</span> Edit Profile
+                </button>
+            </div>
+
+            <div style="margin-top: 12px;">
+                <button onclick="deleteDriver()" class="btn btn-danger" style="width:100%; justify-content:center;">
+                    🗑️ Delete Driver
+                </button>
             </div>
         </div>
+    </div>
 
-        <div class="split-row">
-            <!-- Personal Info -->
-            <div>
-                <h4 style="margin-bottom: 16px; color: var(--primary);">Personal Information</h4>
-                <div class="detail-group">
-                    <div class="detail-label">Phone Number</div>
-                    <div class="detail-value" id="display_phone_number">{{ driver.phone_number }}</div>
-                    <input type="tel" id="edit_phone_number" class="form-input" value="{{ driver.phone_number }}"
-                        style="display:none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;" disabled
+    <!-- RIGHT COLUMN: Details -->
+    <div class="main-content">
+
+        <!-- Details Card -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="section-title">Driver Details</div>
+
+            <div class="detail-grid">
+                <!-- Personal Info -->
+                <div class="info-group">
+                    <label class="info-label">Phone Number</label>
+                    <div class="value" id="display_phone_number">{{ driver.phone_number }}</div>
+                    <input type="tel" id="edit_phone_number" class="form-input-edit" value="{{ driver.phone_number }}"
+                        style="display:none; opacity:0.6; cursor:not-allowed" disabled
                         title="Phone number cannot be changed as it is linked to the login account.">
                 </div>
-                <div class="detail-group">
-                    <div class="detail-label">Address</div>
-                    <div class="detail-value" id="display_address">{{ driver.address or 'N/A' }}</div>
-                    <textarea id="edit_address" class="form-input" style="display:none;">{{ driver.address }}</textarea>
+                <div class="info-group">
+                    <label class="info-label">Date of Birth</label>
+                    <div class="value" id="display_date_of_birth">{{ driver.date_of_birth or 'N/A' }}</div>
+                    <input type="date" id="edit_date_of_birth" class="form-input-edit"
+                        value="{{ driver.date_of_birth }}" style="display:none;">
                 </div>
-                <div class="detail-group">
-                    <div class="detail-label">Date of Birth</div>
-                    <div class="detail-value" id="display_date_of_birth">{{ driver.date_of_birth or
-                        'N/A' }}</div>
-                    <input type="date" id="edit_date_of_birth" class="form-input" value="{{ driver.date_of_birth }}"
-                        style="display:none;">
-                </div>
-                <div class="detail-group">
-                    <div class="detail-label">Blood Group</div>
-                    <div class="detail-value" id="display_blood_group">{{ driver.blood_group or 'N/A' }}
-                    </div>
-                    <select id="edit_blood_group" class="form-input" style="display:none;">
+                <div class="info-group">
+                    <label class="info-label">Blood Group</label>
+                    <div class="value" id="display_blood_group">{{ driver.blood_group or 'N/A' }}</div>
+                    <select id="edit_blood_group" class="form-input-edit" style="display:none;">
                         <option value="">Select...</option>
-                        <option value="A+" {% if driver.blood_group=='A+' %}selected{% endif %}>A+
-                        </option>
-                        <option value="A-" {% if driver.blood_group=='A-' %}selected{% endif %}>A-
-                        </option>
-                        <option value="B+" {% if driver.blood_group=='B+' %}selected{% endif %}>B+
-                        </option>
-                        <option value="B-" {% if driver.blood_group=='B-' %}selected{% endif %}>B-
-                        </option>
-                        <option value="O+" {% if driver.blood_group=='O+' %}selected{% endif %}>O+
-                        </option>
-                        <option value="O-" {% if driver.blood_group=='O-' %}selected{% endif %}>O-
-                        </option>
-                        <option value="AB+" {% if driver.blood_group=='AB+' %}selected{% endif %}>AB+
-                        </option>
-                        <option value="AB-" {% if driver.blood_group=='AB-' %}selected{% endif %}>AB-
-                        </option>
+                        <option value="A+" {% if driver.blood_group=='A+' %}selected{% endif %}>A+</option>
+                        <option value="A-" {% if driver.blood_group=='A-' %}selected{% endif %}>A-</option>
+                        <option value="B+" {% if driver.blood_group=='B+' %}selected{% endif %}>B+</option>
+                        <option value="B-" {% if driver.blood_group=='B-' %}selected{% endif %}>B-</option>
+                        <option value="O+" {% if driver.blood_group=='O+' %}selected{% endif %}>O+</option>
+                        <option value="O-" {% if driver.blood_group=='O-' %}selected{% endif %}>O-</option>
+                        <option value="AB+" {% if driver.blood_group=='AB+' %}selected{% endif %}>AB+</option>
+                        <option value="AB-" {% if driver.blood_group=='AB-' %}selected{% endif %}>AB-</option>
                     </select>
+                </div>
+                <div class="info-group" style="grid-column: 1 / -1">
+                    <label class="info-label">Address</label>
+                    <div class="value" id="display_address">{{ driver.address or 'N/A' }}</div>
+                    <textarea id="edit_address" class="form-input-edit"
+                        style="display:none;">{{ driver.address }}</textarea>
                 </div>
             </div>
 
-            <!-- Assignment & Professional Info -->
-            <div>
-                <h4 style="margin-bottom: 16px; color: var(--primary);">Assignment</h4>
-                <div class="detail-group">
-                    <div class="detail-label">Assigned Bus</div>
-                    <div class="detail-value" id="display_assigned_bus">{{ driver.assigned_bus_name or
-                        'Unassigned' }}</div>
-                    <select id="edit_assigned_bus" class="form-input" style="display:none;">
-                        <option value="">Select Bus...</option>
-                        {% for bus in buses %}
-                        <option value="{{ bus.id }}" {% if driver.assigned_bus==bus.id %}selected{% endif %}>{{
-                            bus.bus_number }}</option>
-                        {% endfor %}
-                        <option value="">Unassigned</option>
-                    </select>
-                </div>
-
-                <h4 style="margin-bottom: 16px; color: var(--primary); margin-top: 24px;">Professional &
-                    Emergency</h4>
-                <div class="detail-group">
-                    <div class="detail-label">Joining Date</div>
-                    <div class="detail-value" id="display_joining_date">{{ driver.joining_date or 'N/A'
-                        }}</div>
-                    <input type="date" id="edit_joining_date" class="form-input" value="{{ driver.joining_date }}"
-                        style="display:none;">
-                </div>
-                <div class="detail-group">
-                    <div class="detail-label">License Expiry</div>
-                    <div class="detail-value" id="display_license_expiry_date">{{
-                        driver.license_expiry_date or 'N/A' }}</div>
-                    <input type="date" id="edit_license_expiry_date" class="form-input"
-                        value="{{ driver.license_expiry_date }}" style="display:none;">
-                </div>
-                <div class="detail-group">
-                    <div class="detail-label">Emergency Contact</div>
-                    <div class="detail-value" id="display_emergency_contact">
-                        {{ driver.emergency_contact_name or 'N/A' }}
-                        {% if driver.emergency_contact_phone %}
-                        <br><span style="font-size:0.9rem;color:var(--text-light)">{{
-                            driver.emergency_contact_phone }}</span>
-                        {% endif %}
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">
+                <h4
+                    style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px; text-transform:uppercase;">
+                    Professional & Assignment
+                </h4>
+                <div class="detail-grid">
+                    <div class="info-group">
+                        <label class="info-label">Assigned Bus</label>
+                        <select id="live_assigned_bus" class="form-input"
+                            onchange="updateField('assigned_bus', this.value)">
+                            <option value="">Select Bus...</option>
+                            {% for bus in buses %}
+                            <option value="{{ bus.id }}" {% if driver.assigned_bus==bus.id %}selected{% endif %}>
+                                {{ bus.bus_number }}
+                            </option>
+                            {% endfor %}
+                            <option value="">Unassigned</option>
+                        </select>
                     </div>
-                    <div id="edit_emergency_contact" style="display:none;">
-                        <input type="text" id="edit_emergency_contact_name" class="form-input"
-                            value="{{ driver.emergency_contact_name }}" placeholder="Name" style="margin-bottom:5px;">
-                        <input type="tel" id="edit_emergency_contact_phone" class="form-input"
-                            value="{{ driver.emergency_contact_phone }}" placeholder="Phone">
+                    <div class="info-group">
+                        <label class="info-label">Add Stop Permission</label>
+                        <div style="display: flex; align-items: center; gap: 8px; padding-top: 4px;">
+                            <label class="switch">
+                                <input type="checkbox" id="live_can_add_stop"
+                                    onchange="updateField('can_add_stop', this.checked)" {% if driver.can_add_stop
+                                    %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                            <span id="can_add_stop_label" style="font-size: 0.9rem; color: var(--text-secondary);">
+                                {% if driver.can_add_stop %}Enabled{% else %}Disabled{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-group">
+                        <label class="info-label">Joining Date</label>
+                        <div class="value" id="display_joining_date">{{ driver.joining_date or 'N/A' }}</div>
+                        <input type="date" id="edit_joining_date" class="form-input-edit"
+                            value="{{ driver.joining_date }}" style="display:none;">
+                    </div>
+                    <div class="info-group">
+                        <label class="info-label">License Expiry</label>
+                        <div class="value" id="display_license_expiry_date">{{ driver.license_expiry_date or 'N/A' }}
+                        </div>
+                        <input type="date" id="edit_license_expiry_date" class="form-input-edit"
+                            value="{{ driver.license_expiry_date }}" style="display:none;">
+                    </div>
+                    <div class="info-group">
+                        <label class="info-label">Emergency Contact</label>
+                        <div class="value" id="display_emergency_contact">
+                            {{ driver.emergency_contact_name or 'N/A' }}
+                            {% if driver.emergency_contact_phone %}
+                            <br><span style="font-size:0.9rem;color:var(--text-secondary)">{{
+                                driver.emergency_contact_phone }}</span>
+                            {% endif %}
+                        </div>
+                        <div id="edit_emergency_contact" style="display:none;">
+                            <input type="text" id="edit_emergency_contact_name" class="form-input-edit"
+                                value="{{ driver.emergency_contact_name }}" placeholder="Name"
+                                style="margin-bottom:5px;">
+                            <input type="tel" id="edit_emergency_contact_phone" class="form-input-edit"
+                                value="{{ driver.emergency_contact_phone }}" placeholder="Phone">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-            <h4 style="margin-bottom: 16px; color: var(--primary);">Trip History</h4>
+        <!-- Trip History -->
+        <div class="card">
+            <div class="section-title">Trip History</div>
             <div class="table-wrapper">
-                <table>
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -209,7 +180,7 @@
                             <th>Trip Type</th>
                             <th>Start Time</th>
                             <th>End Time</th>
-
+                            <th>Duration</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -217,19 +188,15 @@
                         <tr>
                             <td>{{ trip.date }}</td>
                             <td>{{ trip.bus_number }}</td>
-                            <td>{{ trip.type|capitalize }}</td>
-                            <td>
-                                {{ trip.startTime[11:16] if trip.startTime|length > 16 else trip.startTime }}
-                            </td>
-                            <td>
-                                {{ trip.endTime[11:16] if trip.endTime and trip.endTime|length > 16 else (trip.endTime
-                                or '-') }}
-                            </td>
+                            <td><span class="badge badge-secondary">{{ trip.type|capitalize }}</span></td>
+                            <td>{{ trip.startTime[11:16] if trip.startTime|length > 16 else trip.startTime }}</td>
+                            <td>{{ trip.endTime[11:16] if trip.endTime and trip.endTime|length > 16 else (trip.endTime
+                                or '-') }}</td>
                             <td>{{ trip.durationMinutes }} min</td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="8" style="text-align:center; padding: 20px; color: var(--text-light);">No trip
+                            <td colspan="6" style="text-align:center; padding: 20px; color: var(--text-muted);">No trip
                                 history found.</td>
                         </tr>
                         {% endfor %}
@@ -264,7 +231,7 @@
     function toggleFields(showInput) {
         const fields = [
             'full_name', 'license_number', 'phone_number', 'address',
-            'date_of_birth', 'blood_group', 'assigned_bus',
+            'date_of_birth', 'blood_group',
             'joining_date', 'license_expiry_date'
         ];
 
@@ -304,6 +271,7 @@
         formData.append('license_expiry_date', document.getElementById('edit_license_expiry_date').value);
         formData.append('emergency_contact_name', document.getElementById('edit_emergency_contact_name').value);
         formData.append('emergency_contact_phone', document.getElementById('edit_emergency_contact_phone').value);
+        formData.append('can_add_stop', document.getElementById('input_can_add_stop').checked);
 
         const fileInput = document.getElementById('edit_driver_photo');
         if (fileInput && fileInput.files.length > 0) {
@@ -357,5 +325,108 @@
                 });
         }
     }
+
+    function updateField(fieldName, value) {
+        const payload = {};
+        payload[fieldName] = value;
+
+        // Optimistic UI update for label
+        if (fieldName === 'can_add_stop') {
+            const label = document.getElementById('can_add_stop_label');
+            if (label) label.innerText = value ? 'Enabled' : 'Disabled';
+        }
+
+        fetch("{{ url_for('api.api_update_driver', driver_id=driver.id) }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status !== 'success') {
+                    alert('Failed to update: ' + data.message);
+                    // Revert change if needed (complex for select, easy for checkbox)
+                    if (fieldName === 'assigned_bus') {
+                        location.reload();
+                    } else if (fieldName === 'can_add_stop') {
+                        document.getElementById('live_can_add_stop').checked = !value;
+                        const label = document.getElementById('can_add_stop_label');
+                        if (label) label.innerText = !value ? 'Enabled' : 'Disabled';
+                    }
+                } else {
+                    // Success feedback (optional)
+                    console.log(fieldName + ' updated successfully');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+    }
 </script>
+
+<style>
+    /* Switch Toggle CSS */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: var(--primary);
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px var(--primary);
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(20px);
+        -ms-transform: translateX(20px);
+        transform: translateX(20px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+</style>
 {% endblock %}

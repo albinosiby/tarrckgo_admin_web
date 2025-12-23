@@ -6,23 +6,10 @@
 
 {% block header_title %}Smart Bus Admin • Add Driver{% endblock %}
 
-{% block head %}
-<style>
-    .form-container {
-        max-width: 800px;
-        margin: 0 auto;
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="form-container">
-    <h2 style="margin-bottom: 24px; color: var(--text-dark);">Add New Driver</h2>
-    <form id="addDriverForm">
+    <h2 class="form-section-title">Add New Driver</h2>
+    <form id="addDriverForm" class="form-grid">
         <div class="form-group">
             <label class="form-label">Driver Photo</label>
             <input type="file" id="driver_photo" class="form-input" accept="image/*">
@@ -39,7 +26,7 @@
             <label class="form-label">Phone Number</label>
             <input type="tel" id="phone_number" class="form-input" placeholder="10-digit number" required>
         </div>
-        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+        <div class="split-row">
             <div>
                 <label class="form-label">Date of Birth</label>
                 <input type="date" id="date_of_birth" class="form-input">
@@ -49,7 +36,7 @@
                 <input type="date" id="joining_date" class="form-input">
             </div>
         </div>
-        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+        <div class="split-row">
             <div>
                 <label class="form-label">License Expiry</label>
                 <input type="date" id="license_expiry_date" class="form-input">
@@ -78,7 +65,12 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="split-row" style="margin-top:0; margin-bottom:16px; gap:12px">
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="can_add_stop" style="width: 20px; height: 20px; accent-color: var(--primary);">
+            <label for="can_add_stop" class="form-label" style="margin-bottom: 0; cursor: pointer;">Enable "Add Stop"
+                Feature</label>
+        </div>
+        <div class="split-row">
             <div>
                 <label class="form-label">Emergency Contact Name</label>
                 <input type="text" id="emergency_contact_name" class="form-input" placeholder="Name">
@@ -92,9 +84,8 @@
             <label class="form-label">Address</label>
             <textarea id="address" class="form-input" rows="2" placeholder="Full Address"></textarea>
         </div>
-        <div class="form-actions" style="margin-top: 30px;">
-            <a href="{{ url_for('drivers.drivers') }}" class="btn"
-                style="background:#f3f4f6; color:#374151; text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
+        <div class="form-actions">
+            <a href="{{ url_for('drivers.drivers') }}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">Save Driver</button>
         </div>
     </form>
@@ -117,7 +108,8 @@
             emergency_contact_name: document.getElementById('emergency_contact_name').value,
             emergency_contact_phone: document.getElementById('emergency_contact_phone').value,
             address: document.getElementById('address').value,
-            assigned_bus: document.getElementById('assigned_bus').value
+            assigned_bus: document.getElementById('assigned_bus').value,
+            can_add_stop: document.getElementById('can_add_stop').checked
         };
 
         const formDataObj = new FormData();

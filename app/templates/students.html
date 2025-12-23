@@ -12,31 +12,28 @@
         <div class="card-title-row"
             style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
             <h3>Students Directory</h3>
-            <div>
-                <button onclick="resetAllFees()" class="btn"
-                    style="background:#ef4444; color:white; margin-right: 10px; border: none;">
+            <div style="display:flex; gap:10px;">
+                <button onclick="resetAllFees()" class="btn btn-danger">
                     <span style="font-size:1.2rem; margin-right:6px">↻</span> Reset Academic Year
                 </button>
-                <a href="{{ url_for('students.add_student') }}" class="btn btn-primary" style="text-decoration: none;">
+                <a href="{{ url_for('students.add_student') }}" class="btn btn-primary">
                     <span style="font-size:1.2rem; margin-right:6px">+</span> Add Student
                 </a>
             </div>
         </div>
 
         <!-- Filter Section -->
-        <div
-            style="margin-bottom: 24px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-            <form method="GET" action="{{ url_for('students.students') }}"
-                style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+        <div class="filter-section">
+            <form method="GET" action="{{ url_for('students.students') }}" style="display: contents;">
 
                 <!-- Search -->
                 <div style="flex: 1; min-width: 200px;">
                     <input type="text" name="q" placeholder="Search name or roll id..." value="{{ filters.q }}"
-                        style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;">
+                        class="form-input">
                 </div>
 
                 <!-- Assignment Filter -->
-                <select name="assignment" style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;">
+                <select name="assignment" class="form-input" style="width:auto;">
                     <option value="">All Students</option>
                     <option value="assigned" {% if filters.assignment=='assigned' %}selected{% endif %}>Assigned Only
                     </option>
@@ -45,7 +42,7 @@
                 </select>
 
                 <!-- Bus Filter -->
-                <select name="bus" style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;">
+                <select name="bus" class="form-input" style="width:auto;">
                     <option value="">All Buses</option>
                     {% for bus in buses %}
                     <option value="{{ bus.bus_number }}" {% if filters.bus==bus.bus_number %}selected{% endif %}>
@@ -55,7 +52,7 @@
                 </select>
 
                 <!-- Route Filter -->
-                <select name="route" style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;">
+                <select name="route" class="form-input" style="width:auto;">
                     <option value="">All Routes</option>
                     {% for route in routes %}
                     <option value="{{ route.route_name }}" {% if filters.route==route.route_name %}selected{% endif %}>
@@ -65,122 +62,17 @@
                 </select>
 
                 <!-- Actions -->
-                <button type="submit" class="btn btn-primary" style="padding: 8px 16px;">
+                <button type="submit" class="btn btn-primary">
                     🔍 Search
                 </button>
 
                 {% if filters.q or filters.assignment or filters.bus or filters.route %}
-                <a href="{{ url_for('students.students') }}" class="btn"
-                    style="padding: 8px 16px; background: white; border: 1px solid #d1d5db; text-decoration: none; color: #374151;">
+                <a href="{{ url_for('students.students') }}" class="btn btn-secondary">
                     × Clear
                 </a>
                 {% endif %}
             </form>
         </div>
-        <style>
-            .student-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 16px;
-                padding: 10px 0;
-            }
-
-            .student-card {
-                background: white;
-                border: 1px solid #e5e7eb;
-                border-radius: 12px;
-                padding: 16px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                text-decoration: none;
-                /* For anchor tag */
-                color: inherit;
-                transition: all 0.2s ease;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                position: relative;
-            }
-
-            .student-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                border-color: #d1d5db;
-            }
-
-            .student-avatar {
-                width: 56px;
-                height: 56px;
-                border-radius: 50%;
-                background: #f3f4f6;
-                color: #6b7280;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5rem;
-                font-weight: 600;
-                margin-bottom: 12px;
-                overflow: hidden;
-                border: 2px solid #fff;
-                box-shadow: 0 0 0 1px #e5e7eb;
-            }
-
-            .student-avatar img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-
-            .student-name {
-                font-size: 1rem;
-                font-weight: 600;
-                color: #111827;
-                margin-bottom: 2px;
-                line-height: 1.2;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 100%;
-            }
-
-            .student-roll {
-                font-size: 0.8rem;
-                color: #6b7280;
-                font-family: monospace;
-                background: #f9fafb;
-                padding: 2px 6px;
-                border-radius: 4px;
-                border: 1px solid #f3f4f6;
-                margin-bottom: 8px;
-            }
-
-            .student-info {
-                font-size: 0.8rem;
-                color: #4b5563;
-                width: 100%;
-                display: flex;
-                justify-content: space-around;
-                border-top: 1px solid #f3f4f6;
-                padding-top: 8px;
-                margin-top: auto;
-            }
-
-            .info-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .info-value {
-                font-weight: 500;
-                color: #374151;
-            }
-
-            .info-label {
-                font-size: 0.7rem;
-                color: #9ca3af;
-            }
-        </style>
 
         <div class="student-grid">
             {% for student in students %}
@@ -208,7 +100,7 @@
                 </div>
             </a>
             {% else %}
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #9ca3af;">
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
                 <div style="font-size: 3rem; margin-bottom: 10px;">🎓</div>
                 <p>No students found. Add one to get started!</p>
             </div>

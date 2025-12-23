@@ -231,32 +231,35 @@ def student_attendance_history(student_id):
     
     attendance_records = []
     try:
-        attendance_ref = student_ref.collection('attendance').order_by('date', direction='DESCENDING').limit(100) # Fetch more for full history
+        # Update: Fetch from 'attendance_record' collection
+        attendance_ref = student_ref.collection('attendance_record').order_by('timestamp', direction='DESCENDING').limit(50)
+        
         for doc in attendance_ref.stream():
-            if doc.id == 'stats': continue
             a_data = doc.to_dict()
             
-            date = a_data.get('date')
-             # Morning Trip
-            if a_data.get('morning_status'):
-                 attendance_records.append({
-                     'date': date,
-                     'check_in': a_data.get('morning_time', '-'),
-                     'check_out': a_data.get('morning_exit_time', '-'),
-                     'type': 'Morning',
-                     'timestamp': f"{date} {a_data.get('morning_time', '00:00')}"
-                 })
-            # Evening Trip
-            if a_data.get('evening_status'):
-                 attendance_records.append({
-                     'date': date,
-                     'check_in': a_data.get('evening_time', '-'),
-                     'check_out': a_data.get('evening_exit_time', '-'),
-                     'type': 'Evening',
-                     'timestamp': f"{date} {a_data.get('evening_time', '00:00')}"
-                 })
-                 
-        attendance_records.sort(key=lambda x: x['timestamp'], reverse=True)
+            # Helper to format timestamp
+            def format_ts(ts):
+                if not ts: return '-'
+                try:
+                    # If it's a Firestore datetime object, return just time in 12h format
+                    return ts.strftime('%I:%M %p')
+                except:
+                    return str(ts)
+
+            record = {
+                'id': doc.id,
+                'date': a_data.get('date', '-'),
+                'bus_id': a_data.get('bus_id', '-'),
+                'start_point':a_data.get('start_point', '-'),
+                'end_point':a_data.get('end_point', '-'),
+                'boarded_time': format_ts(a_data.get('boarded_time')),
+                'dropped_time': format_ts(a_data.get('dropped_time')),
+                'status': a_data.get('status', 'UNKNOWN'),
+                'trip_type': a_data.get('trip_type', 'unknown').capitalize(),
+                'timestamp_raw': a_data.get('timestamp') # Keep for sorting if needed, though query is sorted
+            }
+            attendance_records.append(record)
+            
     except Exception as e:
         print(f"Error fetching full attendance: {e}")
         

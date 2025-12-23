@@ -5,80 +5,298 @@
     <meta charset="UTF-8" />
     <title>Smart Bus Admin Panel - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/trackgo_logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --primary: #00E5FF;
+            --primary-dark: #00B8D4;
+            --primary-gradient: linear-gradient(135deg, #00E5FF 0%, #00B8D4 100%);
+            /* Using the global theme gradient logic */
+            --bg-gradient: linear-gradient(180deg, #0F2027 0%, #2C5364 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #FFFFFF;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --focus-ring: rgba(0, 229, 255, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background-color: var(--bg);
+            padding: 24px;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* Ambient Glow */
+        .glow-effect {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(50% 50% at 50% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 100%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .login-card {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background: var(--glass-bg);
             width: 100%;
-            max-width: 400px;
-            border: 1px solid var(--border);
+            max-width: 440px;
+            padding: 48px;
+            border-radius: 24px;
+            box-shadow:
+                0 0 0 1px var(--glass-border) inset,
+                0 20px 40px -12px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            backdrop-filter: blur(20px);
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            width: 88px;
+            height: 88px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .login-title {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            color: var(--text-dark);
+            color: var(--text-main);
             margin-bottom: 8px;
+            letter-spacing: -0.03em;
         }
 
         .login-subtitle {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        .btn-block {
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: #94a3b8;
+            transition: color 0.2s ease;
+        }
+
+        .form-input {
             width: 100%;
-            padding: 12px;
+            padding: 14px 16px 14px 48px;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--focus-ring);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .form-input:focus+.input-icon {
+            color: var(--primary);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            font-size: 0.875rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: var(--primary-dark);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 20px -8px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+            transform: none;
         }
     </style>
 </head>
 
 <body>
+    <div class="glow-effect"></div>
+
     <div class="login-card">
         <div class="login-header">
-            <div style="font-size: 3rem; margin-bottom: 16px;">🚌</div>
-            <h1 class="login-title">Admin Login</h1>
-            <p class="login-subtitle">Enter your credentials to access the dashboard</p>
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/trackgo_logo.png') }}" alt="TrackGo Logo">
+            </div>
+            <h1 class="login-title">Welcome Back</h1>
+            <p class="login-subtitle">Enter your credentials to access the admin panel.</p>
         </div>
+
         <form id="loginForm">
             <div class="form-group">
                 <label class="form-label">Email Address</label>
-                <input type="email" id="email" class="form-input" placeholder="admin@example.com" required
-                    value="admin@smartbus.com">
+                <div class="input-group">
+                    <input type="email" id="email" class="form-input" placeholder="admin@example.com" required
+                        value="admin@smartbus.com">
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
             </div>
+
             <div class="form-group">
                 <label class="form-label">Password</label>
-                <input type="password" id="password" class="form-input" placeholder="••••••••" required
-                    value="password">
+                <div class="input-group">
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required
+                        value="password">
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
             </div>
-            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
-                <label
-                    style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-light); cursor: pointer;">
+
+            <div class="form-actions">
+                <label class="checkbox-label">
                     <input type="checkbox"> Remember me
                 </label>
-                <a href="#" style="font-size: 0.9rem; color: var(--primary); text-decoration: none;">Forgot
-                    password?</a>
+                <a href="#" class="forgot-link">Forgot password?</a>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+
+            <button type="submit" class="btn-submit">
+                <span>Sign In</span>
+                <!-- Arrow Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
         </form>
     </div>
 
@@ -87,8 +305,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <script>
-        // Your web app's Firebase configuration
-        // TODO: Replace with your actual Firebase project configuration
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBw_MLO37JyU_Ev50PrwGRkdNtcPOe10fE",
             authDomain: "bus-management-c8612.firebaseapp.com",
@@ -105,27 +322,35 @@
         const auth = firebase.auth();
 
         const loginForm = document.getElementById('loginForm');
+
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const btn = loginForm.querySelector('button');
-            const originalText = btn.innerText;
+            const originalContent = btn.innerHTML;
 
+            // Loading state
             btn.disabled = true;
-            btn.innerText = 'Signing in...';
+            btn.innerHTML = `<svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="20" height="20">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg> Signing In...`;
+
+            // Add spin animation class if not present in CSS
+            if (!document.querySelector('#spin-style')) {
+                const style = document.createElement('style');
+                style.id = 'spin-style';
+                style.innerHTML = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`;
+                document.head.appendChild(style);
+            }
 
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Signed in
                     const user = userCredential.user;
-                    console.log('Logged in as:', user.email);
-
-                    // Get ID token
                     return user.getIdToken();
                 })
                 .then((idToken) => {
-                    // Send token to backend
                     return fetch("{{ url_for('auth.session_login') }}", {
                         method: 'POST',
                         headers: {
@@ -140,20 +365,24 @@
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.status === 'success') {
-                        window.location.href = "{{ url_for('main.index') }}";
+                        // Success state
+                        btn.style.background = '#10b981'; // Emerald 500
+                        btn.innerHTML = `Success!`;
+                        setTimeout(() => {
+                            window.location.href = "{{ url_for('main.index') }}";
+                        }, 500);
                     } else {
-                        alert('Server login failed: ' + (data.message || 'Unknown error'));
-                        btn.disabled = false;
-                        btn.innerText = originalText;
+                        throw new Error(data.message || 'Server login failed');
                     }
                 })
                 .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.error('Error:', errorCode, errorMessage);
-                    alert('Login failed: ' + errorMessage);
+                    console.error('Login Error:', error);
+                    alert('Login failed: ' + error.message);
+
+                    // Reset button
                     btn.disabled = false;
-                    btn.innerText = originalText;
+                    btn.innerHTML = originalContent;
+                    btn.style.background = '';
                 });
         });
     </script>

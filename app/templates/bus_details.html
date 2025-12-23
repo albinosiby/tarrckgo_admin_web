@@ -11,272 +11,231 @@
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<style>
-    .detail-label {
-        font-size: 0.85rem;
-        color: var(--text-light);
-        margin-bottom: 4px;
-    }
-
-    .detail-value {
-        font-size: 1rem;
-        font-weight: 500;
-        color: var(--text-dark);
-    }
-
-    .detail-group {
-        margin-bottom: 16px;
-    }
-
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 24px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .profile-img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background-color: #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        color: #9ca3af;
-        object-fit: cover;
-    }
-
-    .edit-input {
-        display: none;
-        width: 100%;
-        padding: 8px;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        font-size: 1rem;
-        margin-top: 4px;
-    }
-</style>
 {% endblock %}
 
 {% block content %}
-<div style="max-width: 1000px; margin: 0 auto;">
-    <!-- Bus Profile Card -->
-    <div class="card" style="margin-bottom: 20px;">
-        <div class="card-title-row"
-            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-            <h3>Bus Profile</h3>
-            <button id="editBtn" class="btn btn-primary" onclick="toggleEditMode()">
-                <span style="font-size:1rem; margin-right:6px">✎</span> Edit
-            </button>
-        </div>
+<div class="page-container">
 
-        <div class="profile-header">
-            <div class="profile-img">🚌</div>
-            <div>
-                <h2 style="font-size: 1.5rem; margin-bottom: 4px;">{{ bus.bus_number }}</h2>
-                <div style="color: var(--text-light);">Registration: {{ bus.registration_no }}</div>
-                <span class="badge badge-success"
-                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600; margin-top: 8px; display: inline-block;">Active</span>
+    <!-- LEFT COLUMN: Bus Profile -->
+    <div class="profile-sidebar">
+        <div class="modern-card">
+            <div class="profile-avatar-large">
+                🚌
             </div>
-        </div>
 
-        <div class="split-row">
-            <!-- Bus Info -->
-            <div>
-                <h4 style="margin-bottom: 16px; color: var(--primary);">Bus Information</h4>
-                <div class="detail-group">
-                    <div class="detail-label">Bus ID</div>
-                    <div class="detail-value" style="font-family:monospace; user-select:all;">{{ bus.id
-                        }}</div>
-                </div>
-                <div class="detail-group">
-                    <div class="detail-label">Capacity</div>
-                    <div id="display-capacity" class="detail-value">{{ bus.capacity }} Seats</div>
-                    <input type="number" id="input-capacity" class="edit-input" value="{{ bus.capacity }}">
-                </div>
-                <div class="detail-group">
-                    <div class="detail-label">Model</div>
-                    <div id="display-model" class="detail-value">{{ bus.model or 'N/A' }}</div>
-                    <input type="text" id="input-model" class="edit-input" value="{{ bus.model or '' }}">
+            <h2 class="profile-name">
+                Bus {{ bus.bus_number }}
+            </h2>
+
+            <div class="profile-meta">
+                <div>{{ bus.registration_no }}</div>
+                <div style="font-family:monospace; font-size: 0.8rem; margin-top:4px; color:var(--text-muted);">ID: {{
+                    bus.id }}
                 </div>
             </div>
 
-            <!-- Assignment Info -->
-            <div>
-                <h4 style="margin-bottom: 16px; color: var(--primary);">Assignment</h4>
-                <div class="detail-group">
-                    <div class="detail-label">Assigned Driver</div>
-                    <div id="display-driver" class="detail-value">{{ bus.driver_name_display }}
-                    </div>
-                    <select id="input-driver" class="edit-input">
-                        <option value="">Unassigned</option>
-                        {% for driver in drivers %}
-                        <option value="{{ driver.id }}" data-name="{{ driver.full_name }}" {% if
-                            bus.driver_name==driver.full_name %}selected{% endif %}>{{ driver.full_name
-                            }}</option>
-                        {% endfor %}
-                    </select>
+            <div class="status-badge badge badge-success">Active</div>
+
+            <div style="margin-top: 24px;">
+                <!-- Updated button to use classes -->
+                <button id="editBtn" class="btn btn-primary" style="width:100%; justify-content:center;"
+                    onclick="toggleEditMode()">
+                    <span style="margin-right:8px">✏️</span> Edit Bus
+                </button>
+            </div>
+
+            <div style="margin-top: 12px;">
+                <!-- Placeholder for future functionality, or implement delete bus if available -->
+                <!-- <button class="btn" style="width:100%; justify-content:center; background:#fee2e2; color:#ef4444; border:none;">
+                    🗑️ Delete Bus
+                </button> -->
+            </div>
+        </div>
+
+        <!-- Driver Summary -->
+        <div class="modern-card" style="margin-top: 20px; text-align: left;">
+            <div class="section-title">Assigned Driver</div>
+            {% if bus.driver_name_display and bus.driver_name_display != 'Unassigned' %}
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div
+                    style="width:40px; height:40px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+                    🧑‍✈️</div>
+                <div>
+                    <div style="font-weight:600; color:var(--text-primary);">{{ bus.driver_name_display }}</div>
+                    <!-- <div style="font-size:0.8rem; color:var(--text-secondary);">Phone number here</div> -->
                 </div>
-                <div class="detail-group">
-                    <div class="detail-label">Route</div>
-                    <div id="display-route" class="detail-value">{{ bus.route or 'N/A' }}</div>
-                    <select id="input-route" class="edit-input">
+            </div>
+            {% else %}
+            <div style="color:var(--text-secondary); font-style:italic;">No driver assigned</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Details & Tracking -->
+    <div class="main-content">
+
+        <!-- Stats & Info -->
+        <div class="modern-card" style="margin-bottom: 24px;">
+            <div class="section-title">Overview & Status</div>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-label">Total Capacity</div>
+                    <div class="stat-value" id="display-capacity">{{ bus.capacity }}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">On Board</div>
+                    <div class="stat-value" style="color:var(--primary)">{{ boarded_students|length }}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Assigned</div>
+                    <div class="stat-value">{{ assigned_students|length }}</div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div class="info-group">
+                    <label>Model</label>
+                    <div class="value" id="display-model">{{ bus.model or 'N/A' }}</div>
+                    <input type="text" id="input-model" class="form-input-edit" value="{{ bus.model or '' }}">
+                </div>
+                <div class="info-group">
+                    <label>Route</label>
+                    <div class="value" id="display-route">{{ bus.route or 'N/A' }}</div>
+                    <select id="input-route" class="form-input-edit">
                         <option value="">N/A</option>
                         {% for route in routes %}
                         <option value="{{ route.route_name }}" data-id="{{ route.id }}" {% if
-                            bus.route==route.route_name %}selected{% endif %}>{{ route.route_name }}
-                        </option>
+                            bus.route==route.route_name %}selected{% endif %}>{{ route.route_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="info-group">
+                    <label>Driver</label>
+                    <div class="value" id="display-driver">{{ bus.driver_name_display }}</div>
+                    <select id="input-driver" class="form-input-edit">
+                        <option value="">Unassigned</option>
+                        {% for driver in drivers %}
+                        <option value="{{ driver.id }}" data-name="{{ driver.full_name }}" {% if
+                            bus.driver_name==driver.full_name %}selected{% endif %}>{{ driver.full_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
-        </div>
 
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-            <h4 style="margin-bottom: 16px; color: var(--primary);">Service & Compliance</h4>
-            <div class="split-row">
-                <div>
-                    <div class="detail-group">
-                        <div class="detail-label">Last Service Date</div>
-                        <div id="display-last-service" class="detail-value">{{ bus.last_service_date or
-                            'N/A' }}</div>
-                        <input type="date" id="input-last-service" class="edit-input"
+            <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--glass-border);">
+                <h4
+                    style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px; text-transform:uppercase;">
+                    Maintenance & Compliance</h4>
+                <div class="detail-grid">
+                    <div class="info-group">
+                        <label>Last Service</label>
+                        <div class="value" id="display-last-service">{{ bus.last_service_date or 'N/A' }}</div>
+                        <input type="date" id="input-last-service" class="form-input-edit"
                             value="{{ bus.last_service_date or '' }}">
                     </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Next Service Due</div>
-                        <div id="display-next-service" class="detail-value">{{ bus.next_service_due or
-                            'N/A' }}</div>
-                        <input type="date" id="input-next-service" class="edit-input"
+                    <div class="info-group">
+                        <label>Next Due</label>
+                        <div class="value" id="display-next-service">{{ bus.next_service_due or 'N/A' }}</div>
+                        <input type="date" id="input-next-service" class="form-input-edit"
                             value="{{ bus.next_service_due or '' }}">
                     </div>
-                </div>
-                <div>
-                    <div class="detail-group">
-                        <div class="detail-label">Insurance Expiry</div>
-                        <div id="display-insurance" class="detail-value">{{ bus.insurance_expiry or
-                            'N/A' }}</div>
-                        <input type="date" id="input-insurance" class="edit-input"
+                    <div class="info-group">
+                        <label>Insurance Exp</label>
+                        <div class="value" id="display-insurance">{{ bus.insurance_expiry or 'N/A' }}</div>
+                        <input type="date" id="input-insurance" class="form-input-edit"
                             value="{{ bus.insurance_expiry or '' }}">
                     </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Fitness Cert. Expiry</div>
-                        <div id="display-fitness" class="detail-value">{{ bus.fitness_expiry or 'N/A' }}
-                        </div>
-                        <input type="date" id="input-fitness" class="edit-input" value="{{ bus.fitness_expiry or '' }}">
+                    <div class="info-group">
+                        <label>Fitness Exp</label>
+                        <div class="value" id="display-fitness">{{ bus.fitness_expiry or 'N/A' }}</div>
+                        <input type="date" id="input-fitness" class="form-input-edit"
+                            value="{{ bus.fitness_expiry or '' }}">
                     </div>
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-                <h4 style="color: var(--primary); margin:0;">Current Boarded Students</h4>
-                <span class="badge"
-                    style="background:var(--primary); color:white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
-                    {{ boarded_students|length }} On Board
-                </span>
-            </div>
-
-            {% if boarded_students %}
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Photo</th>
-                            <th>Name</th>
-                            <th>Roll No.</th>
-                            <th>Parent Phone</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in boarded_students %}
-                        <tr>
-                            <td style="width: 60px;">
-                                {% if student.profile_photo_url %}
-                                <img src="{{ student.profile_photo_url }}" alt="Photo"
-                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                {% else %}
-                                <div
-                                    style="width: 40px; height: 40px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                                    👤</div>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div style="font-weight: 500;">{{ student.full_name }}</div>
-                            </td>
-                            <td>{{ student.roll_number }}</td>
-                            <td>{{ student.parent_phone or '-' }}</td>
-                            <td>
-                                <span class="badge badge-success"
-                                    style="color:var(--success);background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600">On
-                                    Board</span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div
-                style="background: #f9fafb; padding: 20px; border-radius: 8px; text-align: center; color: var(--text-light);">
-                <div style="font-size: 2rem; margin-bottom: 8px;">🚌</div>
-                <div>No students currently boarded</div>
-            </div>
-            {% endif %}
+        <!-- Live Map -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="section-title">Live Tracking</div>
+            <div id="single-bus-map"></div>
         </div>
-
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-                <h4 style="color: var(--primary); margin:0;">Assigned Students</h4>
-                <span class="badge"
-                    style="background:#6b7280; color:white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
-                    {{ assigned_students|length }} Assigned
-                </span>
-            </div>
-
+        <!-- Assigned Students -->
+        <div class="card">
+            <div class="section-title">Assigned Students</div>
             {% if assigned_students %}
-            <div class="table-wrapper">
-                <table>
+            <div style="overflow-x: auto;" class="table-wrapper">
+                <table class="modern-table">
                     <thead>
                         <tr>
-                            <th>Photo</th>
-                            <th>Name</th>
-                            <th>Roll No.</th>
+                            <th>Student</th>
+                            <th>Roll No</th>
                             <th>Class</th>
                             <th>Stop</th>
-                            <th>Parent Phone</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for student in assigned_students %}
-                        <tr>
-                            <td style="width: 60px;">
-                                {% if student.profile_photo_url %}
-                                <img src="{{ student.profile_photo_url }}" alt="Photo"
-                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                {% else %}
-                                <div
-                                    style="width: 40px; height: 40px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                                    👤</div>
-                                {% endif %}
-                            </td>
+                        <tr style="cursor:pointer;" class="clickable-row"
+                            data-href="{{ url_for('students.student_details', student_id=student.id) }}">
                             <td>
-                                <div style="font-weight: 500;">
-                                    <a href="{{ url_for('students.student_details', student_id=student.id) }}"
-                                        style="text-decoration:none; color:inherit;">
-                                        {{ student.full_name }}
-                                    </a>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    {% if student.profile_photo_url %}
+                                    <img src="{{ student.profile_photo_url }}"
+                                        style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+                                    {% else %}
+                                    <div
+                                        style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;">
+                                        👤</div>
+                                    {% endif %}
+                                    <span style="font-weight:500;">{{ student.full_name }}</span>
                                 </div>
                             </td>
                             <td>{{ student.roll_number }}</td>
                             <td>{{ student.batch or '-' }}</td>
                             <td>{{ student.bus_stop or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div style="text-align:center; padding:20px; color:var(--text-muted); font-style:italic;">No students
+                assigned to this
+                bus.</div>
+            {% endif %}
+        </div>
+        <!-- Boarded Students -->
+        <div class="modern-card" style="margin-bottom: 24px;">
+            <div class="section-title">Current Boarded Students</div>
+            {% if boarded_students %}
+            <div style="overflow-x: auto;" class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll No</th>
+                            <th>Parent Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in boarded_students %}
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    {% if student.profile_photo_url %}
+                                    <img src="{{ student.profile_photo_url }}"
+                                        style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+                                    {% else %}
+                                    <div
+                                        style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;">
+                                        👤</div>
+                                    {% endif %}
+                                    <span style="font-weight:500;">{{ student.full_name }}</span>
+                                </div>
+                            </td>
+                            <td>{{ student.roll_number }}</td>
                             <td>{{ student.parent_phone or '-' }}</td>
                         </tr>
                         {% endfor %}
@@ -284,32 +243,32 @@
                 </table>
             </div>
             {% else %}
-            <div
-                style="background: #f9fafb; padding: 20px; border-radius: 8px; text-align: center; color: var(--text-light);">
-                <div style="font-size: 2rem; margin-bottom: 8px;">👥</div>
-                <div>No students assigned to this bus</div>
-            </div>
+            <div style="text-align:center; padding:20px; color:var(--text-muted); font-style:italic;">No students
+                currently
+                boarded.</div>
             {% endif %}
         </div>
-
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-            <h4 style="margin-bottom: 16px; color: var(--primary);">Trip History</h4>
-            <div class="table-wrapper">
-                <table>
+        <!-- Trip History -->
+        <div class="modern-card" style="margin-bottom: 24px;">
+            <div class="section-title">
+                <span>Recent Trips</span>
+                <a href="{{ url_for('buses.bus_trip_history', bus_id=bus.id) }}"
+                    style="font-size:0.85rem; color:var(--primary); text-decoration:none;">View All →</a>
+            </div>
+            <div style="overflow-x: auto;" class="table-wrapper">
+                <table class="modern-table">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Time</th>
                             <th>Type</th>
                             <th>Students</th>
-                            <th>Duration</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for trip in trip_history %}
                         <tr>
                             <td>{{ trip.date }}</td>
-                            <!-- Basic slicing for time, assuming ISO format like "2025-12-12T10:08:19..." -->
                             <td>
                                 {{ trip.startTime[11:16] if trip.startTime|length > 16 else trip.startTime }}
                                 -
@@ -317,31 +276,24 @@
                                 or '-') }}
                             </td>
                             <td>{{ trip.type|capitalize }}</td>
-
                             <td>{{ trip.boardedStudents }} / {{ trip.totalStudents }}</td>
-                            <td>{{ trip.durationMinutes }} min</td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="7" style="text-align:center; padding: 20px; color: var(--text-light);">No trip
-                                history found.</td>
+                            <td colspan="4" style="text-align:center; color:var(--text-muted);">No trip history found.
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div style="margin-top: 16px; text-align: center;">
-                <a href="{{ url_for('buses.bus_trip_history', bus_id=bus.id) }}" class="btn"
-                    style="background: #e0e7ff; color: var(--primary); text-decoration: none; display: inline-block;">
-                    View Full History &rarr;
-                </a>
-            </div>
         </div>
 
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-            <h4 style="margin-bottom: 16px; color: var(--primary);">Live Location</h4>
-            <div id="single-bus-map" style="height: 400px; width: 100%; border-radius: 8px; z-index: 1;"></div>
-        </div>
+
+
+
+
+
     </div>
 </div>
 {% endblock %}
@@ -403,22 +355,32 @@
         } else {
             isEditing = true;
             document.getElementById('editBtn').innerHTML = '<span style="font-size:1rem; margin-right:6px">💾</span> Save Changes';
-            document.getElementById('editBtn').classList.replace('btn-primary', 'btn-success'); // Optional: change color
-            document.getElementById('editBtn').style.backgroundColor = 'var(--success)';
-            document.getElementById('editBtn').style.borderColor = 'var(--success)';
+            // Use classes instead of inline styles
+            document.getElementById('editBtn').classList.remove('btn-primary');
+            document.getElementById('editBtn').style.background = '#69F0AE'; // Success color manually or class
+            document.getElementById('editBtn').style.color = '#000';
 
             // Show inputs, hide displays
             const fields = ['capacity', 'model', 'driver', 'route', 'last-service', 'next-service', 'insurance', 'fitness'];
             fields.forEach(field => {
-                document.getElementById(`display-${field}`).style.display = 'none';
-                document.getElementById(`input-${field}`).style.display = 'block';
+                const displayEl = document.getElementById(`display-${field}`);
+                const inputEl = document.getElementById(`input-${field}`);
+                if (displayEl && inputEl) {
+                    displayEl.style.display = 'none';
+                    if (field === 'model' || field === 'capacity') {
+                        inputEl.style.display = 'block'; // Or whatever display property they had
+                    } else {
+                        inputEl.style.display = 'block';
+                    }
+                    inputEl.style.display = 'block';
+                }
             });
         }
     }
 
     function saveChanges() {
         const btn = document.getElementById('editBtn');
-        const originalText = btn.innerHTML;
+        const originalText = '<span style="margin-right:8px">✏️</span> Edit Bus';
         btn.disabled = true;
         btn.innerText = 'Saving...';
 
@@ -455,6 +417,10 @@
                     alert('Error: ' + data.message);
                     btn.disabled = false;
                     btn.innerHTML = originalText;
+                    btn.style.backgroundColor = ''; // Reset to class style
+                    btn.style.color = '';
+                    btn.classList.add('btn-primary');
+                    isEditing = false;
                 }
             })
             .catch((error) => {
@@ -462,7 +428,22 @@
                 alert('An error occurred. Please try again.');
                 btn.disabled = false;
                 btn.innerHTML = originalText;
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+                btn.classList.add('btn-primary');
+                isEditing = false;
             });
     }
+    // Handle clickable rows
+    document.addEventListener('DOMContentLoaded', () => {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', () => {
+                if (row.dataset.href) {
+                    window.location.href = row.dataset.href;
+                }
+            });
+        });
+    });
 </script>
 {% endblock %}

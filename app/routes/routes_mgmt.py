@@ -36,10 +36,27 @@ def routes():
             if bus_id and bus_id in bus_map:
                 route['assigned_bus_name'] = bus_map[bus_id]
             else:
-                # If not in map, it might be Unassigned or legacy name
                 route['assigned_bus_name'] = bus_id if bus_id else 'Unassigned'
-
+                
     return render_template('routes.html', routes=routes)
+
+@routes_bp.route('/stops')
+def stops():
+    if 'uid' not in session:
+        return redirect(url_for('auth.login'))
+    
+    uid = session['uid']
+    db = get_db()
+    
+    # Fetch all global stops
+    stops_ref = db.collection('organizations').document(uid).collection('stops').order_by('stop_name')
+    all_stops = []
+    for s_doc in stops_ref.stream():
+        s_data = s_doc.to_dict()
+        s_data['id'] = s_doc.id
+        all_stops.append(s_data)
+
+    return render_template('stops.html', all_stops=all_stops)
 
 @routes_bp.route('/route/<route_id>')
 def route_details(route_id):
@@ -74,7 +91,47 @@ def route_details(route_id):
         else:
             route['assigned_bus_name'] = aid if aid else 'Unassigned'
 
-    return render_template('route_details.html', route=route, buses=buses)
+    # Fetch global stops for adding to route
+    stops_ref = db.collection('organizations').document(uid).collection('stops').order_by('stop_name')
+    all_stops = []
+    stop_map = {}
+    for s_doc in stops_ref.stream():
+        s_data = s_doc.to_dict()
+        s_data['id'] = s_doc.id
+        all_stops.append(s_data)
+        stop_map[s_doc.id] = s_data
+
+    # Enrich route stops with coordinates
+    if route and 'stops' in route and isinstance(route['stops'], list):
+        enriched_stops = []
+        for stop in route['stops']:
+            if isinstance(stop, dict) and 'id' in stop and stop['id'] in stop_map:
+                full_stop = stop_map[stop['id']]
+                stop['lat'] = full_stop.get('lat', 0)
+                stop['long'] = full_stop.get('long', 0)
+            enriched_stops.append(stop)
+        
+        # Sort stops by fee (ascending)
+        # Handle cases where stop might be a string (legacy) or dict
+        def get_fee(s):
+            if isinstance(s, dict):
+                try:
+                    return float(s.get('fee', 0))
+                except (ValueError, TypeError):
+                    return 0.0
+            return 0.0
+            
+        route['stops'] = sorted(enriched_stops, key=get_fee)
+
+    # Find assigned bus data
+    assigned_bus_data = None
+    if route and route.get('assigned_bus'):
+        for bus in buses:
+            if bus['id'] == route['assigned_bus']:
+                assigned_bus_data = bus
+                break
+
+    return render_template('route_details.html', route=route, buses=buses, all_stops=all_stops, assigned_bus=assigned_bus_data)
 
 @routes_bp.route('/add_route')
 def add_route():

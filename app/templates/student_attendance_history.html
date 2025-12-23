@@ -27,28 +27,30 @@
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Check-in Time</th>
-                        <th>Check-out Time</th>
                         <th>Trip Type</th>
+                        <th>Boarded Time</th>
+                        <th>Dropped Time</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for record in attendance_records %}
                     <tr>
                         <td>{{ record.date }}</td>
-                        <td>{{ record.check_in }}</td>
-                        <td>{{ record.check_out }}</td>
                         <td>
-                            {% if record.type == 'Morning' %}
+                            {% if record.trip_type == 'Morning' %}
                             <span class="badge" style="background:#dbeafe;color:#1e40af;">Morning</span>
-                            {% else %}
+                            {% elif record.trip_type == 'Evening' %}
                             <span class="badge" style="background:#fae8ff;color:#86198f;">Evening</span>
+                            {% else %}
+                            <span class="badge">{{ record.trip_type }}</span>
                             {% endif %}
                         </td>
+                        <td>{{ record.boarded_time }}</td>
+                        <td>{{ record.dropped_time }}</td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="4" style="text-align:center; padding:20px; color:var(--text-light);">No
+                        <td colspan="5" style="text-align:center; padding:20px; color:var(--text-light);">No
                             attendance records found.</td>
                     </tr>
                     {% endfor %}
