@@ -35,8 +35,7 @@
             <div class="profile-meta">
                 <div>License: <span id="display_license_number" style="font-family:monospace">{{ driver.license_number
                         }}</span>
-                    <input type="text" id="edit_license_number" class="form-input-edit"
-                        value="{{ driver.license_number }}" style="display:none;">
+
                 </div>
             </div>
 
@@ -44,13 +43,13 @@
 
             <div style="margin-top: 24px;">
                 <button id="edit-profile-btn" class="btn btn-primary" style="width:100%; justify-content:center;">
-                    <span style="margin-right:8px">✏️</span> Edit Profile
+                    Edit Profile
                 </button>
             </div>
 
             <div style="margin-top: 12px;">
                 <button onclick="deleteDriver()" class="btn btn-danger" style="width:100%; justify-content:center;">
-                    🗑️ Delete Driver
+                    Delete Driver
                 </button>
             </div>
         </div>
@@ -109,16 +108,13 @@
                 <div class="detail-grid">
                     <div class="info-group">
                         <label class="info-label">Assigned Bus</label>
-                        <select id="live_assigned_bus" class="form-input"
-                            onchange="updateField('assigned_bus', this.value)">
-                            <option value="">Select Bus...</option>
-                            {% for bus in buses %}
-                            <option value="{{ bus.id }}" {% if driver.assigned_bus==bus.id %}selected{% endif %}>
-                                {{ bus.bus_number }}
-                            </option>
-                            {% endfor %}
-                            <option value="">Unassigned</option>
-                        </select>
+                        <div class="value" id="display_assigned_bus">
+                            {% if driver.assigned_bus_name %}
+                            {{ driver.assigned_bus_name }}
+                            {% else %}
+                            Unassigned
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="info-group">
                         <label class="info-label">Add Stop Permission</label>
@@ -137,8 +133,7 @@
                     <div class="info-group">
                         <label class="info-label">Joining Date</label>
                         <div class="value" id="display_joining_date">{{ driver.joining_date or 'N/A' }}</div>
-                        <input type="date" id="edit_joining_date" class="form-input-edit"
-                            value="{{ driver.joining_date }}" style="display:none;">
+
                     </div>
                     <div class="info-group">
                         <label class="info-label">License Expiry</label>

@@ -22,21 +22,33 @@
         <div class="stops-grid">
             {% for stop in all_stops %}
             <div class="stop-card">
-                <div class="stop-icon">🚏</div>
-                <div class="stop-info">
-                    <div class="stop-name">{{ stop.stop_name }}</div>
-                    <div class="stop-meta">
-                        <span class="fee-badge">₹{{ stop.fee }}</span>
+                <div class="stop-card-row">
+                    <div class="stop-icon">🚏</div>
+                    <div class="stop-info">
+                        <div class="stop-name">{{ stop.stop_name }}</div>
+                        <div class="stop-meta">
+                            <span class="fee-badge">₹{{ stop.fee }}</span>
+                            <span class="student-count-badge" title="Assigned Students">
+                                👥 {{ stop.student_count }}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="stop-actions">
-                    <button class="action-btn edit-btn" data-id="{{ stop.id }}" data-name="{{ stop.stop_name }}"
-                        data-fee="{{ stop.fee }}" onclick="editStop(this)">
-                        ✏️
-                    </button>
-                    <button class="action-btn delete-btn" onclick="deleteStop('{{ stop.id }}')">
-                        🗑️
-                    </button>
+                    <div class="stop-actions">
+                        <button class="action-btn edit-btn" data-id="{{ stop.id }}" data-name="{{ stop.stop_name }}"
+                            data-fee="{{ stop.fee }}" onclick="editStop(this)">
+                            ✏️
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteStop('{{ stop.id }}')">
+                            🗑️
+                        </button>
+                        {% if stop.student_count > 0 %}
+                        <button class="action-btn info-btn" data-stop-name="{{ stop.stop_name }}"
+                            data-students='{{ stop.assigned_students_details | tojson | safe }}'
+                            onclick="viewStudentList(this)" title="View Students">
+                            ℹ️
+                        </button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% else %}
@@ -62,13 +74,22 @@
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid var(--glass-border);
         border-radius: 12px;
+        padding: 0;
+        /* Padding moved to inner elements */
+        display: flex;
+        flex-direction: column;
+        /* Vertical stack */
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stop-card-row {
         padding: 20px;
         display: flex;
         align-items: center;
         gap: 15px;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        width: 100%;
     }
 
     .stop-card:hover {
@@ -78,9 +99,40 @@
         border-color: rgba(255, 255, 255, 0.1);
     }
 
+    .student-list {
+        padding: 0 20px 20px 20px;
+        /* background: rgba(0,0,0,0.1); Optional inner background */
+    }
+
+    .list-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        margin-bottom: 12px;
+        width: 100%;
+    }
+
+    .student-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .student-tag {
+        background: rgba(255, 255, 255, 0.08);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-primary);
+    }
+
     .stop-icon {
         font-size: 2rem;
         background: rgba(255, 255, 255, 0.05);
+        min-width: 50px;
+        /* Prevent shrink */
         width: 50px;
         height: 50px;
         display: flex;
@@ -117,6 +169,14 @@
         padding: 2px 8px;
         border-radius: 4px;
         font-weight: 500;
+    }
+
+    .student-count-badge {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-secondary);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
     }
 
     .stop-actions {
@@ -186,9 +246,31 @@
     </div>
 </div>
 
+<!-- STUDENTS LIST MODAL -->
+<div id="studentsModal" class="modal"
+    style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-content card"
+        style="margin: 10% auto; padding: 24px; width: 500px; max-width:90%; position: relative;">
+        <span onclick="closeStudentsModal()"
+            style="position: absolute; right: 20px; top: 15px; cursor: pointer; font-size: 1.5rem; opacity: 0.7;">&times;</span>
+        <h3 id="studentsModalTitle"
+            style="margin-bottom: 10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">Assigned
+            Students</h3>
+
+        <div id="studentsModalContent" style="max-height: 400px; overflow-y: auto; padding-top: 10px;">
+            <!-- Populated via JS -->
+        </div>
+
+        <div style="margin-top: 20px; text-align: right;">
+            <button onclick="closeStudentsModal()" class="btn btn-secondary">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // Modal Logic
     const modal = document.getElementById('stopModal');
+    const studentsModal = document.getElementById('studentsModal');
 
     function openAddStopModal() {
         document.getElementById('modalTitle').innerText = "Add New Stop";
@@ -218,6 +300,55 @@
 
     function closeStopModal() {
         modal.style.display = "none";
+    }
+
+    // Student List Modal Logic
+    function viewStudentList(btn) {
+        const stopName = btn.dataset.stopName;
+        // Check if data-students exists
+        let students = [];
+        try {
+            students = JSON.parse(btn.dataset.students);
+        } catch (e) {
+            console.error("Error parsing students JSON", e);
+            students = [];
+        }
+
+        document.getElementById('studentsModalTitle').innerText = `Students at ${stopName} (${students.length})`;
+        const container = document.getElementById('studentsModalContent');
+        container.innerHTML = '';
+
+        if (students.length === 0) {
+            container.innerHTML = '<div style="text-align:center; color:var(--text-secondary); padding:20px;">No students assigned.</div>';
+        } else {
+            const grid = document.createElement('div');
+            grid.style.display = 'grid';
+            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+            grid.style.gap = '10px';
+
+            students.forEach(s => {
+                const item = document.createElement('div');
+                item.className = 'student-list-item';
+                item.style.background = 'rgba(255,255,255,0.05)';
+                item.style.padding = '10px';
+                item.style.borderRadius = '8px';
+                item.style.display = 'flex';
+                item.style.flexDirection = 'column';
+
+                item.innerHTML = `
+                    <div style="font-weight:600; color:var(--text-primary);">${s.name}</div>
+                    <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">${s.roll}</div>
+                `;
+                grid.appendChild(item);
+            });
+            container.appendChild(grid);
+        }
+
+        studentsModal.style.display = "block";
+    }
+
+    function closeStudentsModal() {
+        studentsModal.style.display = "none";
     }
 
     function saveStop() {
@@ -280,6 +411,9 @@
     window.onclick = function (event) {
         if (event.target == modal) {
             closeStopModal();
+        }
+        if (event.target == studentsModal) {
+            closeStudentsModal();
         }
     }
 </script>

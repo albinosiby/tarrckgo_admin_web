@@ -202,21 +202,29 @@ def bus_details(bus_id):
         except Exception as e:
              print(f"Error fetching boarded students: {e}")
 
-    # Fetch drivers
+    # Fetch drivers (Filter out those assigned to OTHER buses)
     drivers_ref = db.collection('organizations').document(uid).collection('drivers')
     drivers = []
     for doc in drivers_ref.stream():
         d_data = doc.to_dict()
         d_data['id'] = doc.id
-        drivers.append(d_data)
+        
+        # Include if unassigned OR assigned to THIS bus
+        assigned_bus = d_data.get('assigned_bus')
+        if not assigned_bus or assigned_bus == bus_id:
+            drivers.append(d_data)
 
-    # Fetch routes
+    # Fetch routes (Filter out those assigned to OTHER buses)
     routes_ref = db.collection('organizations').document(uid).collection('routes')
     routes = []
     for doc in routes_ref.stream():
         r_data = doc.to_dict()
         r_data['id'] = doc.id
-        routes.append(r_data)
+        
+        # Include if unassigned OR assigned to THIS bus
+        assigned_bus_route = r_data.get('assigned_bus')
+        if not assigned_bus_route or assigned_bus_route == bus_id:
+            routes.append(r_data)
 
     return render_template('bus_details.html', bus=bus, drivers=drivers, routes=routes, trip_history=trip_history, boarded_students=boarded_students, assigned_students=assigned_students)
 
@@ -250,20 +258,22 @@ def add_bus():
     uid = session.get('uid')
     db = get_db()
 
-    # Fetch drivers
+    # Fetch drivers (Only unassigned)
     drivers_ref = db.collection('organizations').document(uid).collection('drivers')
     drivers = []
     for doc in drivers_ref.stream():
         d_data = doc.to_dict()
         d_data['id'] = doc.id
-        drivers.append(d_data)
+        if not d_data.get('assigned_bus'):
+            drivers.append(d_data)
 
-    # Fetch routes
+    # Fetch routes (Only unassigned)
     routes_ref = db.collection('organizations').document(uid).collection('routes')
     routes = []
     for doc in routes_ref.stream():
         r_data = doc.to_dict()
         r_data['id'] = doc.id
-        routes.append(r_data)
+        if not r_data.get('assigned_bus'):
+            routes.append(r_data)
 
     return render_template('add_bus.html', drivers=drivers, routes=routes)

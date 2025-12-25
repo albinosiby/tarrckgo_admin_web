@@ -51,9 +51,32 @@ def stops():
     # Fetch all global stops
     stops_ref = db.collection('organizations').document(uid).collection('stops').order_by('stop_name')
     all_stops = []
+    
+    # Validation Helper: Fetch all students for name lookup
+    students_ref = db.collection('organizations').document(uid).collection('students')
+    student_map = {}
+    for s in students_ref.stream():
+        d = s.to_dict()
+        student_map[s.id] = d.get('full_name', 'Unknown')
+
     for s_doc in stops_ref.stream():
         s_data = s_doc.to_dict()
         s_data['id'] = s_doc.id
+        
+        # Enrich assigned_students with names
+        enriched_students = []
+        raw_assigned = s_data.get('assigned_students', [])
+        
+        if raw_assigned and isinstance(raw_assigned, list):
+            for roll in raw_assigned:
+                if roll in student_map:
+                    enriched_students.append({'roll': roll, 'name': student_map[roll]})
+                else:
+                    enriched_students.append({'roll': roll, 'name': 'Unknown'})
+        
+        s_data['assigned_students_details'] = enriched_students
+        s_data['student_count'] = len(enriched_students)
+        
         all_stops.append(s_data)
 
     return render_template('stops.html', all_stops=all_stops)

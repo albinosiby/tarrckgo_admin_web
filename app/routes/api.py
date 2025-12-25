@@ -155,39 +155,66 @@ def api_add_student():
     except ValueError:
         fee_amount = 0
 
-    # 🚌 Bus Assignment Logic
-    bus_number_input = data.get('bus_number', '')
+    # 🚌 Bus & Route Assignment Logic (Based on Stop)
+    stop_id_input = data.get('bus_stop_id', '') # Assuming frontend sends this ID
+    stop_name_input = data.get('bus_stop', '')
+
     bus_id_assigned = ''
     bus_number_assigned = ''
+    route_id_assigned = ''
+    route_name_assigned = ''
 
-    if bus_number_input:
-        buses_ref = db.collection('organizations').document(uid).collection('buses')
-        # Query by bus_number
-        query = buses_ref.where('bus_number', '==', bus_number_input).limit(1)
-        results = query.stream()
-        bus_doc = None
-        for doc in results:
-            bus_doc = doc
-            break
+    if stop_id_input:
+        # 1. Find the Route containing this Stop
+        # Search all routes for this stop ID within their 'stops' array
+        routes_ref = db.collection('organizations').document(uid).collection('routes')
+        all_routes = routes_ref.stream()
+        found_route = None
         
-        if bus_doc:
-            b_data = bus_doc.to_dict()
-            # Check capacity
-            avail_seats = int(b_data.get('avail_seats', 0))
-            if avail_seats > 0:
-                bus_id_assigned = bus_doc.id
-                bus_number_assigned = bus_number_input
-                # Decrement seats
-                bus_doc.reference.update({'avail_seats': avail_seats - 1})
-                
-                # POPULATE ROUTE DETAILS FROM BUS
-                data['route_name'] = b_data.get('route', '') # Bus usually stores route name in 'route'
-                data['route_id'] = b_data.get('route_id', '')
-                
-            else:
-                return jsonify({'status': 'error', 'message': f'Bus {bus_number_input} is full!'}), 400
-        else:
-             return jsonify({'status': 'error', 'message': f'Bus {bus_number_input} not found!'}), 400
+        for r_doc in all_routes:
+            r_data = r_doc.to_dict()
+            stops_list = r_data.get('stops', [])
+            
+            # Check if stop is in this route
+            is_in_route = False
+            if isinstance(stops_list, list):
+                for s in stops_list:
+                    if isinstance(s, dict) and s.get('id') == stop_id_input:
+                        is_in_route = True
+                        break
+                    elif isinstance(s, str) and s == stop_name_input: # Fallback for legacy string match
+                        is_in_route = True
+                        break
+            
+            if is_in_route:
+                found_route = r_data
+                found_route['id'] = r_doc.id
+                break
+        
+        if found_route:
+            route_id_assigned = found_route.get('id')
+            route_name_assigned = found_route.get('route_name')
+            assigned_bus_id = found_route.get('assigned_bus')
+            
+            if assigned_bus_id:
+                # 2. Get Bus Details
+                bus_ref = db.collection('organizations').document(uid).collection('buses').document(assigned_bus_id)
+                bus_doc = bus_ref.get()
+                if bus_doc.exists:
+                    b_data = bus_doc.to_dict()
+                    bus_id_assigned = bus_doc.id
+                    bus_number_assigned = b_data.get('bus_number', '')
+                    
+                    # Decrement available seats
+                    bus_ref.update({'avail_seats': firestore.Increment(-1)}) 
+
+        # 3. Update Stop Document with Student ID
+        if stop_id_input:
+            stop_ref = db.collection('organizations').document(uid).collection('stops').document(stop_id_input)
+            if stop_ref.get().exists:
+                stop_ref.update({
+                    'assigned_students': firestore.ArrayUnion([roll_number]) # Using roll_number as student ID
+                })
 
     student_data = {
         'full_name': data.get('full_name', ''),
@@ -202,9 +229,10 @@ def api_add_student():
         'batch': data.get('batch', ''),
         'bus_id': bus_id_assigned,
         'bus_number': bus_number_assigned,
-        'route_id': data.get('route_id', ''),
-        'route_name': data.get('route_name', ''),
+        'route_id': route_id_assigned or data.get('route_id', ''),
+        'route_name': route_name_assigned or data.get('route_name', ''),
         'bus_stop': data.get('bus_stop', ''),
+        'bus_stop_id': data.get('bus_stop_id', ''), # Store stop ID too for reference
         'payment_type': data.get('payment_type', ''),
         'fee_amount': fee_amount,
         'paid': 0,
@@ -507,6 +535,82 @@ def api_update_bus(bus_id):
                     new_route_ref = db.collection('organizations').document(uid).collection('routes').document(new_route_id)
                     new_route_ref.update({'assigned_bus': bus_id})
 
+                    # UPDATE STUDENTS associated with this route
+                    try:
+                        students_ref = db.collection('organizations').document(uid).collection('students')
+                        
+                        # Set to collect all unique student IDs to update
+                        student_ids_to_update = set()
+                        
+                        # 1. Get Route Data to find Stops
+                        route_doc = new_route_ref.get()
+                        if route_doc.exists:
+                            r_data = route_doc.to_dict()
+                            stops_list = r_data.get('stops', [])
+                            
+                            # Find students with this route_id
+                            students_by_route = students_ref.where('route_id', '==', new_route_id).stream()
+                            for s in students_by_route:
+                                student_ids_to_update.add(s.id)
+
+                            # Find students by Stop Name/ID if route_id is missing
+                            # Iterate through stops and query students
+                            for stop in stops_list:
+                                stop_val = stop.get('id') if isinstance(stop, dict) else stop
+                                if stop_val:
+                                    # Query by bus_stop_id (if using IDs) or bus_stop (if using names)
+                                    # We check both fields to be safe
+                                    if isinstance(stop_val, str): # Verify valid ID string
+                                        # Strategy: Query generic 'bus_stop' field which might hold Name or ID
+                                        # Or better, query specific fields if schema is strict.
+                                        # Assuming 'bus_stop_id' stores ID and 'bus_stop' stores Name.
+                                        
+                                        # Query by ID
+                                        st_by_id = students_ref.where('bus_stop_id', '==', stop_val).stream()
+                                        for s in st_by_id: student_ids_to_update.add(s.id)
+                                        
+                                        # If stop is a dict with 'stop_name', query by name too
+                                        if isinstance(stop, dict) and 'stop_name' in stop:
+                                            st_by_name = students_ref.where('bus_stop', '==', stop['stop_name']).stream()
+                                            for s in st_by_name: student_ids_to_update.add(s.id)
+                        
+                        bus_number = data.get('bus_number', current_bus_data.get('bus_number'))
+                        
+                        batch = db.batch()
+                        batch_count = 0
+                        
+                        for sid in student_ids_to_update:
+                            s_ref = students_ref.document(sid)
+                            batch.update(s_ref, {
+                                'bus_id': bus_id,
+                                'bus_number': bus_number,
+                                'route_id': new_route_id, # Ensure route_id is synced
+                                'route_name': r_data.get('route_name', '') # Ensure route name is synced
+                            })
+                            batch_count += 1
+                            if batch_count >= 450:
+                                batch.commit()
+                                batch = db.batch()
+                                batch_count = 0
+                        
+                        if batch_count > 0:
+                            batch.commit()
+                        
+                        # RECALCULATE AVAILABLE SEATS
+                        # Count total students assigned to this bus
+                        total_assigned_snaps = students_ref.where('bus_id', '==', bus_id).stream()
+                        total_assigned_count = sum(1 for _ in total_assigned_snaps)
+                        
+                        # Get capacity (from incoming data or existing)
+                        capacity_val = int(data.get('capacity', current_bus_data.get('capacity', 0)))
+                        new_avail_seats = max(0, capacity_val - total_assigned_count)
+                        
+                        # Update bus avail_seats immediately
+                        bus_ref.update({'avail_seats': new_avail_seats})
+                            
+                    except Exception as e:
+                        print(f"Error syncing students for bus {bus_id}: {e}")
+
         bus_ref.update(data)
         return jsonify({'status': 'success'})
     except Exception as e:
@@ -593,6 +697,40 @@ def api_update_route(route_id):
         uid = session['uid']
         db = get_db()
         route_ref = db.collection('organizations').document(uid).collection('routes').document(route_id)
+        
+        # Handle assigned_bus change
+        if 'assigned_bus' in data:
+            new_bus_id = data['assigned_bus']
+            
+            # Fetch current route data to find old bus
+            current_route_snap = route_ref.get()
+            if current_route_snap.exists:
+                current_route = current_route_snap.to_dict()
+                old_bus_id = current_route.get('assigned_bus')
+                
+                # If bus changed
+                if old_bus_id != new_bus_id:
+                    # 1. Unassign from old bus if exists
+                    if old_bus_id:
+                        old_bus_ref = db.collection('organizations').document(uid).collection('buses').document(old_bus_id)
+                        old_bus_ref.update({
+                            'route': 'N/A',
+                            'route_id': ''
+                        })
+                    
+                    # 2. Assign to new bus if exists
+                    if new_bus_id:
+                        new_bus_ref = db.collection('organizations').document(uid).collection('buses').document(new_bus_id)
+                        
+                        # Get route name (from payload if updating, else current)
+                        route_name = data.get('route_name', current_route.get('route_name', ''))
+                        
+                        # Update new bus
+                        new_bus_ref.update({
+                            'route': route_name,
+                            'route_id': route_id
+                        })
+
         route_ref.update(data)
         return jsonify({'status': 'success'})
     except Exception as e:
@@ -657,46 +795,93 @@ def api_update_student(roll_number):
 
     student_curr = student_curr_snap.to_dict()
     
-    # 🚍 Bus Assignment & Capacity Logic
-    # Check if bus_id is in data (meaning it's being updated/sent)
+    # 🚏 Stop-Based Assignment & Stop Record Update Logic
+    # Check if stop is being changed (present in data)
+    if 'bus_stop_id' in data:
+        new_stop_id = data.get('bus_stop_id')
+        old_stop_id = student_curr.get('bus_stop_id')
+        
+        # Determine effective new IDs (default to remove if not found)
+        derived_bus_id = ''
+        derived_bus_number = ''
+        derived_route_id = ''
+        derived_route_name = ''
+        
+        if new_stop_id:
+             # 1. Find the Route containing this Stop
+            routes_ref = db.collection('organizations').document(uid).collection('routes')
+            all_routes = routes_ref.stream()
+            found_route = None
+            
+            # Simple retrieval if stop_id provided
+            for r_doc in all_routes:
+                r_data = r_doc.to_dict()
+                stops_list = r_data.get('stops', [])
+                for s in stops_list:
+                    if (isinstance(s, dict) and s.get('id') == new_stop_id) or (isinstance(s, str) and s == data.get('bus_stop')):
+                        found_route = r_data
+                        found_route['id'] = r_doc.id
+                        break
+                if found_route: break
+            
+            if found_route:
+                derived_route_id = found_route.get('id')
+                derived_route_name = found_route.get('route_name')
+                assigned_bus_id = found_route.get('assigned_bus')
+                
+                if assigned_bus_id:
+                     bus_ref = db.collection('organizations').document(uid).collection('buses').document(assigned_bus_id)
+                     bus_doc = bus_ref.get()
+                     if bus_doc.exists:
+                         derived_bus_id = bus_doc.id
+                         derived_bus_number = bus_doc.to_dict().get('bus_number', '')
+
+        # Update data with derived values
+        data['bus_id'] = derived_bus_id
+        data['bus_number'] = derived_bus_number
+        data['route_id'] = derived_route_id
+        data['route_name'] = derived_route_name
+
+        # 2. Update Stop Records (Assigned Students)
+        # Remove from old stop (strictly using ID)
+        if old_stop_id and old_stop_id != new_stop_id:
+             old_stop_ref = db.collection('organizations').document(uid).collection('stops').document(old_stop_id)
+             if old_stop_ref.get().exists:
+                 old_stop_ref.update({
+                     'assigned_students': firestore.ArrayRemove([roll_number])
+                 })
+        
+        # Add to new stop
+        if new_stop_id and new_stop_id != old_stop_id:
+             new_stop_ref = db.collection('organizations').document(uid).collection('stops').document(new_stop_id)
+             if new_stop_ref.get().exists:
+                 new_stop_ref.update({
+                     'assigned_students': firestore.ArrayUnion([roll_number])
+                 })
+
+    # 🚍 Bus Assignment & Capacity Logic (Existing refined)
+    # Check if bus_id is in data (updated above or passed)
     if 'bus_id' in data:
         new_bus_id = data.get('bus_id')
         old_bus_id = student_curr.get('bus_id')
         
-        # If bus assignment is changing
         if new_bus_id != old_bus_id:
             # A. Assigning to a New Bus (New ID is present)
             if new_bus_id:
-                # 1. Enforce No Dues Rule - REMOVED per user request
-                # current_due check was here.
+                try:
+                    bus_new_ref = db.collection('organizations').document(uid).collection('buses').document(new_bus_id)
+                    # Atomic decrement. Will fail if doc doesn't exist.
+                    bus_new_ref.update({'avail_seats': firestore.Increment(-1)})
+                except Exception as e:
+                    print(f"Warning: Failed to decrement seats for bus {new_bus_id}: {e}")
 
-                
-                # 2. Check & Decrement Capacity
-                bus_new_ref = db.collection('organizations').document(uid).collection('buses').document(new_bus_id)
-                bus_new_snap = bus_new_ref.get()
-                if not bus_new_snap.exists:
-                    return jsonify({'status': 'error', 'message': 'Selected bus not found'}), 404
-                
-                bus_new_data = bus_new_snap.to_dict()
-                avail_seats = int(bus_new_data.get('avail_seats', 0))
-                
-                if avail_seats <= 0:
-                    return jsonify({'status': 'error', 'message': 'Selected bus is full (0 seats available).'}), 400
-                
-                bus_new_ref.update({'avail_seats': avail_seats - 1})
-                
-                # Update Route info as well from the new bus
-                data['route_name'] = bus_new_data.get('route', '')
-                data['route_id'] = bus_new_data.get('route_id', '')
-                data['bus_number'] = bus_new_data.get('bus_number', '') # Ensure bus number is synced too
-
-            # B. Unassigning from Old Bus (Old ID was present)
+            # B. Removing from Old Bus (Old ID was present)
             if old_bus_id:
-                bus_old_ref = db.collection('organizations').document(uid).collection('buses').document(old_bus_id)
-                bus_old_snap = bus_old_ref.get()
-                if bus_old_snap.exists:
-                    old_avail = int(bus_old_snap.to_dict().get('avail_seats', 0))
-                    bus_old_ref.update({'avail_seats': old_avail + 1})
+                try:
+                    bus_old_ref = db.collection('organizations').document(uid).collection('buses').document(old_bus_id)
+                    bus_old_ref.update({'avail_seats': firestore.Increment(1)})
+                except Exception as e:
+                    print(f"Warning: Failed to increment seats for bus {old_bus_id}: {e}")
 
     # 🚫 Never allow roll number change
     data.pop('roll_number', None)

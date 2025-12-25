@@ -53,13 +53,19 @@
 
         const markers = {};
         const uid = "{{ session['uid'] }}"; // Get Organization ID
-
-        // Listen to all buses in the organization
         const locationRef = rtdb.ref(`organizations/${uid}/bus_location`);
+        // Custom Bus Icon
+        const busIcon = L.divIcon({
+            html: '<div style="font-size: 24px; line-height: 1; text-shadow: 0 0 5px rgba(0,0,0,0.5);">🚌</div>',
+            className: 'bus-marker-icon', // Dummy class to remove default styles if needed, or use default empty
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
 
         locationRef.on('value', (snapshot) => {
             const buses = snapshot.val();
-            console.log("[DEBUG Tracker] Received buses data:", buses);
+            // console.log("[DEBUG Tracker] Received buses data:", buses);
             if (buses) {
                 // Clear markers not in data anymore (optional, handled by update)
 
@@ -76,7 +82,7 @@
                             markers[busId].setLatLng([lat, lng]);
                             markers[busId].setPopupContent(`<b>Bus ${data.bus_number}</b><br>Speed: ${data.speed} km/h`);
                         } else {
-                            const marker = L.marker([lat, lng]).addTo(map)
+                            const marker = L.marker([lat, lng], { icon: busIcon }).addTo(map)
                                 .bindPopup(`<b>Bus ${data.bus_number}</b><br>Speed: ${data.speed} km/h`);
                             markers[busId] = marker;
 

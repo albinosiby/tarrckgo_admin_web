@@ -128,29 +128,35 @@
                     Transport Assignment</h4>
                 <div class="detail-grid">
                     <div class="info-group">
-                        <label class="info-label">Assigned Bus</label>
-                        <div class="value" id="display_bus_number">{{ student.bus_number or 'No Bus' }}</div>
-                        <select id="edit_bus_number" class="form-input-edit" style="display:none;"
-                            onchange="updateStops()">
-                            <option value="">Select Bus...</option>
-                            {% for bus in buses %}
-                            <option value="{{ bus.bus_number }}" {% if student.bus_number==bus.bus_number %}selected{%
-                                endif %}>
-                                {{ bus.bus_number }} - {{ bus.route }}
+                        <label class="info-label">Bus Stop</label>
+                        <div class="value" id="display_bus_stop">{{ student.bus_stop or '-' }}</div>
+                        <select id="edit_bus_stop" class="form-input-edit" style="display:none;" onchange="updateFee()">
+                            <option value="">Select Stop...</option>
+                            {% for stop in all_stops %}
+                            <option value="{{ stop.stop_name }}" data-id="{{ stop.id }}" data-fee="{{ stop.fee }}" {% if
+                                student.bus_stop_id==stop.id or student.bus_stop==stop.stop_name %}selected{% endif %}>
+                                {{ stop.stop_name }}
                             </option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="info-group">
-                        <label class="info-label">Bus Stop</label>
-                        <div class="value" id="display_bus_stop">{{ student.bus_stop or '-' }}</div>
-                        <select id="edit_bus_stop" class="form-input-edit" style="display:none;" onchange="updateFee()">
-                            <option value="{{ student.bus_stop }}">{{ student.bus_stop }}</option>
-                        </select>
+                        <label class="info-label">Assigned Bus</label>
+                        <div class="value" id="display_bus_number">
+                            {{ student.bus_number or 'Unassigned' }}
+                        </div>
+                        <!-- Bus is auto-assigned, so no edit dropdown here -->
+                        <div id="edit_bus_number"
+                            style="display:none; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i style="margin-right: 5px;">🤖</i> Bus auto-assigned based on stop
+                        </div>
                     </div>
                     <div class="info-group">
                         <label class="info-label">Route</label>
-                        <div class="value" id="display_route_name">{{ student.route_name or '-' }}</div>
+                        <div class="value" id="display_route_name">{% if student.route_name %}
+                            <small style="opacity:0.7">{{ student.route_name }}</small>
+                            {% endif %}
+                        </div>
                         <!-- Route is derived from bus -->
                     </div>
                 </div>
@@ -310,7 +316,9 @@
         ];
 
         // Transport fields separate
-        const transportFields = ['route', 'bus_number', 'bus_stop', 'payment_type', 'fee_amount'];
+        // bus_number removed from list as handled separately/hidden
+        const transportFields = ['route', 'bus_stop', 'payment_type', 'fee_amount'];
+        // Note: 'bus_number' is now just an info div in edit mode, managed by toggle logic manually below
 
         fields.forEach(field => {
             const displayEl = document.getElementById('display_' + field);
@@ -320,6 +328,14 @@
                 inputEl.style.display = showInput ? 'block' : 'none';
             }
         });
+
+        // Specially handle bus number display/edit-info
+        const busDisplay = document.getElementById('display_bus_number');
+        const busEditInfo = document.getElementById('edit_bus_number');
+        if (busDisplay && busEditInfo) {
+            busDisplay.style.display = showInput ? 'none' : 'block';
+            busEditInfo.style.display = showInput ? 'block' : 'none';
+        }
 
         transportFields.forEach(field => {
             const displayEl = document.getElementById('display_' + field);
@@ -345,73 +361,11 @@
         if (photoContainer) photoContainer.style.display = showInput ? 'block' : 'none';
 
         if (showInput) {
-            const busSelect = document.getElementById('edit_bus_number');
-            const currentStop = JSON.parse(document.getElementById('student-bus-stop').textContent);
-
-            // Trigger initial stop population based on current route
-            if (busSelect.value) {
-                updateStops(currentStop);
-            }
+            // No need to trigger updateStops
         }
     }
 
-    function updateStops(currentStop = null) {
-        const busSelect = document.getElementById('edit_bus_number');
-        const stopSelect = document.getElementById('edit_bus_stop');
-        const routeDisplay = document.getElementById('display_route_name');
-        const busNumber = busSelect.value;
-        const currentVal = currentStop || stopSelect.value;
-
-        stopSelect.innerHTML = '<option value="">Select Stop...</option>';
-        if (routeDisplay) routeDisplay.textContent = '-';
-
-        if (!busNumber) return;
-
-        // Find the selected bus object
-        const selectedBus = busesData.find(b => b.bus_number === busNumber);
-
-        if (selectedBus && selectedBus.route && routeDisplay) {
-            routeDisplay.textContent = selectedBus.route;
-        }
-
-        if (!selectedBus || !selectedBus.route) return;
-
-        // Find route
-        const selectedRoute = routesData.find(r => r.route_name === selectedBus.route);
-
-        if (selectedRoute) {
-            let stops = selectedRoute.stops || [];
-            if (typeof stops === 'string') {
-                stops = stops.split(',').map(s => s.trim());
-            }
-
-            if (Array.isArray(stops)) {
-                stops.forEach(stop => {
-                    const option = document.createElement('option');
-                    let stopName = stop;
-                    let stopFee = 0;
-
-                    if (typeof stop === 'object') {
-                        stopName = stop.name || '';
-                        stopFee = stop.fee || 0;
-                    }
-
-                    option.value = stopName;
-                    option.textContent = stopName;
-                    option.setAttribute('data-fee', stopFee);
-
-                    if (stopName === currentVal) {
-                        option.selected = true;
-                    }
-                    stopSelect.appendChild(option);
-                });
-            } else {
-                const option = document.createElement('option');
-                option.textContent = "No stops found for this route";
-                stopSelect.appendChild(option);
-            }
-        }
-    }
+    // updateStops function removed as stops are global
 
     function updateFee() {
         const stopSelect = document.getElementById('edit_bus_stop');
@@ -441,11 +395,17 @@
         formData.append('address', document.getElementById('edit_address').value);
 
         // Transport
-        formData.append('bus_number', document.getElementById('edit_bus_number').value);
-        formData.append('bus_stop', document.getElementById('edit_bus_stop').value);
+        // Transport
+        // bus_number logic removed (auto-assigned)
+        const stopSelect = document.getElementById('edit_bus_stop');
+        formData.append('bus_stop', stopSelect.value);
 
-        const busId = busesData.find(b => b.bus_number === document.getElementById('edit_bus_number').value)?.id || '';
-        formData.append('bus_id', busId);
+        const selectedOpt = stopSelect.options[stopSelect.selectedIndex];
+        if (selectedOpt && selectedOpt.getAttribute('data-id')) {
+            formData.append('bus_stop_id', selectedOpt.getAttribute('data-id'));
+        }
+
+        // We do not send bus_number or bus_id manually anymore
 
         formData.append('payment_type', document.getElementById('edit_payment_type').value);
         formData.append('fee_amount', document.getElementById('edit_fee_amount').value);

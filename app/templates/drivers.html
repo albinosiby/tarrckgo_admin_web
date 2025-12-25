@@ -8,6 +8,8 @@
 
 {% block content %}
 <section id="page-drivers" class="page-section active">
+    <!-- Using block content to inject only the specific page content -->
+
     <div class="card">
         <div class="card-title-row"
             style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
@@ -17,38 +19,215 @@
             </a>
         </div>
 
-        <div class="driver-grid">
+        <div class="drivers-row">
             {% for driver in drivers %}
-            <a href="{{ url_for('drivers.driver_details', driver_id=driver.id) }}" class="driver-card">
-                <div class="driver-header">
-                    <div>
-                        <div class="driver-name">{{ driver.full_name }}</div>
-                        <div class="driver-license">{{ driver.license_number }}</div>
+            <div class="driver-profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        {% if driver.profile_photo_url %}
+                        <img src="{{ driver.profile_photo_url }}" alt="Profile">
+                        {% else %}
+                        🧑‍✈️
+                        {% endif %}
                     </div>
-                    <span class="badge badge-success">Active</span>
+                    <div class="driver-name">{{ driver.full_name }}</div>
+                    <div class="license-code">{{ driver.license_number }}</div>
                 </div>
 
-                <div class="driver-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Phone</span>
-                        <span class="detail-value">{{ driver.phone_number }}</span>
+                <div class="profile-body">
+                    <div class="profile-info-row">
+                        <span class="p-label">Phone</span>
+                        <span class="p-value">{{ driver.phone_number }}</span>
                     </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Assigned Bus</span>
-                        <span class="detail-value">{{ driver.assigned_bus_name or 'Unassigned' }}</span>
+                    <div class="profile-info-row">
+                        <span class="p-label">Bus</span>
+                        {% if driver.assigned_bus_name %}
+                        <span class="bus-tag">🚌 {{ driver.assigned_bus_number }}</span>
+                        {% else %}
+                        <span class="p-value" style="color:var(--text-secondary)">Unassigned</span>
+                        {% endif %}
                     </div>
                 </div>
-            </a>
+
+                <div class="profile-footer">
+                    <a href="{{ url_for('drivers.driver_details', driver_id=driver.id) }}"
+                        class="p-action-btn view-btn">
+                        View Profile
+                    </a>
+                </div>
+
+                <button class="delete-icon-btn" onclick="deleteDriver('{{ driver.id }}')"
+                    title="Delete Driver">×</button>
+            </div>
             {% else %}
-            <div class="empty-state">
-                <div style="font-size: 3rem; margin-bottom: 12px;">🧑‍✈️</div>
-                <h3>No drivers found</h3>
-                <p>Add your first driver to get started.</p>
+            <div class="no-drivers">
+                <div style="font-size: 3rem; margin-bottom: 10px;">🧑‍✈️</div>
+                <div style="color: var(--text-secondary);">No drivers found.</div>
             </div>
             {% endfor %}
         </div>
     </div>
 </section>
+
+<style>
+    .drivers-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 10px 0;
+    }
+
+    .driver-profile-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        width: 250px;
+        position: relative;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .driver-profile-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .profile-header {
+        padding: 24px 20px 10px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .driver-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .license-code {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-family: monospace;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    .profile-body {
+        padding: 15px 20px;
+        flex: 1;
+    }
+
+    .profile-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .p-label {
+        color: var(--text-secondary);
+    }
+
+    .p-value {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .bus-tag {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+    }
+
+    .profile-footer {
+        padding: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .p-action-btn {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .view-btn {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+    }
+
+    .view-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    .delete-icon-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    .driver-profile-card:hover .delete-icon-btn {
+        opacity: 1;
+    }
+
+    .delete-icon-btn:hover {
+        color: #ef4444;
+    }
+
+    .no-drivers {
+        width: 100%;
+        text-align: center;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        border: 1px dashed var(--glass-border);
+    }
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -61,7 +240,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('Driver deleted successfully.');
+                        // alert('Driver deleted successfully.');
                         window.location.reload();
                     } else {
                         alert('Error: ' + data.message);

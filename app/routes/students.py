@@ -101,7 +101,15 @@ def add_student():
         org_data = org_doc.to_dict()
         payment_type = org_data.get('feeDetails', 'Monthly')
 
-    return render_template('add_student.html', buses=buses, routes=routes, payment_type=payment_type)
+    # Fetch All Stops for Dropdown
+    stops_ref = db.collection('organizations').document(uid).collection('stops').order_by('stop_name')
+    all_stops = []
+    for s_doc in stops_ref.stream():
+        s_data = s_doc.to_dict()
+        s_data['id'] = s_doc.id
+        all_stops.append(s_data)
+
+    return render_template('add_student.html', buses=buses, routes=routes, payment_type=payment_type, all_stops=all_stops)
 
 @students_bp.route('/student_details/<student_id>')
 def student_details(student_id):
@@ -117,11 +125,18 @@ def student_details(student_id):
         buses_ref = db.collection('organizations').document(uid).collection('buses')
         buses = []
         bus_route_map = {}
+        bus_id_map = {}  # Map bus_id -> bus_number
+
         for doc in buses_ref.stream():
             b_data = doc.to_dict()
             b_data['id'] = doc.id
             buses.append(b_data)
             bus_route_map[doc.id] = b_data.get('route', '') # Map ID to Route Name
+            bus_id_map[doc.id] = b_data.get('bus_number', 'Unknown')
+
+        # Sync bus_number from bus_id if available
+        if student.get('bus_id') and student.get('bus_id') in bus_id_map:
+            student['bus_number'] = bus_id_map[student['bus_id']]
         
         # Fallback: If student doesn't have route_name, try to get it from assigned bus
         if not student.get('route_name'):
@@ -213,7 +228,15 @@ def student_details(student_id):
             org_data = org_doc.to_dict()
             org_payment_type = org_data.get('feeDetails', 'Monthly')
 
-        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance, attendance_records=recent_attendance, buses=buses, routes=routes, org_payment_type=org_payment_type)
+        # Fetch All Stops for Edit Dropdown
+        stops_ref = db.collection('organizations').document(uid).collection('stops').order_by('stop_name')
+        all_stops = []
+        for s_doc in stops_ref.stream():
+            s_data = s_doc.to_dict()
+            s_data['id'] = s_doc.id
+            all_stops.append(s_data)
+
+        return render_template('student_details.html', student=student, payments=payments, total_paid=total_paid, balance=balance, attendance_records=recent_attendance, buses=buses, routes=routes, org_payment_type=org_payment_type, all_stops=all_stops)
     else:
         return "Student not found", 404
 

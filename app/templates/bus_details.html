@@ -88,21 +88,22 @@
                     <div class="stat-value" style="color:var(--primary)">{{ boarded_students|length }}</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-label">Assigned</div>
+                    <div class="stat-label">Assigned Students</div>
                     <div class="stat-value">{{ assigned_students|length }}</div>
                 </div>
             </div>
 
             <div class="detail-grid">
                 <div class="info-group">
-                    <label>Model</label>
-                    <div class="value" id="display-model">{{ bus.model or 'N/A' }}</div>
+                    <label for="input-model">Model</label>
+
                     <input type="text" id="input-model" class="form-input-edit" value="{{ bus.model or '' }}">
                 </div>
                 <div class="info-group">
-                    <label>Route</label>
-                    <div class="value" id="display-route">{{ bus.route or 'N/A' }}</div>
-                    <select id="input-route" class="form-input-edit">
+                    <label for="input-route">Route</label>
+
+                    <select id="input-route" class="form-input" style="display:block;"
+                        onchange="updateLiveAssignment('route', this)">
                         <option value="">N/A</option>
                         {% for route in routes %}
                         <option value="{{ route.route_name }}" data-id="{{ route.id }}" {% if
@@ -111,9 +112,10 @@
                     </select>
                 </div>
                 <div class="info-group">
-                    <label>Driver</label>
-                    <div class="value" id="display-driver">{{ bus.driver_name_display }}</div>
-                    <select id="input-driver" class="form-input-edit">
+                    <label for="input-driver">Driver</label>
+
+                    <select id="input-driver" class="form-input" style="display:block;"
+                        onchange="updateLiveAssignment('driver', this)">
                         <option value="">Unassigned</option>
                         {% for driver in drivers %}
                         <option value="{{ driver.id }}" data-name="{{ driver.full_name }}" {% if
@@ -129,25 +131,25 @@
                     Maintenance & Compliance</h4>
                 <div class="detail-grid">
                     <div class="info-group">
-                        <label>Last Service</label>
+                        <label for="input-last-service">Last Service</label>
                         <div class="value" id="display-last-service">{{ bus.last_service_date or 'N/A' }}</div>
                         <input type="date" id="input-last-service" class="form-input-edit"
                             value="{{ bus.last_service_date or '' }}">
                     </div>
                     <div class="info-group">
-                        <label>Next Due</label>
+                        <label for="input-next-service">Next Due</label>
                         <div class="value" id="display-next-service">{{ bus.next_service_due or 'N/A' }}</div>
                         <input type="date" id="input-next-service" class="form-input-edit"
                             value="{{ bus.next_service_due or '' }}">
                     </div>
                     <div class="info-group">
-                        <label>Insurance Exp</label>
+                        <label for="input-insurance">Insurance Exp</label>
                         <div class="value" id="display-insurance">{{ bus.insurance_expiry or 'N/A' }}</div>
                         <input type="date" id="input-insurance" class="form-input-edit"
                             value="{{ bus.insurance_expiry or '' }}">
                     </div>
                     <div class="info-group">
-                        <label>Fitness Exp</label>
+                        <label for="input-fitness">Fitness Exp</label>
                         <div class="value" id="display-fitness">{{ bus.fitness_expiry or 'N/A' }}</div>
                         <input type="date" id="input-fitness" class="form-input-edit"
                             value="{{ bus.fitness_expiry or '' }}">
@@ -161,51 +163,7 @@
             <div class="section-title">Live Tracking</div>
             <div id="single-bus-map"></div>
         </div>
-        <!-- Assigned Students -->
-        <div class="card">
-            <div class="section-title">Assigned Students</div>
-            {% if assigned_students %}
-            <div style="overflow-x: auto;" class="table-wrapper">
-                <table class="modern-table">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Roll No</th>
-                            <th>Class</th>
-                            <th>Stop</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in assigned_students %}
-                        <tr style="cursor:pointer;" class="clickable-row"
-                            data-href="{{ url_for('students.student_details', student_id=student.id) }}">
-                            <td>
-                                <div style="display:flex; align-items:center; gap:10px;">
-                                    {% if student.profile_photo_url %}
-                                    <img src="{{ student.profile_photo_url }}"
-                                        style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
-                                    {% else %}
-                                    <div
-                                        style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;">
-                                        👤</div>
-                                    {% endif %}
-                                    <span style="font-weight:500;">{{ student.full_name }}</span>
-                                </div>
-                            </td>
-                            <td>{{ student.roll_number }}</td>
-                            <td>{{ student.batch or '-' }}</td>
-                            <td>{{ student.bus_stop or '-' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div style="text-align:center; padding:20px; color:var(--text-muted); font-style:italic;">No students
-                assigned to this
-                bus.</div>
-            {% endif %}
-        </div>
+
         <!-- Boarded Students -->
         <div class="modern-card" style="margin-bottom: 24px;">
             <div class="section-title">Current Boarded Students</div>
@@ -225,7 +183,8 @@
                             <td>
                                 <div style="display:flex; align-items:center; gap:10px;">
                                     {% if student.profile_photo_url %}
-                                    <img src="{{ student.profile_photo_url }}"
+                                    <img src="{{ student.profile_photo_url }}" alt="{{ student.full_name }}"
+                                        title="{{ student.full_name }}"
                                         style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
                                     {% else %}
                                     <div
@@ -248,6 +207,7 @@
                 boarded.</div>
             {% endif %}
         </div>
+
         <!-- Trip History -->
         <div class="modern-card" style="margin-bottom: 24px;">
             <div class="section-title">
@@ -288,7 +248,52 @@
                 </table>
             </div>
         </div>
-
+        <!-- Assigned Students -->
+        <div class="card">
+            <div class="section-title">Assigned Students</div>
+            {% if assigned_students %}
+            <div style="overflow-x: auto;" class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll No</th>
+                            <th>Class</th>
+                            <th>Stop</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in assigned_students %}
+                        <tr style="cursor:pointer;" class="clickable-row"
+                            data-href="{{ url_for('students.student_details', student_id=student.id) }}">
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    {% if student.profile_photo_url %}
+                                    <img src="{{ student.profile_photo_url }}" alt="{{ student.full_name }}"
+                                        title="{{ student.full_name }}"
+                                        style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+                                    {% else %}
+                                    <div
+                                        style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;">
+                                        👤</div>
+                                    {% endif %}
+                                    <span style="font-weight:500;">{{ student.full_name }}</span>
+                                </div>
+                            </td>
+                            <td>{{ student.roll_number }}</td>
+                            <td>{{ student.batch or '-' }}</td>
+                            <td>{{ student.bus_stop or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div style="text-align:center; padding:20px; color:var(--text-muted); font-style:italic;">No students
+                assigned to this
+                bus.</div>
+            {% endif %}
+        </div>
 
 
 
@@ -312,6 +317,15 @@
             const busNo = "{{ bus.bus_number }}";
             let marker = null;
 
+            // Custom Bus Icon
+            const busIcon = L.divIcon({
+                html: '<div style="font-size: 24px; line-height: 1; text-shadow: 0 0 5px rgba(0,0,0,0.5);">🚌</div>',
+                className: 'bus-marker-icon',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+                popupAnchor: [0, -15]
+            });
+
             const busRef = rtdb.ref(`organizations/${uid}/bus_location/${busId}`);
             console.log(`[DEBUG] Listening to RTDB path: organizations/${uid}/bus_location/${busId}`);
 
@@ -332,7 +346,7 @@
                         marker.setLatLng([lat, lng]);
                         marker.setPopupContent(`<b>Bus ${busNo}</b><br>Speed: ${data.speed} km/h`);
                     } else {
-                        marker = L.marker([lat, lng]).addTo(map)
+                        marker = L.marker([lat, lng], { icon: busIcon }).addTo(map)
                             .bindPopup(`<b>Bus ${busNo}</b><br>Speed: ${data.speed} km/h`)
                             .openPopup();
                     }
@@ -445,5 +459,49 @@
             });
         });
     });
+
+    function updateLiveAssignment(type, element) {
+        const payload = {};
+
+        if (type === 'route') {
+            const selectedOption = element.options[element.selectedIndex];
+            payload.route = element.value;
+            payload.route_id = selectedOption.getAttribute('data-id') || '';
+        } else if (type === 'driver') {
+            const selectedOption = element.options[element.selectedIndex];
+            payload.driver_id = element.value || null;
+            payload.driver_name = selectedOption.getAttribute('data-name') || (element.value ? selectedOption.innerText : 'Unassigned');
+        }
+
+        // Visual feedback
+        const originalBg = element.style.backgroundColor;
+        element.style.backgroundColor = '#e0f2fe'; // Light blue indicating processing
+
+        fetch("{{ url_for('api.api_update_bus', bus_id=bus.id) }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    element.style.backgroundColor = '#dcfce7'; // Light green success
+                    setTimeout(() => {
+                        element.style.backgroundColor = originalBg || '';
+                        if (type === 'driver') window.location.reload(); // Reload to update sidebar driver info
+                    }, 500);
+                } else {
+                    alert('Error updating ' + type + ': ' + data.message);
+                    element.style.backgroundColor = '#fee2e2'; // Light red error
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update. Check connection.');
+                element.style.backgroundColor = '#fee2e2';
+            });
+    }
 </script>
 {% endblock %}

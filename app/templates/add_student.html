@@ -19,11 +19,11 @@
 
             <div class="split-row">
                 <div>
-                    <label class="form-label">Full Name</label>
+                    <label class="form-label" for="full_name">Full Name</label>
                     <input type="text" id="full_name" class="form-input" placeholder="e.g. John Doe" required>
                 </div>
                 <div>
-                    <label class="form-label">Date of Birth</label>
+                    <label class="form-label" for="dob">Date of Birth</label>
                     <input type="date" id="dob" class="form-input" required>
                 </div>
             </div>
@@ -56,8 +56,8 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Profile Photo</label>
-                <input type="file" id="student_photo" class="form-input" accept="image/*">
+                <label class="form-label" for="student_photo">Profile Photo</label>
+                <input type="file" id="student_photo" class="form-input" accept="image/*" title="Upload Student Photo">
             </div>
 
             <!-- Transport Details -->
@@ -65,19 +65,23 @@
 
             <div class="split-row">
                 <div>
-                    <label class="form-label">Select Bus</label>
-                    <select id="bus_select" class="form-input" onchange="updateStops()">
-                        <option value="">Select Bus...</option>
-                        {% for bus in buses %}
-                        <option value="{{ bus.bus_number }}">{{ bus.bus_number }} - {{ bus.route }}</option>
+                    <label class="form-label" for="bus_stop">Select Stop</label>
+                    <select id="bus_stop" class="form-input" onchange="updateFee()">
+                        <option value="">Select Stop...</option>
+                        {% for stop in all_stops %}
+                        <option value="{{ stop.stop_name }}" data-id="{{ stop.id }}" data-fee="{{ stop.fee }}">
+                            {{ stop.stop_name }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
                 <div>
-                    <label class="form-label">Select Stop</label>
-                    <select id="bus_stop" class="form-input" onchange="updateFee()">
-                        <option value="">Select Bus First...</option>
-                    </select>
+                    <!-- Placeholder or Info about automated assignment -->
+                    <label class="form-label" style="opacity: 0.7;">Assigned Bus & Route</label>
+                    <div
+                        style="padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                        <i style="margin-right: 5px;">🤖</i> Will be assigned automatically
+                    </div>
                 </div>
             </div>
 
@@ -86,11 +90,11 @@
 
             <div class="split-row">
                 <div>
-                    <label class="form-label">Payment Type</label>
+                    <label class="form-label" for="payment_type">Payment Type</label>
                     <input type="text" id="payment_type" class="form-input" value="{{ payment_type }}" readonly>
                 </div>
                 <div>
-                    <label class="form-label">Fee Amount (₹)</label>
+                    <label class="form-label" for="fee_amount">Fee Amount (₹)</label>
                     <input type="number" id="fee_amount" class="form-input" placeholder="0" required min="0">
                 </div>
             </div>
@@ -206,53 +210,7 @@
             });
     });
 
-    function updateStops() {
-        const busSelect = document.getElementById('bus_select');
-        const stopSelect = document.getElementById('bus_stop');
-        const busNumber = busSelect.value;
-        // Reset
-        stopSelect.innerHTML = '<option value="">Select Stop...</option>';
-        document.getElementById('fee_amount').value = '';
-
-        if (!busNumber) return;
-
-        // Find bus
-        const selectedBus = busesData.find(b => b.bus_number === busNumber);
-        if (!selectedBus || !selectedBus.route) {
-            const opt = document.createElement('option');
-            opt.innerText = "No route assigned to this bus";
-            stopSelect.appendChild(opt);
-            return;
-        }
-
-        // Find route
-        const selectedRoute = routesData.find(r => r.route_name === selectedBus.route);
-        if (selectedRoute) {
-            let stops = selectedRoute.stops || [];
-            if (typeof stops === 'string') {
-                stops = stops.split(',').map(s => s.trim());
-            }
-
-            if (Array.isArray(stops)) {
-                stops.forEach(stop => {
-                    const opt = document.createElement('option');
-                    // Check if stop is an object (new format) or string (old format)
-                    let stopName = stop;
-                    let stopFee = 0;
-
-                    if (typeof stop === 'object') {
-                        stopName = stop.name || '';
-                        stopFee = stop.fee || 0;
-                    }
-
-                    opt.value = stopName;
-                    opt.innerText = stopName;
-                    opt.setAttribute('data-fee', stopFee);
-                    stopSelect.appendChild(opt);
-                });
-            }
-        }
-    }
+    // updateStops function removed as stops are now global
 
     function updateFee() {
         const stopSelect = document.getElementById('bus_stop');
@@ -279,8 +237,14 @@
         formData.append('address', document.getElementById('address').value);
 
         // Transport Details
-        formData.append('bus_number', document.getElementById('bus_select').value);
-        formData.append('bus_stop', document.getElementById('bus_stop').value);
+        // Transport Details
+        const stopSelect = document.getElementById('bus_stop');
+        formData.append('bus_stop', stopSelect.value);
+        // Also send ID
+        const selectedOpt = stopSelect.options[stopSelect.selectedIndex];
+        if (selectedOpt && selectedOpt.getAttribute('data-id')) {
+            formData.append('bus_stop_id', selectedOpt.getAttribute('data-id'));
+        }
 
         formData.append('parent_name', document.getElementById('parent_name').value);
         formData.append('parent_phone', document.getElementById('parent_phone').value);
