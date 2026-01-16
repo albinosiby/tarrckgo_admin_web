@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: tarrckgo-admin-web
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: SECRET_KEY
+        sync: false
+      - key: FIREBASE_CREDENTIALS_JSON
+        sync: false
