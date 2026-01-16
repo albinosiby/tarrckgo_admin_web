@@ -35,7 +35,9 @@
             <div class="profile-meta">
                 <div>License: <span id="display_license_number" style="font-family:monospace">{{ driver.license_number
                         }}</span>
-
+                    <input type="text" id="edit_license_number" class="form-input-edit"
+                        value="{{ driver.license_number }}" style="display:none; opacity:0.6; cursor:not-allowed"
+                        disabled title="License number cannot be changed as it is linked to the login ID.">
                 </div>
             </div>
 
@@ -115,6 +117,15 @@
                             Unassigned
                             {% endif %}
                         </div>
+                        <select id="edit_assigned_bus" class="form-input-edit" style="display:none;">
+                            <option value="">Select Bus...</option>
+                            {% for bus in buses %}
+                            <option value="{{ bus.id }}" {% if driver.assigned_bus==bus.id %}selected{% endif %}>
+                                {{ bus.bus_number }}
+                            </option>
+                            {% endfor %}
+                            <option value="">Unassigned</option>
+                        </select>
                     </div>
                     <div class="info-group">
                         <label class="info-label">Add Stop Permission</label>
@@ -133,6 +144,8 @@
                     <div class="info-group">
                         <label class="info-label">Joining Date</label>
                         <div class="value" id="display_joining_date">{{ driver.joining_date or 'N/A' }}</div>
+                        <input type="date" id="edit_joining_date" class="form-input-edit"
+                            value="{{ driver.joining_date }}" style="display:none;">
 
                     </div>
                     <div class="info-group">
@@ -184,9 +197,8 @@
                             <td>{{ trip.date }}</td>
                             <td>{{ trip.bus_number }}</td>
                             <td><span class="badge badge-secondary">{{ trip.type|capitalize }}</span></td>
-                            <td>{{ trip.startTime[11:16] if trip.startTime|length > 16 else trip.startTime }}</td>
-                            <td>{{ trip.endTime[11:16] if trip.endTime and trip.endTime|length > 16 else (trip.endTime
-                                or '-') }}</td>
+                            <td>{{ trip.startTime }}</td>
+                            <td>{{ trip.endTime or '-' }}</td>
                             <td>{{ trip.durationMinutes }} min</td>
                         </tr>
                         {% else %}
@@ -266,7 +278,7 @@
         formData.append('license_expiry_date', document.getElementById('edit_license_expiry_date').value);
         formData.append('emergency_contact_name', document.getElementById('edit_emergency_contact_name').value);
         formData.append('emergency_contact_phone', document.getElementById('edit_emergency_contact_phone').value);
-        formData.append('can_add_stop', document.getElementById('input_can_add_stop').checked);
+        formData.append('can_add_stop', document.getElementById('live_can_add_stop').checked);
 
         const fileInput = document.getElementById('edit_driver_photo');
         if (fileInput && fileInput.files.length > 0) {

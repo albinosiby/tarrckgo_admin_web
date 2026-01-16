@@ -72,6 +72,7 @@ body {
     background: rgba(0, 0, 0, 0.5);
     z-index: 90;
     display: none;
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
 }
 
@@ -394,6 +395,7 @@ option {
     padding: 24px;
     border-radius: var(--glass-radius);
     border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
@@ -610,8 +612,8 @@ option {
 .bus-card {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     border-radius: 20px;
     padding: 24px;
     display: flex;
@@ -879,6 +881,7 @@ option {
 
 /* Modal */
 .modal-overlay {
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     background: rgba(0, 0, 0, 0.6);
 }

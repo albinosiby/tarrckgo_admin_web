@@ -169,5 +169,13 @@ def add_route():
         b_data = doc.to_dict()
         b_data['id'] = doc.id
         buses.append(b_data)
+
+    # Fetch global stops for adding to route
+    stops_ref = db.collection('organizations').document(uid).collection('stops').order_by('stop_name')
+    all_stops = []
+    for s_doc in stops_ref.stream():
+        s_data = s_doc.to_dict()
+        s_data['id'] = s_doc.id
+        all_stops.append(s_data)
         
-    return render_template('add_route.html', buses=buses)
+    return render_template('add_route.html', buses=buses, all_stops=all_stops)

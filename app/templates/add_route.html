@@ -18,27 +18,47 @@
         <div class="split-row">
             <div>
                 <label class="form-label">Start Point</label>
-                <input type="text" id="start_point" class="form-input" placeholder="Start Location" required>
+                <select id="start_stop_id" class="form-input" required onchange="updatePointHidden('start')">
+                    <option value="">-- Select Start Stop --</option>
+                </select>
+                <input type="hidden" id="start_point">
             </div>
             <div>
                 <label class="form-label">End Point</label>
-                <input type="text" id="end_point" class="form-input" placeholder="End Location" required>
+                <select id="end_stop_id" class="form-input" required onchange="updatePointHidden('end')">
+                    <option value="">-- Select End Stop --</option>
+                </select>
+                <input type="hidden" id="end_point">
             </div>
         </div>
 
         <div class="form-group">
             <label class="form-label">Stops</label>
+
+            <!-- Global Stop Selector -->
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <select id="geo_stop_selector" class="form-input" style="flex:1;">
+                    <option value="">-- Select Global Stop --</option>
+                    {% for stop in all_stops %}
+                    <option value="{{ stop.id }}" data-name="{{ stop.stop_name }}" data-fee="{{ stop.fee }}">{{
+                        stop.stop_name }} (₹{{ stop.fee }})</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-secondary" onclick="addSelectedStop()">Add</button>
+            </div>
+
             <div id="stops-container">
                 <!-- Stops will be added here -->
-                <div class="stop-item">
-                    <span class="stop-number">1.</span>
-                    <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required>
-                    <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required min="0">
-                </div>
             </div>
-            <button type="button" class="add-stop-btn" onclick="addStop()">
-                <span>+</span> Add Stop
-            </button>
+            <!-- Removed generic "Add Stop" button in favor of Global Stop Selector, or keep as fallback? 
+                 Let's keep a "Custom Stop" button if needed, but for now user asked to use mechanism from edit.
+                 In edit, it's mostly global stops. -->
+            <div style="text-align: right; margin-top: 5px;">
+                <small class="text-secondary">Or add a manual stop:</small>
+                <button type="button" class="add-stop-btn" onclick="addStop()">
+                    <span>+</span> Add Manual Stop
+                </button>
+            </div>
         </div>
 
         <div class="form-actions">
@@ -51,7 +71,55 @@
 
 {% block scripts %}
 <script>
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+        updateStopDropdowns();
+    });
+
+    function updatePointHidden(type) {
+        const select = document.getElementById(`${type}_stop_id`);
+        const hidden = document.getElementById(`${type}_point`);
+        if (select.selectedIndex > 0) {
+            hidden.value = select.options[select.selectedIndex].text;
+        } else {
+            hidden.value = "";
+        }
+    }
+
+    function addSelectedStop() {
+        const selector = document.getElementById('geo_stop_selector');
+        const selectedOption = selector.options[selector.selectedIndex];
+
+        if (!selectedOption.value) {
+            alert('Please select a stop first.');
+            return;
+        }
+
+        const id = selectedOption.value;
+        const name = selectedOption.getAttribute('data-name');
+        const fee = selectedOption.getAttribute('data-fee');
+
+        // Check for duplicates (ID or Name)
+        const stopItems = document.querySelectorAll('.stop-item');
+        for (let item of stopItems) {
+            const existingId = item.querySelector('.stop-id-input').value;
+            const existingName = item.querySelector('.stop-name-input').value.trim();
+
+            if ((existingId && existingId === id) || (existingName && existingName.toLowerCase() === name.toLowerCase())) {
+                alert(`Stop '${name}' is already added to the route.`);
+                return;
+            }
+        }
+
+        createStopRow(name, fee, id);
+        selector.value = ""; // Reset
+    }
+
     function addStop() {
+        createStopRow("", "", "");
+    }
+
+    function createStopRow(name, fee, id) {
         const container = document.getElementById('stops-container');
         const count = container.children.length + 1;
 
@@ -59,11 +127,13 @@
         div.className = 'stop-item';
         div.innerHTML = `
             <span class="stop-number">${count}.</span>
-            <input type="text" class="form-input stop-name-input" placeholder="Stop Name" required>
-            <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" required min="0">
+            <input type="text" class="form-input stop-name-input" placeholder="Stop Name" value="${name}" required oninput="updateStopDropdowns()">
+            <input type="number" class="form-input stop-fee-input" placeholder="Fee (₹)" value="${fee}" required min="0">
+            <input type="hidden" class="stop-id-input" value="${id}">
             <button type="button" class="remove-stop-btn" onclick="removeStop(this)">&times;</button>
         `;
         container.appendChild(div);
+        updateStopDropdowns();
     }
 
     function removeStop(btn) {
@@ -71,30 +141,108 @@
         // Renumber stops
         const container = document.getElementById('stops-container');
         Array.from(container.children).forEach((child, index) => {
-            child.querySelector('span').innerText = (index + 1) + '.';
+            child.querySelector('.stop-number').innerText = (index + 1) + '.';
         });
+        updateStopDropdowns();
+    }
+
+    function updateStopDropdowns() {
+        const startSelect = document.getElementById('start_stop_id');
+        const endSelect = document.getElementById('end_stop_id');
+
+        const currentStart = startSelect.value;
+        const currentEnd = endSelect.value;
+
+        // Clear except first option
+        startSelect.innerHTML = '<option value="">-- Select Start Stop --</option>';
+        endSelect.innerHTML = '<option value="">-- Select End Stop --</option>';
+
+        const stopItems = document.querySelectorAll('.stop-item');
+        stopItems.forEach(item => {
+            const nameInput = item.querySelector('.stop-name-input');
+            const idInput = item.querySelector('.stop-id-input');
+            const name = nameInput.value.trim();
+            const id = idInput.value;
+
+            // Use ID if available, otherwise use name as value (for manual stops) 
+            // BUT system expects IDs for better linking. 
+            // If manual stop has no ID, we can't really link it well in backend unless backend handles creating it.
+            // For now, let's use ID if present, else fallback to something unique or just the name? 
+            // Routes saving expects objects.
+
+            // If we use dropdowns for Start/End, we need a value.
+            // If it's a manual stop, value can be empty string? Or just the name?
+            // "edit_route" uses IDs.
+            // Let's assume manual stops functionality is secondary or will generate new IDs on save.
+            // For the dropdown value: prefer ID.
+
+            const value = id || name;
+
+            if (name) {
+                // Prevent duplicate options in dropdown if multiple manual stops have same name temporarily
+                // But generally users shouldn't have duplicate names.
+                startSelect.add(new Option(name, value));
+                endSelect.add(new Option(name, value));
+            }
+        });
+
+        // Restore selection
+        if (currentStart) startSelect.value = currentStart;
+        if (currentEnd) endSelect.value = currentEnd;
+
+        updatePointHidden('start');
+        updatePointHidden('end');
     }
 
     document.getElementById('addRouteForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
+        const startSelect = document.getElementById('start_stop_id');
+        const endSelect = document.getElementById('end_stop_id');
+
+        // Validation
+        if (!startSelect.value) { alert("Please select a Start Point."); return; }
+        if (!endSelect.value) { alert("Please select an End Point."); return; }
+
+        // Duplicate Name Check (Manual Stops)
+        const allStopItems = document.querySelectorAll('.stop-item');
+        const names = new Set();
+        for (let item of allStopItems) {
+            const name = item.querySelector('.stop-name-input').value.trim().toLowerCase();
+            if (name) {
+                if (names.has(name)) {
+                    alert(`Duplicate stop name found: '${name}'. Please ensure all stops are unique.`);
+                    return;
+                }
+                names.add(name);
+            }
+        }
+
         const formData = {
             route_name: document.getElementById('route_name').value,
             start_point: document.getElementById('start_point').value,
             end_point: document.getElementById('end_point').value,
+            start_stop_id: startSelect.value,
+            end_stop_id: endSelect.value,
             stops: []
         };
 
+        // If the value in drop down is NOT an ID (e.g. manual stop name), we might have an issue 
+        // if backend expects UUIDs. 
+        // But let's send what we have.
+
         // Collect stops and fees
-        const stopItems = document.querySelectorAll('.stop-item');
-        stopItems.forEach(item => {
+        // Reusing the already queried items
+        allStopItems.forEach(item => {
             const nameInput = item.querySelector('.stop-name-input');
             const feeInput = item.querySelector('.stop-fee-input');
+            const idInput = item.querySelector('.stop-id-input');
 
             if (nameInput && nameInput.value.trim() !== '') {
                 formData.stops.push({
                     name: nameInput.value.trim(),
-                    fee: feeInput ? parseFloat(feeInput.value) || 0 : 0
+                    fee: feeInput ? parseFloat(feeInput.value) || 0 : 0,
+                    id: idInput.value || null
                 });
             }
         });

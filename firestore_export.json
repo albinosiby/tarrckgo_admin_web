@@ -1,0 +1,2612 @@
+{
+    "organizations": {
+        "obnpZfRSukYavktpNiea5Q6p4WB2": {
+            "address": "test address vjec",
+            "type": "College",
+            "email": "vimaljyothi@gmail.com",
+            "logo": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/organizations/obnpZfRSukYavktpNiea5Q6p4WB2/logo.png",
+            "feeDetails": "Yearly One Time",
+            "name": "Vimal Jyothi Institute Of Management And Research",
+            "createdAt": "2025-12-11T23:27:43.606185+00:00",
+            "numberOfTerms": null,
+            "phone": "2345678901",
+            "_subcollections": {
+                "buses": {
+                    "ONfWxWsy1vvpLZ7ihZMo": {
+                        "last_service_date": "2025-12-11",
+                        "route": "",
+                        "driver_name": "Unassigned",
+                        "fitness_expiry": "2025-12-30",
+                        "insurance_expiry": "2025-12-31",
+                        "bus_number": "3",
+                        "next_service_due": "2025-12-09",
+                        "capacity": "40",
+                        "registration_no": "KL-12-AB-4564",
+                        "driver_id": null,
+                        "model": "eicher",
+                        "on_board_count": 0,
+                        "avail_seats": 40,
+                        "route_id": ""
+                    },
+                    "dya4qWgWtXW4Wykh8Bkd": {
+                        "trip_type": "morning",
+                        "driver_name": "sudheesh pp",
+                        "fitness_expiry": "2026-01-08",
+                        "insurance_expiry": "2025-12-24",
+                        "capacity": "35",
+                        "next_service_due": "2025-12-31",
+                        "last_updated": "2025-12-22T20:19:07.357000+00:00",
+                        "model": "eicher",
+                        "on_board_count": 0,
+                        "trip_status": "completed",
+                        "last_service_date": "2024-12-02",
+                        "route": "3",
+                        "registration_no": "KL-12-AB-4554",
+                        "bus_number": "1",
+                        "driver_id": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                        "avail_seats": 33,
+                        "route_id": "DdkGV9E0zbkyQsqhM7bI",
+                        "_subcollections": {
+                            "boards": {
+                                "2GX4b88etaraW00EPfeb": {
+                                    "timestamp": "2025-12-22T20:05:59.998000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "studentId": "vml22cs031",
+                                    "status": "ALLOWED",
+                                    "scanType": "exit",
+                                    "rollNumber": "vml22cs031",
+                                    "isValidBus": true,
+                                    "parentName": "Josina P J",
+                                    "cardId": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": "Valiyaparamba"
+                                },
+                                "8sNtbrXFhn76RjEWu4wo": {
+                                    "timestamp": "2025-12-22T16:12:00.845000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "cardId": "vml22cs031",
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "rollNumber": "vml22cs031",
+                                    "studentId": "vml22cs031",
+                                    "parentName": "Josina P J",
+                                    "isValidBus": true,
+                                    "studentName": "albino siby",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "9yqpY6u0NwI2GOhmF19v": {
+                                    "timestamp": "2025-12-22T16:05:35.902000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "studentId": "vml22cs055",
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "cardId": "vml22cs055",
+                                    "rollNumber": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "isValidBus": true,
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "EjplbWariCaWZSz8SNus": {
+                                    "timestamp": "2025-12-22T04:17:45.843000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": null,
+                                    "studentId": "vml22cs031",
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "isValidBus": true,
+                                    "cardId": "vml22cs031",
+                                    "parentName": "",
+                                    "rollNumber": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": ""
+                                },
+                                "GaEeSL7CN6bz1ygJJPsq": {
+                                    "timestamp": "2025-12-22T16:55:45.817000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "studentId": "vml22cs031",
+                                    "status": "ALLOWED",
+                                    "scanType": "exit",
+                                    "isValidBus": true,
+                                    "cardId": "vml22cs031",
+                                    "parentName": "Josina P J",
+                                    "rollNumber": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "GddZV1jyitBtxIUGfCzO": {
+                                    "timestamp": "2025-12-22T20:18:11.909000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "rollNumber": "vml22cs055",
+                                    "status": "DENIED",
+                                    "scanType": "denied",
+                                    "studentId": "vml22cs055",
+                                    "isValidBus": false,
+                                    "parentName": "Josina P J",
+                                    "cardId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "payyavoor"
+                                },
+                                "JGXcqE3vF50OeLBUTOG9": {
+                                    "timestamp": "2025-12-22T16:11:52.511000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "isValidBus": true,
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "cardId": "vml22cs055",
+                                    "rollNumber": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "Ng2S2RjR8sLcOoRsPFjC": {
+                                    "timestamp": "2025-12-22T16:54:56.345000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "studentId": "vml22cs055",
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "cardId": "vml22cs055",
+                                    "isValidBus": true,
+                                    "parentName": "Josina P J",
+                                    "rollNumber": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "OUvb2t3gEIxOs4axRW3F": {
+                                    "timestamp": "2025-12-22T20:05:15.368000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "isValidBus": false,
+                                    "status": "DENIED",
+                                    "scanType": "denied",
+                                    "studentId": "vml22cs055",
+                                    "rollNumber": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "cardId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "payyavoor"
+                                },
+                                "OhyI4627YYprF0Lsjd4h": {
+                                    "timestamp": "2025-12-22T16:47:21.821000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "rollNumber": "vml22cs031",
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "isValidBus": true,
+                                    "cardId": "vml22cs031",
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "PQvh4ouEWh2Irf6aD0kO": {
+                                    "timestamp": "2025-12-22T16:41:30.002000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "rollNumber": "vml22cs055",
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "studentId": "vml22cs055",
+                                    "isValidBus": true,
+                                    "parentName": "Josina P J",
+                                    "cardId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "T3tOEpOOUvejYU27sQ1F": {
+                                    "timestamp": "2025-12-22T20:04:24.455000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "isValidBus": true,
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "cardId": "vml22cs031",
+                                    "rollNumber": "vml22cs031",
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": "Valiyaparamba"
+                                },
+                                "W3QzoeJWy2eOQEZwbKOA": {
+                                    "timestamp": "2025-12-22T16:46:06.342000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "isValidBus": true,
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "rollNumber": "vml22cs055",
+                                    "cardId": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "eK2FloPBqjibyRtxo5uu": {
+                                    "timestamp": "2025-12-22T16:15:17.150000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "rollNumber": "vml22cs031",
+                                    "status": "ALLOWED",
+                                    "scanType": "exit",
+                                    "isValidBus": true,
+                                    "studentId": "vml22cs031",
+                                    "parentName": "Josina P J",
+                                    "cardId": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "fE0Kce2raUulggbsLcL2": {
+                                    "timestamp": "2025-12-22T16:05:46.295000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "cardId": "vml22cs031",
+                                    "status": "ALLOWED",
+                                    "scanType": "exit",
+                                    "isValidBus": true,
+                                    "rollNumber": "vml22cs031",
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "fO87GGVdgokmE9KIbAsN": {
+                                    "timestamp": "2025-12-22T20:05:14.953000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "isValidBus": false,
+                                    "status": "DENIED",
+                                    "scanType": "denied",
+                                    "cardId": "vml22cs055",
+                                    "studentId": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "rollNumber": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "payyavoor"
+                                },
+                                "fooGD7QFt4dgDUO9iTco": {
+                                    "timestamp": "2025-12-22T16:56:54.994000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "isValidBus": true,
+                                    "status": "ALLOWED",
+                                    "scanType": "exit",
+                                    "studentId": "vml22cs055",
+                                    "cardId": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "rollNumber": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "mUxDHtjANm7kzlv5uy6l": {
+                                    "timestamp": "2025-12-22T20:18:11.596000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "cardId": "vml22cs055",
+                                    "status": "DENIED",
+                                    "scanType": "denied",
+                                    "rollNumber": "vml22cs055",
+                                    "isValidBus": false,
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "payyavoor"
+                                },
+                                "o9CPpxANafRcaJxZyRKO": {
+                                    "timestamp": "2025-12-22T16:28:24.552000+00:00",
+                                    "rfidTagId": "vml22cs031",
+                                    "parentPhone": "9745407915",
+                                    "photoUrl": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                                    "isValidBus": true,
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "rollNumber": "vml22cs031",
+                                    "cardId": "vml22cs031",
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs031",
+                                    "studentName": "albino siby",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "oIozbGVbYPV4qSuQhekB": {
+                                    "timestamp": "2025-12-22T20:18:11.613000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "studentId": "vml22cs055",
+                                    "status": "DENIED",
+                                    "scanType": "denied",
+                                    "isValidBus": false,
+                                    "rollNumber": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "cardId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "payyavoor"
+                                },
+                                "oXziTOx8EwApQ2vnpNkx": {
+                                    "timestamp": "2025-12-22T20:05:15.099000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "studentId": "vml22cs055",
+                                    "status": "DENIED",
+                                    "scanType": "denied",
+                                    "rollNumber": "vml22cs055",
+                                    "cardId": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "isValidBus": false,
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "payyavoor"
+                                },
+                                "ugO5W1ZshMptEdLUiz4e": {
+                                    "timestamp": "2025-12-22T16:15:36.409000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "cardId": "vml22cs055",
+                                    "status": "ALLOWED",
+                                    "scanType": "exit",
+                                    "isValidBus": true,
+                                    "studentId": "vml22cs055",
+                                    "parentName": "Josina P J",
+                                    "rollNumber": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                },
+                                "w8vgsvmI9SSF8t5WpcgB": {
+                                    "timestamp": "2025-12-22T16:34:04.036000+00:00",
+                                    "rfidTagId": "vml22cs055",
+                                    "parentPhone": "7306257430",
+                                    "photoUrl": null,
+                                    "rollNumber": "vml22cs055",
+                                    "status": "ALLOWED",
+                                    "scanType": "entry",
+                                    "cardId": "vml22cs055",
+                                    "isValidBus": true,
+                                    "parentName": "Josina P J",
+                                    "studentId": "vml22cs055",
+                                    "studentName": "Ashin Thomas",
+                                    "assignedStop": "nuchiard"
+                                }
+                            },
+                            "trip_history": {
+                                "1vKQhdy59CPcpcrCJnyQ": {
+                                    "timestamp": "2025-12-15T04:38:34+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T10:08:34.143425",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T10:08:06.685883",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "2mUUUmRXlMddeWvjBfFt": {
+                                    "timestamp": "2025-12-22T15:53:07.719000+00:00",
+                                    "durationMinutes": 695,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:23:06.536360",
+                                    "date": "2025-12-22",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T09:47:25.579089",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "5ZmvER533jJIyd5V5Ak6": {
+                                    "timestamp": "2025-12-22T17:02:07.867000+00:00",
+                                    "durationMinutes": 15,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T22:31:43.301323",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 2,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T22:15:58.231291",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "7O0itbII7jtTECoR06Fh": {
+                                    "timestamp": "2025-12-22T16:09:49.544000+00:00",
+                                    "durationMinutes": 4,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:39:46.420882",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:35:15.844990",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "96XqqWa0jXm74vWVcIQf": {
+                                    "timestamp": "2025-12-17T17:05:48.340000+00:00",
+                                    "durationMinutes": 43,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-17T22:35:46.816252",
+                                    "date": "2025-12-17",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 3,
+                                    "startTime": "2025-12-17T21:52:00.168999",
+                                    "totalStudents": 3,
+                                    "distanceKm": 14.2
+                                },
+                                "D0YW7suDzzESQJL2cyuF": {
+                                    "timestamp": "2025-12-22T17:02:09.342000+00:00",
+                                    "durationMinutes": 16,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T22:32:00.865983",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 2,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T22:15:58.231291",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "EA9lf6W6qJovT90Z7Rnr": {
+                                    "timestamp": "2025-12-15T10:04:20.258000+00:00",
+                                    "durationMinutes": 10,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T15:34:20.588783",
+                                    "date": "2025-12-15",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 4,
+                                    "startTime": "2025-12-15T15:24:16.075348",
+                                    "totalStudents": 4,
+                                    "distanceKm": 14.2
+                                },
+                                "EBvtAN73C6m85lskDWnd": {
+                                    "timestamp": "2025-12-15T05:48:30.291000+00:00",
+                                    "durationMinutes": 40,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T11:18:30.602673",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T10:37:35.577012",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "GTw1cS0n7uzQjMIczUIE": {
+                                    "timestamp": "2025-12-22T03:46:13.095000+00:00",
+                                    "durationMinutes": 539,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T09:16:11.694300",
+                                    "date": "2025-12-22",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T00:16:29.448482",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "GyBA5jT0NuN0zlAXJUFA": {
+                                    "timestamp": "2025-12-22T18:05:43.722000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T23:35:31.645391",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T23:35:28.292841",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "HoPggUXnbUqaBuwe34nW": {
+                                    "timestamp": "2025-12-15T08:39:06.331000+00:00",
+                                    "durationMinutes": 64,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T14:09:06.466936",
+                                    "date": "2025-12-15",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 2,
+                                    "startTime": "2025-12-15T13:04:39.938762",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "KfCjzlFYcwq3jPugcMR5": {
+                                    "timestamp": "2025-12-15T03:51:28.864000+00:00",
+                                    "durationMinutes": 11,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T09:21:29.087652",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T09:09:38.607192",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "Lwis5UkPYxhCp5IRNbJx": {
+                                    "timestamp": "2025-12-20T05:39:57.088000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-20T11:09:54.625696",
+                                    "date": "2025-12-20",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-20T11:09:53.745288",
+                                    "totalStudents": 0,
+                                    "distanceKm": 14.2
+                                },
+                                "MyBMuUaBSc4TNTDCBE4u": {
+                                    "timestamp": "2025-12-13T18:58:28.630000+00:00",
+                                    "durationMinutes": 74,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-14T00:28:28.040803",
+                                    "date": "2025-12-14",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-13T23:13:46.752913",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "OB94kfT3qgykg1loCwXM": {
+                                    "timestamp": "2025-12-15T04:59:30.501000+00:00",
+                                    "durationMinutes": 10,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T10:29:30.838442",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T10:19:12.195193",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "PoW4hzvvBgBfONoCEX54": {
+                                    "timestamp": "2025-12-15T04:07:57.169000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T09:37:39.305850",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T09:37:11.663250",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "QLbOaVcNiYbTn89vwpCH": {
+                                    "timestamp": "2025-12-12T08:13:18.298000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-12T13:43:16.988411",
+                                    "date": "2025-12-12",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-12T13:42:46.305926",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "QSMt7yx64QPIEiN56wFO": {
+                                    "timestamp": "2025-12-22T16:08:49.742000+00:00",
+                                    "durationMinutes": 3,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:38:34.064267",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:35:15.844990",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "UF1Mqq2q7uSxZNDtjQgb": {
+                                    "timestamp": "2025-12-15T04:37:27.400000+00:00",
+                                    "durationMinutes": 22,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T10:07:27.578130",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T09:45:07.074855",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "WVa6nCRDqp6s5cxJmyj5": {
+                                    "timestamp": "2025-12-20T06:27:48.452000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-20T11:57:48.864487",
+                                    "date": "2025-12-20",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-20T11:57:45.053607",
+                                    "totalStudents": 0,
+                                    "distanceKm": 14.2
+                                },
+                                "ZwAO6ou9CIg6IDH9POHc": {
+                                    "timestamp": "2025-12-13T05:39:12.924000+00:00",
+                                    "durationMinutes": 12,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-13T11:09:11.879810",
+                                    "date": "2025-12-13",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-13T10:56:53.515626",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "aFsiuUn681p9xi8NYraY": {
+                                    "timestamp": "2025-12-22T16:09:11.010000+00:00",
+                                    "durationMinutes": 3,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:38:56.887687",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:35:15.844990",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "auBIS1cx89EL794L10d2": {
+                                    "timestamp": "2025-12-22T20:06:56.418000+00:00",
+                                    "durationMinutes": 6,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-23T01:36:55.827608",
+                                    "date": "2025-12-23",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-23T01:30:09.088638",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "bICq78VmCd8IkL55bzE8": {
+                                    "timestamp": "2025-12-12T08:44:46.672000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-12T14:14:43.082031",
+                                    "date": "2025-12-12",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-12T14:14:28.741426",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "bgcdAJClzdlaUT7Wit91": {
+                                    "timestamp": "2025-12-22T20:19:08.203000+00:00",
+                                    "durationMinutes": 1,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-23T01:49:07.188352",
+                                    "date": "2025-12-23",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-23T01:48:04.588093",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "bj3IPQVQgIxcSaRWedHP": {
+                                    "timestamp": "2025-12-22T16:27:34.946000+00:00",
+                                    "durationMinutes": 15,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:57:33.253324",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 2,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:41:39.124495",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "c1BfISHMDclaIWRWOAwj": {
+                                    "timestamp": "2025-12-15T05:22:13.109000+00:00",
+                                    "durationMinutes": 14,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T10:52:13.110672",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T10:37:35.577012",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "cErzzv7sIryTsRbY6gs0": {
+                                    "timestamp": "2025-12-17T18:09:03.470000+00:00",
+                                    "durationMinutes": 52,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-17T23:39:02.679838",
+                                    "date": "2025-12-17",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "startTime": "2025-12-17T22:46:16.878384",
+                                    "totalStudents": 3,
+                                    "distanceKm": 14.2
+                                },
+                                "cWRiCs6H53heUICjQoL8": {
+                                    "timestamp": "2025-12-17T18:30:35.597000+00:00",
+                                    "durationMinutes": 20,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-18T00:00:34.265500",
+                                    "date": "2025-12-18",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "startTime": "2025-12-17T23:40:25.071356",
+                                    "totalStudents": 3,
+                                    "distanceKm": 14.2
+                                },
+                                "cgOAmOqKWieJ6FwGpX7D": {
+                                    "timestamp": "2025-12-22T16:10:33.714000+00:00",
+                                    "durationMinutes": 5,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:40:32.785497",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:35:15.844990",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "hOD0mhTIJ04dbHePgRWL": {
+                                    "timestamp": "2025-12-13T15:10:31.359000+00:00",
+                                    "durationMinutes": 570,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-13T20:40:25.065005",
+                                    "date": "2025-12-13",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-13T11:10:16.599792",
+                                    "totalStudents": 3,
+                                    "distanceKm": 14.2
+                                },
+                                "iJqeFGkK4Up1SNs0oXWZ": {
+                                    "timestamp": "2025-12-15T06:07:57.336000+00:00",
+                                    "durationMinutes": 2,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T11:37:57.547390",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "startTime": "2025-12-15T11:35:22.619485",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "lkIFbsXKxO3iS8zyVqve": {
+                                    "timestamp": "2025-12-22T16:08:57.225000+00:00",
+                                    "durationMinutes": 3,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:38:41.039355",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:35:15.844990",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "mjiCHMlzktm0HyMA4a9C": {
+                                    "timestamp": "2025-12-15T04:07:58.742000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T09:37:49.046184",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T09:37:11.663250",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "mwkJgC2ifqJ1IJarwgqi": {
+                                    "timestamp": "2025-12-15T06:03:34.490000+00:00",
+                                    "durationMinutes": 55,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T11:33:34.647929",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T10:37:35.577012",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "n1w7ZGj8DQmgpDolUOg5": {
+                                    "timestamp": "2025-12-12T08:37:24.050000+00:00",
+                                    "durationMinutes": 3,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-12T14:07:22.318497",
+                                    "date": "2025-12-12",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-12T14:04:15.333556",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "oQ9geWcNXAmmxd8uVu4L": {
+                                    "timestamp": "2025-12-22T03:57:54.954000+00:00",
+                                    "durationMinutes": 11,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T09:27:53.177001",
+                                    "date": "2025-12-22",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T09:16:32.359280",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "pfjnRsMbHm4Cl3ARfjtg": {
+                                    "timestamp": "2025-12-22T18:14:50.047000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T23:44:48.983284",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T23:44:13.814133",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "poZUgtjszSHYCVonyBn3": {
+                                    "timestamp": "2025-12-15T04:39:24.669000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T10:09:24.977772",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T10:08:46.697401",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "sEYdRlklrLkXXZ0zSLUU": {
+                                    "timestamp": "2025-12-12T04:38:38.351000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-12T10:08:37.053330",
+                                    "date": "2025-12-12",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-12T10:08:19.509583",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "tjvLfcuW68VMWNjODxV9": {
+                                    "timestamp": "2025-12-22T17:02:08.017000+00:00",
+                                    "durationMinutes": 15,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T22:31:46.620195",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 2,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T22:15:58.231291",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "vCrfT11L4FydI7btqiFj": {
+                                    "timestamp": "2025-12-22T16:00:33.025000+00:00",
+                                    "durationMinutes": 4,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:30:31.526835",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:25:36.889217",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "vPhFmcvqMapqJjp3r1C8": {
+                                    "timestamp": "2025-12-17T06:36:08.899000+00:00",
+                                    "durationMinutes": 3,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-17T12:06:10.534586",
+                                    "date": "2025-12-17",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 3,
+                                    "startTime": "2025-12-17T12:02:18.095932",
+                                    "totalStudents": 3,
+                                    "distanceKm": 14.2
+                                },
+                                "vhdsz3bHo87HvRppymBC": {
+                                    "timestamp": "2025-12-17T17:15:31.373000+00:00",
+                                    "durationMinutes": 7,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-17T22:45:29.433547",
+                                    "date": "2025-12-17",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 3,
+                                    "startTime": "2025-12-17T22:37:49.172554",
+                                    "totalStudents": 3,
+                                    "distanceKm": 14.2
+                                },
+                                "vx4iaZ5MJNyyCTEyAtqd": {
+                                    "timestamp": "2025-12-21T18:04:37.591000+00:00",
+                                    "durationMinutes": 18,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-21T23:34:36.044302",
+                                    "date": "2025-12-21",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-21T23:16:12.412436",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "w0ZV7d32CCWT7wd7eFrw": {
+                                    "timestamp": "2025-12-15T05:06:33.968000+00:00",
+                                    "durationMinutes": 5,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-15T10:36:34.002598",
+                                    "date": "2025-12-15",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-15T10:30:42.949814",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "wbEqVND5dEY0x6edaGHG": {
+                                    "timestamp": "2025-12-22T16:45:50.861000+00:00",
+                                    "durationMinutes": 18,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T22:15:49.442641",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 2,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:57:38.289199",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "whrjCmFXeudd5iH10TDQ": {
+                                    "timestamp": "2025-12-21T18:46:22.997000+00:00",
+                                    "durationMinutes": 25,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T00:16:20.908321",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-21T23:51:04.872030",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                },
+                                "yCn5W00lrXbrwJDR557T": {
+                                    "timestamp": "2025-12-17T18:48:34.260000+00:00",
+                                    "durationMinutes": 17,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-18T00:18:32.845324",
+                                    "date": "2025-12-18",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-18T00:00:39.389003",
+                                    "totalStudents": 3,
+                                    "distanceKm": 14.2
+                                },
+                                "yzYIFQWo09f5E6UkIygM": {
+                                    "timestamp": "2025-12-22T16:10:16.599000+00:00",
+                                    "durationMinutes": 4,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T21:40:15.280328",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T21:35:15.844990",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                }
+                            }
+                        }
+                    },
+                    "pnyS9lTr0cK5PweaPhFj": {
+                        "trip_type": "evening",
+                        "driver_name": "sudhhesh",
+                        "fitness_expiry": "2026-01-08",
+                        "capacity": "40",
+                        "insurance_expiry": "2025-12-24",
+                        "next_service_due": "2025-12-31",
+                        "last_updated": "2025-12-13T17:38:04.022000+00:00",
+                        "model": "eicher",
+                        "on_board_count": 0.0,
+                        "trip_status": "completed",
+                        "last_service_date": "2024-12-02",
+                        "route": "kannur route",
+                        "registration_no": "KL-12-AB-4567",
+                        "bus_number": "2",
+                        "driver_id": "KL6347828w",
+                        "avail_seats": 39,
+                        "route_id": "FFpY4iL5Q5x3iKJqDyuP",
+                        "_subcollections": {
+                            "trip_history": {
+                                "mbFCtTRc2diVCyevKG78": {
+                                    "timestamp": "2025-12-13T17:38:04.702000+00:00",
+                                    "durationMinutes": 146,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-13T23:08:03.949670",
+                                    "date": "2025-12-13",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-13T20:41:24.510271",
+                                    "totalStudents": 1,
+                                    "distanceKm": 14.2
+                                }
+                            }
+                        }
+                    },
+                    "sP4bW0KtH44SxCpOpbCI": {
+                        "trip_type": "evening",
+                        "driver_name": "Unassigned",
+                        "fitness_expiry": "2025-12-30",
+                        "insurance_expiry": "2025-12-31",
+                        "capacity": "30",
+                        "next_service_due": "2025-12-09",
+                        "last_updated": "2026-01-03T16:38:56.936000+00:00",
+                        "model": "eicher",
+                        "on_board_count": 0,
+                        "trip_status": "Trip started",
+                        "last_service_date": "2025-12-11",
+                        "route": "",
+                        "registration_no": "KL-12-AB-4524",
+                        "bus_number": "4",
+                        "driver_id": null,
+                        "avail_seats": 28,
+                        "route_id": "",
+                        "_subcollections": {
+                            "trip_history": {
+                                "2DuhFyBjsFuWz8BWi0GD": {
+                                    "timestamp": "2025-12-26T09:58:21.215000+00:00",
+                                    "durationMinutes": 1,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-26T15:28:21.087977",
+                                    "date": "2025-12-26",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2025-12-26T15:26:28.334942",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "2Tucc0EmpZO98bFiAx3H": {
+                                    "timestamp": "2026-01-03T15:50:56.534000+00:00",
+                                    "durationMinutes": 5,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T21:20:56.167444",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T21:15:17.831321",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "8JiemGePXcn51tSmc3b3": {
+                                    "timestamp": "2025-12-26T17:36:06.552000+00:00",
+                                    "durationMinutes": 427,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-26T23:06:05.276344",
+                                    "date": "2025-12-26",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2025-12-26T15:58:25.321119",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "91qN616uxLmewlxrDZyy": {
+                                    "timestamp": "2026-01-03T16:38:40.266000+00:00",
+                                    "durationMinutes": 7,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T22:08:39.916778",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T22:01:36.163863",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "To9jVCLO4jtQxPBuY2s8": {
+                                    "timestamp": "2025-12-21T17:39:32.788000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-21T23:09:31.316806",
+                                    "date": "2025-12-21",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "startTime": "2025-12-21T23:08:43.120464",
+                                    "totalStudents": 0,
+                                    "distanceKm": 14.2
+                                },
+                                "XX2EX01P8aJlSkFl2jFk": {
+                                    "timestamp": "2026-01-03T15:45:10.565000+00:00",
+                                    "durationMinutes": 11,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T21:15:10.436073",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T21:03:29.600317",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "ePd5cNK6kDMQE4TufFjB": {
+                                    "timestamp": "2026-01-03T16:31:18.214000+00:00",
+                                    "durationMinutes": 36,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T22:01:17.889782",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T21:24:31.059870",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                }
+                            }
+                        }
+                    }
+                },
+                "drivers": {
+                    "0udSzD1EW7M1diH1qjALqyXFHwH2": {
+                        "phone_number": "9745407915",
+                        "address": "Puliyamparambil H kayalampara P.O Valiyaparamba,Chemperi,Kannur",
+                        "can_add_stop": true,
+                        "profile_photo_url": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/drivers/obnpZfRSukYavktpNiea5Q6p4WB2/0e658490-d5e9-4000-8906-ddd2b5b3c763_4Z4A2013.JPG",
+                        "license_expiry_date": "2027-12-17",
+                        "emergency_contact_phone": "07034537890",
+                        "driver_uid": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                        "license_number": "kl58w9496",
+                        "blood_group": "A+",
+                        "joining_date": "2025-12-02",
+                        "date_of_birth": "1998-12-16",
+                        "assigned_bus": "dya4qWgWtXW4Wykh8Bkd",
+                        "emergency_contact_name": " Albino ",
+                        "full_name": "sudheesh pp",
+                        "fcmToken": "daPvhDVbSBe7hBEhe_pZf8:APA91bGmZtzSHxD6jDLMx28jFazd1_6q6vcFmsQ7_kt93YRsMWyqtaQl5TYPwKz8S244h3vUeMvZp-CeGb1R-7BLG2ZrjOywyUSpRuiIlEraGXVZAatMrG4",
+                        "_subcollections": {
+                            "trip_history": {
+                                "GUm7nZuE9YiXwWyLADDe": {
+                                    "timestamp": "2026-01-03T16:31:18.832000+00:00",
+                                    "durationMinutes": 36,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T22:01:17.889782",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T21:24:31.059870",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "NQGY4Fzt8uYLP1V9Sqrz": {
+                                    "timestamp": "2025-12-22T18:14:50.517000+00:00",
+                                    "durationMinutes": 0,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-22T23:44:48.983284",
+                                    "date": "2025-12-22",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-22T23:44:13.814133",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "QNlQhXzjsB52CMZ6Wv2g": {
+                                    "timestamp": "2026-01-03T15:45:11.703000+00:00",
+                                    "durationMinutes": 11,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T21:15:10.436073",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T21:03:29.600317",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "a9No0HKXnlSZhSh4Nxe5": {
+                                    "timestamp": "2026-01-03T15:50:56.974000+00:00",
+                                    "durationMinutes": 5,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T21:20:56.167444",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T21:15:17.831321",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "aUsYkwTYcEqxmh2Eb6GG": {
+                                    "timestamp": "2025-12-26T17:36:07.072000+00:00",
+                                    "durationMinutes": 427,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-26T23:06:05.276344",
+                                    "date": "2025-12-26",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2025-12-26T15:58:25.321119",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "ppJ73z4XCJnNJKCwJLEd": {
+                                    "timestamp": "2026-01-03T16:38:40.706000+00:00",
+                                    "durationMinutes": 7,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2026-01-03T22:08:39.916778",
+                                    "date": "2026-01-03",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2026-01-03T22:01:36.163863",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "qBezvdURYHA4WOCrkPn6": {
+                                    "timestamp": "2025-12-22T20:06:57.016000+00:00",
+                                    "durationMinutes": 6,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-23T01:36:55.827608",
+                                    "date": "2025-12-23",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 1,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-23T01:30:09.088638",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "qm7C1N9INpkmCYQl3ZCl": {
+                                    "timestamp": "2025-12-26T09:58:21.667000+00:00",
+                                    "durationMinutes": 1,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-26T15:28:21.087977",
+                                    "date": "2025-12-26",
+                                    "type": "evening",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4524",
+                                    "startTime": "2025-12-26T15:26:28.334942",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                },
+                                "qpcVQ8oj69HrnMVnvHZm": {
+                                    "timestamp": "2025-12-22T20:19:08.961000+00:00",
+                                    "durationMinutes": 1,
+                                    "driverId": "0udSzD1EW7M1diH1qjALqyXFHwH2",
+                                    "endTime": "2025-12-23T01:49:07.188352",
+                                    "date": "2025-12-23",
+                                    "type": "morning",
+                                    "status": "completed",
+                                    "boardedStudents": 0,
+                                    "busNumber": "KL-12-AB-4554",
+                                    "startTime": "2025-12-23T01:48:04.588093",
+                                    "totalStudents": 2,
+                                    "distanceKm": 14.2
+                                }
+                            }
+                        }
+                    },
+                    "KL6347828w": {
+                        "phone_number": "09745889752",
+                        "joining_date": "2025-12-21",
+                        "address": "Puliyamparambil H kayalampara P.O Valiyaparamba,Chemperi,Kannur",
+                        "date_of_birth": "2025-12-08",
+                        "assigned_bus": "pnyS9lTr0cK5PweaPhFj",
+                        "profile_photo_url": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/drivers/obnpZfRSukYavktpNiea5Q6p4WB2/ae302163-2090-4ae2-859f-d54d3bed084c_4Z4A2005.JPG",
+                        "license_expiry_date": "2030-11-13",
+                        "full_name": "sudhhesh",
+                        "emergency_contact_phone": "07306257430",
+                        "emergency_contact_name": "albino siby",
+                        "license_number": "KL6347828w",
+                        "driver_uid": "KL6347828w",
+                        "blood_group": "A+"
+                    }
+                },
+                "routes": {
+                    "DdkGV9E0zbkyQsqhM7bI": {
+                        "stops": [
+                            {
+                                "fee": 0,
+                                "name": "Vimal Jyothi Engineering College",
+                                "id": "jOzVApUErTmuQfOpmzaS"
+                            },
+                            {
+                                "fee": 4000,
+                                "name": "Chemperi",
+                                "id": "PqNHZ9DCzj0RwyVFkVwR"
+                            },
+                            {
+                                "fee": 5500,
+                                "name": "Puranjan",
+                                "id": "KH86bGWbG3h1II9DsbrL"
+                            },
+                            {
+                                "fee": 6000,
+                                "name": "Pulikurumba",
+                                "id": "ty4nP9SzfqD7OYzjbL7m"
+                            },
+                            {
+                                "fee": 6500,
+                                "name": "Mandalam",
+                                "id": "pbZIX4XArBxnuGdc5CAe"
+                            },
+                            {
+                                "fee": 6500,
+                                "name": "Mandalam",
+                                "id": "pbZIX4XArBxnuGdc5CAe"
+                            },
+                            {
+                                "fee": 7500,
+                                "name": "Naduvil",
+                                "id": "y3cAUrH9NdQdoc7hqOC6"
+                            }
+                        ],
+                        "route_name": "3",
+                        "start_point": "vimal jyothi",
+                        "assigned_bus": "dya4qWgWtXW4Wykh8Bkd",
+                        "end_point": "Naduvil",
+                        "distance": ""
+                    },
+                    "FFpY4iL5Q5x3iKJqDyuP": {
+                        "stops": [
+                            {
+                                "fee": 0,
+                                "name": "Vimal Jyothi Engineering College",
+                                "id": "jOzVApUErTmuQfOpmzaS"
+                            },
+                            {
+                                "fee": 5000,
+                                "name": "Payyavoor",
+                                "id": "6OJCSPm2hTAj61qTu1YR"
+                            }
+                        ],
+                        "route_name": "kannur route",
+                        "start_point": "vimal jyothi",
+                        "assigned_bus": "pnyS9lTr0cK5PweaPhFj",
+                        "end_point": "kannur",
+                        "distance": ""
+                    }
+                },
+                "stops": {
+                    "2xocNiiXpKVbk1SaKRnM": {
+                        "lat": 12.1013371,
+                        "stop_name": "Valiyaparamba",
+                        "fee": 5000.0,
+                        "created_at": "2025-12-23T03:45:31.940000+00:00",
+                        "long": 75.5762477
+                    },
+                    "6OJCSPm2hTAj61qTu1YR": {
+                        "long": "75.5849",
+                        "stop_name": "Payyavoor",
+                        "fee": 5000,
+                        "assigned_students": [
+                            "vml22cs055"
+                        ],
+                        "lat": "12.0597"
+                    },
+                    "KH86bGWbG3h1II9DsbrL": {
+                        "long": "75.53478",
+                        "stop_name": "Puranjan",
+                        "fee": 5500,
+                        "assigned_students": [],
+                        "lat": "12.10569"
+                    },
+                    "PqNHZ9DCzj0RwyVFkVwR": {
+                        "long": "75.5451",
+                        "stop_name": "Chemperi",
+                        "fee": 4000,
+                        "lat": "12.0950"
+                    },
+                    "jOzVApUErTmuQfOpmzaS": {
+                        "long": "75.5615",
+                        "stop_name": "Vimal Jyothi Engineering College",
+                        "fee": 0.0,
+                        "lat": "12.0986"
+                    },
+                    "pbZIX4XArBxnuGdc5CAe": {
+                        "long": "75.5060",
+                        "stop_name": "Mandalam",
+                        "fee": 6500,
+                        "assigned_students": [
+                            "VML22CS044"
+                        ],
+                        "lat": "12.1200"
+                    },
+                    "ty4nP9SzfqD7OYzjbL7m": {
+                        "long": "75.52311",
+                        "stop_name": "Pulikurumba",
+                        "fee": "6000",
+                        "assigned_students": [],
+                        "lat": "12.12008"
+                    },
+                    "y3cAUrH9NdQdoc7hqOC6": {
+                        "long": "75.4834",
+                        "stop_name": "Naduvil",
+                        "fee": "7500",
+                        "assigned_students": [
+                            "vml22cs031"
+                        ],
+                        "lat": "12.1212"
+                    }
+                },
+                "students": {
+                    "VML22CS044": {
+                        "parent_phone": "1234567890",
+                        "address": "pamplaniyil H",
+                        "roll_number": "VML22CS044",
+                        "email": "",
+                        "route_id": "DdkGV9E0zbkyQsqhM7bI",
+                        "bus_id": "dya4qWgWtXW4Wykh8Bkd",
+                        "can_travel": false,
+                        "due": 6500.0,
+                        "created_at": "2025-12-25T08:08:20.651000+00:00",
+                        "student_phone": "+91 94966 48825",
+                        "paid": 0,
+                        "bus_stop_id": "pbZIX4XArBxnuGdc5CAe",
+                        "parent_name": "jose ",
+                        "bus_stop": "Mandalam",
+                        "payment_type": "Yearly One Time",
+                        "batch": "CSE B",
+                        "auth_uid": "VML22CS044",
+                        "full_name": "RIchard Tom Jose",
+                        "dob": "2003-11-23",
+                        "route_name": "3",
+                        "bus_number": "1",
+                        "fee_amount": 6500.0,
+                        "_subcollections": {
+                            "notifications": {
+                                "3BAo207UWEYuQbdSwfRf": {
+                                    "timestamp": "2026-01-03T16:45:34.705000+00:00",
+                                    "title": "Route Update: 3 \ud83d\udccd",
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "read": false
+                                },
+                                "AY5zrc4cs4G2jY004aV9": {
+                                    "timestamp": "2026-01-03T16:44:57.561000+00:00",
+                                    "read": false,
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "title": "Route Update: Unknown Route \ud83d\udccd"
+                                },
+                                "D3qrikdRTWAbh2Ogqerp": {
+                                    "timestamp": "2026-01-03T15:45:18.684000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "FEKTHdT1zSV8llHr8YGD": {
+                                    "timestamp": "2025-12-25T08:29:06.761000+00:00",
+                                    "title": "Route Update: 3 \ud83d\udccd",
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "read": false
+                                },
+                                "JAyeR7EuEqkV4sIkVaw0": {
+                                    "timestamp": "2025-12-26T17:36:07.698000+00:00",
+                                    "read": false,
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "KEWO9bn0hHeORwLjtsCf": {
+                                    "timestamp": "2026-01-03T16:31:37.199000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "KoRnR0a0fJlH3ZdWhMe6": {
+                                    "timestamp": "2025-12-26T10:28:27.324000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "PuwIDtn8fWVeapUci19Y": {
+                                    "timestamp": "2026-01-03T16:38:41.302000+00:00",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "eJwy8mEx4yIBjzfbOvdQ": {
+                                    "timestamp": "2026-01-03T16:31:20.392000+00:00",
+                                    "read": false,
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "fom2yRIqpAy16sEZSv1t": {
+                                    "timestamp": "2026-01-03T15:54:32.547000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "hmrA4JfwYnOH8gkEZjP7": {
+                                    "timestamp": "2025-12-26T09:58:22.716000+00:00",
+                                    "read": false,
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "l4AzdEM0ZTSwyHcrcMRE": {
+                                    "timestamp": "2026-01-03T15:50:57.471000+00:00",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "qghecUnxEExqaYDRfLT9": {
+                                    "timestamp": "2026-01-03T16:38:57.988000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "rZcwjPSYDqBr6wkMJfr2": {
+                                    "timestamp": "2025-12-26T09:56:30.554000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                }
+                            }
+                        }
+                    },
+                    "vml22cs031": {
+                        "parent_phone": "9745407915",
+                        "address": "Puliyamparambil H kayalampara P.O Valiyaparamba,Chemperi,Kannur",
+                        "roll_number": "vml22cs031",
+                        "email": "albinosiby775@gmail.com",
+                        "last_fee_reset_date": "2025-12-23",
+                        "route_id": "DdkGV9E0zbkyQsqhM7bI",
+                        "bus_id": "dya4qWgWtXW4Wykh8Bkd",
+                        "profile_photo_url": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/students/obnpZfRSukYavktpNiea5Q6p4WB2/9c3e849b-c6d0-42f0-ba3a-518b9cceff0c_4Z4A1966.JPG",
+                        "can_travel": true,
+                        "due": 0.0,
+                        "created_at": "2025-12-19T08:00:59.227000+00:00",
+                        "student_phone": "07034592461",
+                        "paid": 5000.0,
+                        "bus_stop_id": "y3cAUrH9NdQdoc7hqOC6",
+                        "is_on_bus": false,
+                        "payment_type": "Yearly One Time",
+                        "bus_stop": "Naduvil",
+                        "parent_name": "Josina P J",
+                        "batch": "CS A",
+                        "auth_uid": "vml22cs031",
+                        "full_name": "albino siby",
+                        "dob": "2003-12-14",
+                        "route_name": "3",
+                        "last_scan_timestamp": "2025-12-22T20:05:59.836000+00:00",
+                        "bus_number": "1",
+                        "fcmToken": "fTF_1k8ARZadjZqxpGEODp:APA91bHJW3sLgs6MwKt7MG6qWp4AbR2sh7e4iF8GbBWeLefGsKrQ0y4qyrFkiRae52Kp7cgSR28ytWLUbzdFNv9lHTWxR7JBshu1wl9lv_jAhh34EfEKqWE",
+                        "fee_amount": "7500",
+                        "_subcollections": {
+                            "attendance_record": {
+                                "NU8RPDkGzYUvFP6yGsox": {
+                                    "timestamp": "2025-12-22T16:55:45.764000+00:00",
+                                    "trip_type": "evening",
+                                    "dropped_time": "2025-12-22T16:55:45.764000+00:00",
+                                    "date": "2025-12-22",
+                                    "boarded_time": null,
+                                    "bus_id": "dya4qWgWtXW4Wykh8Bkd",
+                                    "status": "COMPLETED_NO_ENTRY"
+                                },
+                                "wysAgqFpfIBHm2zBVNz6": {
+                                    "timestamp": "2025-12-22T20:04:24.402000+00:00",
+                                    "trip_type": "morning",
+                                    "dropped_time": "2025-12-22T20:05:59.945000+00:00",
+                                    "date": "2025-12-22",
+                                    "boarded_time": "2025-12-22T20:04:24.402000+00:00",
+                                    "bus_id": "dya4qWgWtXW4Wykh8Bkd",
+                                    "status": "COMPLETED"
+                                }
+                            },
+                            "notifications": {
+                                "0EzLBbwbGXbbVErEHu8v": {
+                                    "timestamp": "2025-12-22T16:12:01.209000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: albino siby "
+                                },
+                                "0JaFzSL4dwGEDzthuDaa": {
+                                    "timestamp": "2025-12-22T16:47:22.615000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: albino siby "
+                                },
+                                "1f26xmtmjAHd7nSvVD6s": {
+                                    "timestamp": "2025-12-22T16:11:40.746000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "26k8kkQd3FXpbCfRcEzz": {
+                                    "timestamp": "2025-12-22T16:05:18.185000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "2NfM3owFyXjRysoqjmr4": {
+                                    "timestamp": "2025-12-26T09:56:30.554000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "2owh35MCneXnzRUGZV9w": {
+                                    "timestamp": "2025-12-23T05:59:43.040000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "3SgTfziNJyX28MfB9lfH": {
+                                    "timestamp": "2025-12-21T18:04:03.474000+00:00",
+                                    "title": "Bus Exit: albino siby ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully exited KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "47NZbKeueYn9nOlzsQG5": {
+                                    "timestamp": "2025-12-21T18:46:31.950000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "4qEQtm5giYRJOdfihcXR": {
+                                    "timestamp": "2025-12-23T05:02:55.939000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "50iW4QW7cEsg35ZZo7H4": {
+                                    "timestamp": "2025-12-21T18:31:47.895000+00:00",
+                                    "title": "Bus Entry: albino siby ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "5TbwJQPa4tlZGK5Xofu0": {
+                                    "timestamp": "2025-12-22T03:46:34.720000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "6rLNlY9iWjiEINv5srW3": {
+                                    "timestamp": "2025-12-22T18:05:45.076000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "7yBNpuMvONX1AZEUhAPB": {
+                                    "timestamp": "2025-12-26T09:58:22.716000+00:00",
+                                    "read": false,
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "9T0z3E0CGEg14eMSQGCu": {
+                                    "timestamp": "2026-01-03T16:38:41.302000+00:00",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "BdAXtaUfSv1ktrnH5d7F": {
+                                    "timestamp": "2025-12-23T04:55:25.159000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "BvY7BAgMSN9QNtb8gMt6": {
+                                    "timestamp": "2025-12-26T10:28:27.324000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "CRTIdxK3ytY5kHqSX7CW": {
+                                    "timestamp": "2025-12-23T05:02:45.275000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "CzwJQPTY14rS67WDOyXV": {
+                                    "timestamp": "2026-01-03T16:31:20.392000+00:00",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "D5WbJ16XlzHa3hr7zPsN": {
+                                    "timestamp": "2025-12-22T19:40:16.884000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "DrgRItTYtXSQcL6Y0Ngy": {
+                                    "timestamp": "2025-12-23T04:10:58.524000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "DxvzQoyYYqlYzypDzmB7": {
+                                    "timestamp": "2026-01-03T16:31:37.199000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "ECxCxlauoopHVLOYIR4J": {
+                                    "timestamp": "2025-12-22T16:15:17.986000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully exited KL-12-AB-4554",
+                                    "title": "Bus Exit: albino siby "
+                                },
+                                "ESk6XlRh4OqW5xccJZep": {
+                                    "timestamp": "2025-12-22T16:27:39.424000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "FzYwK2L0wC37CEWpCkke": {
+                                    "timestamp": "2025-12-23T05:45:34.048000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "G9Y98KtVqJkS1uUe5FtO": {
+                                    "timestamp": "2025-12-21T18:21:48.657000+00:00",
+                                    "title": "Bus Entry: albino siby ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "HDNQ4Q1ALnUYnXbeBGlN": {
+                                    "timestamp": "2025-12-23T05:03:39.615000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "JWfFSmHy6KolPctFoBu1": {
+                                    "timestamp": "2025-12-23T05:43:02.061000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "M7ZfW99M55d0jdHx1VAy": {
+                                    "timestamp": "2025-12-21T17:46:34.483000+00:00",
+                                    "title": "Bus Entry Confirmed \ud83d\ude8c",
+                                    "type": "entry_exit",
+                                    "body": "albino siby boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "OSnyZOts8uUHuni9tY8G": {
+                                    "timestamp": "2025-12-25T08:29:06.761000+00:00",
+                                    "read": false,
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "title": "Route Update: 3 \ud83d\udccd"
+                                },
+                                "QIZQL3z7MSdakqSFDW6Q": {
+                                    "timestamp": "2025-12-23T03:45:32.917000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "QZlyGMz9KG5y75tBbrfX": {
+                                    "timestamp": "2025-12-21T17:46:14.489000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "Your bus trip has started",
+                                    "title": "Trip Started \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "R5Y7aVK57mykLAuSv4L5": {
+                                    "timestamp": "2025-12-22T20:06:00.909000+00:00",
+                                    "title": "Bus Exit: albino siby ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully exited KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "RJVepHdFMeoGJ7Vy34pT": {
+                                    "timestamp": "2025-12-23T03:44:01.888000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "SGVEqEtETVybiQry1C95": {
+                                    "timestamp": "2025-12-22T18:14:18.058000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "Sy2W3tTUPeU8ghNsx7e6": {
+                                    "timestamp": "2026-01-03T15:45:18.684000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "VUXpNcyKUEg3BQxTZ5PU": {
+                                    "timestamp": "2025-12-22T20:00:12.172000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "WEHPOipRWSXdNlnmwkgx": {
+                                    "timestamp": "2025-12-23T04:31:19.381000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "WjkIVQmxUoOJi8K3wgG4": {
+                                    "timestamp": "2025-12-21T18:31:47.032000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: albino siby "
+                                },
+                                "WtQjoDF2478LDhRgSPe1": {
+                                    "timestamp": "2025-12-23T05:35:18.863000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "YV1k3VoxeLPKDSkUIuad": {
+                                    "timestamp": "2025-12-22T19:44:27.760000+00:00",
+                                    "title": "Payment Successful \u2705",
+                                    "type": "fee_cleared",
+                                    "body": "Your transport fees have been cleared. You are authorized to travel.",
+                                    "amount": 0,
+                                    "read": false
+                                },
+                                "ZAaI5eSLfOrDWBPVVbcP": {
+                                    "timestamp": "2025-12-23T03:49:17.457000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "bWFU93FLtUfleqhwIaw4": {
+                                    "timestamp": "2025-12-26T17:36:07.698000+00:00",
+                                    "read": false,
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "eFYlqF03ehnFxqCCUw4b": {
+                                    "timestamp": "2025-12-22T04:17:48.031000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: albino siby "
+                                },
+                                "f7tMq0T2HORnrIStS6fo": {
+                                    "timestamp": "2025-12-22T20:04:26.760000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: albino siby "
+                                },
+                                "fjinKsU5gygFSBRXdXx6": {
+                                    "timestamp": "2025-12-25T07:57:09.969000+00:00",
+                                    "read": false,
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "title": "Route Update: 3 \ud83d\udccd"
+                                },
+                                "gxDq9Jt6jWIL02hl4m5t": {
+                                    "timestamp": "2026-01-03T16:45:34.705000+00:00",
+                                    "title": "Route Update: 3 \ud83d\udccd",
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "read": false
+                                },
+                                "iIJHdWEZE6IvSnM4MvHR": {
+                                    "timestamp": "2026-01-03T15:50:57.471000+00:00",
+                                    "read": false,
+                                    "type": "trip_ended",
+                                    "body": "The trip for KL-12-AB-4524 on Route has finished.",
+                                    "title": "Trip Completed: KL-12-AB-4524 \u2705",
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "j6UM2f7EWqAp5lKewZZC": {
+                                    "timestamp": "2025-12-22T20:18:05.931000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "lIbEa6lNA2rMKIXsPZjY": {
+                                    "timestamp": "2025-12-22T15:55:38.873000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "lnUo2Bo8GVdNjzyR10W5": {
+                                    "timestamp": "2026-01-03T16:38:57.988000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "m5atDerF0n2K1GDoFc6n": {
+                                    "timestamp": "2025-12-22T16:05:47.080000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully exited KL-12-AB-4554",
+                                    "title": "Bus Exit: albino siby "
+                                },
+                                "m8YqWrRsuWwpagbpOJSO": {
+                                    "timestamp": "2025-12-22T16:28:25.429000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: albino siby "
+                                },
+                                "mrZXBoMdMqnzNZnGCXDP": {
+                                    "timestamp": "2025-12-21T18:21:11.299000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "nsqJ4Nk2MpMqWqTvJc9H": {
+                                    "timestamp": "2026-01-03T16:44:57.561000+00:00",
+                                    "read": false,
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "title": "Route Update: Unknown Route \ud83d\udccd"
+                                },
+                                "qulYZ7DSGExemDY6eAF1": {
+                                    "timestamp": "2025-12-23T03:40:19.227000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "s9iyLbqNMVoszcyIMNQa": {
+                                    "timestamp": "2025-12-23T05:10:40.733000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "shCSp2L6r4YWeoze6mo7": {
+                                    "timestamp": "2025-12-22T04:17:28.659000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "uMX4Ru2kUyMh4jfj5MjH": {
+                                    "timestamp": "2026-01-03T15:54:32.547000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4524 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4524 on Route has started.",
+                                    "read": false,
+                                    "busId": "sP4bW0KtH44SxCpOpbCI"
+                                },
+                                "w3T9eIkWCf8otHBTZBDo": {
+                                    "timestamp": "2025-12-25T07:55:29.947000+00:00",
+                                    "title": "Bus Stop Update \ud83d\ude8f",
+                                    "type": "stop_update",
+                                    "body": "Your assigned bus stop has been updated to: Naduvil",
+                                    "newStop": "Naduvil",
+                                    "read": false
+                                },
+                                "wVXmwcoj9E3KzMPBtYMZ": {
+                                    "timestamp": "2025-12-22T16:45:59.482000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "xF1rZChkrMKzynQM27E9": {
+                                    "timestamp": "2025-12-21T17:46:32.943000+00:00",
+                                    "title": "Bus Entry Confirmed \ud83d\ude8c",
+                                    "type": "entry_exit",
+                                    "body": "albino siby boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "y4kQg4y3ksVI3b14mAtr": {
+                                    "timestamp": "2025-12-21T17:46:32.936000+00:00",
+                                    "title": "Bus Entry Confirmed \ud83d\ude8c",
+                                    "type": "entry_exit",
+                                    "body": "albino siby boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "yV1uVbZbGBGiLtnJ16lg": {
+                                    "timestamp": "2025-12-22T16:55:45.955000+00:00",
+                                    "title": "Bus Exit: albino siby ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully exited KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "zItITr87cDhXUFhmtPxT": {
+                                    "timestamp": "2025-12-21T18:21:48.659000+00:00",
+                                    "title": "Bus Entry: albino siby ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "read": false
+                                }
+                            },
+                            "payments": {
+                                "0L7YJwl59Jy07sQI3ycB": {
+                                    "reference_id": "",
+                                    "date": "2025-12-19",
+                                    "archived": true,
+                                    "mode": "Cash",
+                                    "amount": "10000"
+                                },
+                                "7buCp6WmGIkz9DTudcZX": {
+                                    "reference_id": "",
+                                    "date": "2025-12-19",
+                                    "archived": true,
+                                    "mode": "Cash",
+                                    "amount": "10000"
+                                },
+                                "DmoqkvKOgShsrd0upuPO": {
+                                    "mode": "Cash",
+                                    "amount": "5000",
+                                    "reference_id": "",
+                                    "date": "2025-12-22"
+                                },
+                                "wIX8XGdh5DtF6SaBjuMF": {
+                                    "reference_id": "",
+                                    "date": "2025-12-21",
+                                    "archived": true,
+                                    "mode": "Cash",
+                                    "amount": "8000"
+                                },
+                                "yNgc5G6xTTHLi9dkcvaq": {
+                                    "reference_id": "",
+                                    "date": "2025-12-19",
+                                    "archived": true,
+                                    "mode": "Cash",
+                                    "amount": "10000"
+                                }
+                            }
+                        }
+                    },
+                    "vml22cs055": {
+                        "parent_phone": "7306257430",
+                        "address": "Mattathil H ,\r\nchelimparamba",
+                        "roll_number": "vml22cs055",
+                        "email": "albinosiby775@gmail.com",
+                        "last_fee_reset_date": "2025-12-23",
+                        "route_id": "FFpY4iL5Q5x3iKJqDyuP",
+                        "bus_id": "pnyS9lTr0cK5PweaPhFj",
+                        "can_travel": false,
+                        "due": 18000.0,
+                        "created_at": "2025-12-22T15:36:48.825000+00:00",
+                        "student_phone": "+91 73062 57430",
+                        "paid": 0,
+                        "bus_stop_id": "6OJCSPm2hTAj61qTu1YR",
+                        "is_on_bus": false,
+                        "payment_type": "Yearly One Time",
+                        "bus_stop": "Payyavoor",
+                        "parent_name": "Shaji",
+                        "batch": "CS A",
+                        "dob": "2003-02-21",
+                        "full_name": "Ashin Thomas",
+                        "auth_uid": "vml22cs055",
+                        "route_name": "kannur route",
+                        "last_scan_timestamp": "2025-12-22T16:56:54.833000+00:00",
+                        "bus_number": "2",
+                        "fcmToken": "dVkCVw36SPykzKTN1zkDGU:APA91bF04X2QnDuLuxCvqhn6_cdLWgODISn1JUKG0NTg12u1oH5mhCH_dQplDH8yjDnnaOEFQwt3KI_yH4yx0HeGKfjTAUm24576a6MZNZWpC4QgfQ3vEgM",
+                        "fee_amount": "5000",
+                        "_subcollections": {
+                            "attendance_record": {
+                                "TfTBE2TvqOepazhtN0EH": {
+                                    "timestamp": "2025-12-22T16:54:56.291000+00:00",
+                                    "trip_type": "evening",
+                                    "dropped_time": "2025-12-22T16:56:54.940000+00:00",
+                                    "date": "2025-12-22",
+                                    "boarded_time": "2025-12-22T16:54:56.291000+00:00",
+                                    "bus_id": "dya4qWgWtXW4Wykh8Bkd",
+                                    "status": "COMPLETED"
+                                }
+                            },
+                            "notifications": {
+                                "0uDJHJQqUpSmgK5jM3Do": {
+                                    "timestamp": "2025-12-23T04:31:19.381000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "1j66oQJMekMnwTer0C4W": {
+                                    "timestamp": "2025-12-25T04:40:05.956000+00:00",
+                                    "title": "Route Update: kannur route \ud83d\udccd",
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "read": false
+                                },
+                                "52xLbyO9oxuhhkTneExE": {
+                                    "timestamp": "2025-12-23T04:55:25.159000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "5UBNZ8mi3LU12tcul3BW": {
+                                    "timestamp": "2025-12-23T08:20:42.026000+00:00",
+                                    "read": false,
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "title": "Route Update: Unknown Route \ud83d\udccd"
+                                },
+                                "5mdzPbtvMpC01arMhUtO": {
+                                    "timestamp": "2025-12-22T18:14:18.058000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "79XSExcPvCwbrPzznwFl": {
+                                    "timestamp": "2025-12-22T16:27:39.424000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "H5cPyuFRrb0OmYeA1oXl": {
+                                    "timestamp": "2025-12-22T16:41:30.818000+00:00",
+                                    "title": "Bus Entry: Ashin Thomas ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "HdUiUC3eRIK176ghYM8F": {
+                                    "timestamp": "2025-12-22T19:40:16.884000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "IVhnyk8WUuhFzk53UALy": {
+                                    "timestamp": "2025-12-23T04:10:58.524000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "InoMJPiiDvCkBp3IoUAQ": {
+                                    "timestamp": "2025-12-22T16:15:37.272000+00:00",
+                                    "title": "Bus Exit: Ashin Thomas ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully exited KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "KP1jUGTnEavcT3DqkpNS": {
+                                    "timestamp": "2025-12-23T03:45:32.917000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "N29Oqxu0891IJIxG56DE": {
+                                    "timestamp": "2025-12-23T05:59:43.040000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "N4px8k4Kh1tILiZKdqLU": {
+                                    "timestamp": "2025-12-23T05:03:39.615000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "Q7MgT0EkXBYGm5AodKkw": {
+                                    "timestamp": "2025-12-22T16:34:05.519000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: Ashin Thomas "
+                                },
+                                "R8vMzGYFfNawUHKQIm4g": {
+                                    "timestamp": "2025-12-22T16:46:07.037000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: Ashin Thomas "
+                                },
+                                "STUAXC3hEqODWvmit6Ot": {
+                                    "timestamp": "2025-12-22T16:05:18.185000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "SVTSsn0IHe3pmqfRmHU0": {
+                                    "timestamp": "2025-12-23T05:35:18.863000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "W0dzkTjCJ3M6ONKVBK4i": {
+                                    "timestamp": "2025-12-22T16:11:53.282000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "title": "Bus Entry: Ashin Thomas "
+                                },
+                                "WOx2JLzCGY8zjVHPSRjU": {
+                                    "timestamp": "2025-12-23T03:49:17.457000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "YFOzaIQM6qDQ1i3jHMSE": {
+                                    "timestamp": "2025-12-22T16:56:55.245000+00:00",
+                                    "read": false,
+                                    "type": "entry_exit",
+                                    "body": "Successfully exited KL-12-AB-4554",
+                                    "title": "Bus Exit: Ashin Thomas "
+                                },
+                                "ZDaSFKtDRmsOvvKg50B2": {
+                                    "timestamp": "2025-12-22T15:55:38.873000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "aZRJfJi0nvIRT8qRuSji": {
+                                    "timestamp": "2025-12-22T16:45:59.482000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "diTYG3eoywisz6aVD2Ov": {
+                                    "timestamp": "2025-12-22T18:05:45.076000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "fYs2uRmentC5qL9xijeU": {
+                                    "timestamp": "2025-12-22T16:05:37.418000+00:00",
+                                    "title": "Bus Entry: Ashin Thomas ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "fiCGdFiQieCTp8wUcH2e": {
+                                    "timestamp": "2025-12-23T05:45:34.048000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "gB0jJKnrp9yNAAcCL3EK": {
+                                    "timestamp": "2025-12-23T03:40:19.227000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "gOy2yH5EVaVgpNVRg1I4": {
+                                    "timestamp": "2025-12-23T03:44:01.888000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "iRzrFteqgWSaIE5C0gIh": {
+                                    "timestamp": "2025-12-22T16:11:40.746000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "ixs8f7ffXnF0XuxKIcep": {
+                                    "timestamp": "2025-12-25T04:24:39.778000+00:00",
+                                    "read": false,
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "title": "Route Update: kannur route \ud83d\udccd"
+                                },
+                                "jOEApX1MdNPv9j2aLVIg": {
+                                    "timestamp": "2025-12-25T08:33:14.310000+00:00",
+                                    "read": false,
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "title": "Route Update: kannur route \ud83d\udccd"
+                                },
+                                "lM7UfWtNxqo1zeSQPsHm": {
+                                    "timestamp": "2025-12-25T04:34:23.734000+00:00",
+                                    "title": "Route Update: Unknown Route \ud83d\udccd",
+                                    "type": "route_update",
+                                    "body": "Your bus route has been updated.",
+                                    "read": false
+                                },
+                                "mDq9meGRyFAYLo0TTpA2": {
+                                    "timestamp": "2025-12-22T16:54:57.203000+00:00",
+                                    "title": "Bus Entry: Ashin Thomas ",
+                                    "type": "entry_exit",
+                                    "body": "Successfully boarded KL-12-AB-4554",
+                                    "read": false
+                                },
+                                "ms42132bkM8v7AYIKrzc": {
+                                    "timestamp": "2025-12-23T05:10:40.733000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "n4sfhf87aQmCmz0COlMq": {
+                                    "timestamp": "2025-12-22T20:18:05.931000+00:00",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "read": false,
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "nR5OH6c6XziDHJN2DUJI": {
+                                    "timestamp": "2025-12-23T05:02:45.275000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                },
+                                "ndTpXlL3qyzABSHkpdv6": {
+                                    "timestamp": "2025-12-22T20:00:12.172000+00:00",
+                                    "read": false,
+                                    "type": "trip_started",
+                                    "body": "The trip for KL-12-AB-4554 on Route has started.",
+                                    "title": "Trip Started: KL-12-AB-4554 \ud83d\ude8c",
+                                    "busId": "dya4qWgWtXW4Wykh8Bkd"
+                                },
+                                "utxSijVZTZ7NsYSlXc1u": {
+                                    "timestamp": "2025-12-23T05:02:55.939000+00:00",
+                                    "read": false,
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "title": "Route Update: 3 \ud83d\ude8f"
+                                },
+                                "wxespvVrly8UCDAHNwql": {
+                                    "timestamp": "2025-12-23T05:43:02.061000+00:00",
+                                    "title": "Route Update: 3 \ud83d\ude8f",
+                                    "type": "route_stops_update",
+                                    "body": "The stops for your route have changed. Please check the new schedule.",
+                                    "read": false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "yxPCaTNM7PZ3LgfN4UpV8o3lQlg1": {
+            "address": "fusco \r\nkannur \r\nkerala\r\n",
+            "type": "College",
+            "email": "fusco@gmail.com",
+            "logo": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/organizations/yxPCaTNM7PZ3LgfN4UpV8o3lQlg1/logo.png",
+            "feeDetails": "Yearly One Time",
+            "name": "fusco",
+            "createdAt": "2025-12-18T06:50:56.619197+00:00",
+            "numberOfTerms": null,
+            "phone": "1234567890",
+            "_subcollections": {
+                "buses": {
+                    "kZ1ZQG5bDrCOo7WDoOWa": {
+                        "route": "route1",
+                        "last_service_date": "2025-12-11",
+                        "driver_name": "sudhhesh",
+                        "fitness_expiry": "2025-12-30",
+                        "insurance_expiry": "2025-12-31",
+                        "bus_number": "1",
+                        "next_service_due": "2025-12-09",
+                        "capacity": "40",
+                        "registration_no": "KL-12-AB-4554",
+                        "driver_id": "KL6347828w",
+                        "model": "",
+                        "on_board_count": 0,
+                        "route_id": "sazj8hv1BQJkfQMNL4qr"
+                    }
+                },
+                "drivers": {
+                    "KL6347828w": {
+                        "phone_number": "8967452310",
+                        "joining_date": "2025-12-21",
+                        "address": "asdas",
+                        "date_of_birth": "2025-12-08",
+                        "assigned_bus": "kZ1ZQG5bDrCOo7WDoOWa",
+                        "profile_photo_url": "https://storage.googleapis.com/bus-management-c8612.firebasestorage.app/drivers/yxPCaTNM7PZ3LgfN4UpV8o3lQlg1/a16d13ff-b9fa-46dc-90d5-09ed18c35c98_WhatsApp%20Image%202025-12-16%20at%2010.20.55%20PM.jpeg",
+                        "license_expiry_date": "2030-11-13",
+                        "full_name": "sudhhesh",
+                        "emergency_contact_phone": "07306257430",
+                        "emergency_contact_name": "albino siby",
+                        "license_number": "KL6347828w",
+                        "driver_uid": "KL6347828w",
+                        "blood_group": "AB-"
+                    }
+                },
+                "routes": {
+                    "sazj8hv1BQJkfQMNL4qr": {
+                        "stops": [
+                            {
+                                "fee": 15000,
+                                "name": "payyavoor"
+                            },
+                            {
+                                "fee": 18000,
+                                "name": "ulikkal"
+                            },
+                            {
+                                "fee": 20000,
+                                "name": "irity"
+                            }
+                        ],
+                        "route_name": "route1",
+                        "start_point": "chemperi",
+                        "assigned_bus": "kZ1ZQG5bDrCOo7WDoOWa",
+                        "end_point": "Irity"
+                    }
+                }
+            }
+        }
+    }
+}

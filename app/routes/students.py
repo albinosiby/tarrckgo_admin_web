@@ -264,9 +264,17 @@ def student_attendance_history(student_id):
             def format_ts(ts):
                 if not ts: return '-'
                 try:
-                    # If it's a Firestore datetime object, return just time in 12h format
-                    return ts.strftime('%I:%M %p')
-                except:
+                    # Convert to IST (UTC+5:30)
+                    from datetime import timedelta, timezone
+                    target_tz = timezone(timedelta(hours=5, minutes=30))
+                    
+                    # If it's a Firestore datetime (aware), convert it.
+                    # If naive, assume UTC and convert.
+                    if hasattr(ts, 'astimezone'):
+                         ts_local = ts.astimezone(target_tz)
+                         return ts_local.strftime('%I:%M %p')
+                    return str(ts)
+                except Exception as e:
                     return str(ts)
 
             record = {

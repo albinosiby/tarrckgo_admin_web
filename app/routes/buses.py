@@ -100,107 +100,36 @@ def bus_details(bus_id):
     except Exception as e:
         print(f"Error fetching assigned students: {e}")
 
-    # Fetch boarded students if there is an active trip
+    # Fetch boarded students from 'boards' subcollection
     boarded_students = []
-    trip_status = latest_trip.get('status', '').lower() if latest_trip else ''
-    if latest_trip and trip_status in ['started', 'tripstarted', 'ongoing']:
-        try:
-             student_ids = []
-             # Option 1: Check for explicit list in trip doc
-             if 'boarded_student_ids' in latest_trip:
-                 student_ids = latest_trip.get('boarded_student_ids', [])
-             
-             # Option 2: If no list, check for 'scans' map/list
-             if not student_ids and 'scans' in latest_trip:
-                 scans = latest_trip.get('scans')
-                 if isinstance(scans, list):
-                     for s in scans:
-                         # Handle both snake_case and camelCase
-                         sid = s.get('cardId') or s.get('studentId')
-                         stype = s.get('scanType')
-                         
-                         if stype == 'entry':
-                             student_ids.append(sid)
-                         elif stype == 'exit':
-                             if sid in student_ids:
-                                 student_ids.remove(sid)
-                 elif isinstance(scans, dict):
-                     for k, v in scans.items():
-                         # Handle both snake_case and camelCase
-                         sid = v.get('cardId') or v.get('studentId')
-                         stype = v.get('scanType')
-                         
-                         if stype == 'entry':
-                             student_ids.append(sid)
-                         elif stype == 'exit':
-                             if sid in student_ids:
-                                 student_ids.remove(sid)
-
-             print(f"[DEBUG] Bus {bus_id} Trip {latest_trip.get('id')} Status: {trip_status}")
-             print(f"[DEBUG] Raw IDs: {student_ids}")
-
-             # Remove duplicates
-             student_ids = list(set([str(sid) for sid in student_ids if sid]))
-
-             if student_ids:
-                 # 1. Check in assigned students first (avoid reads)
-                 assigned_map = {str(s['id']): s for s in assigned_students}
-                 # Also map by roll_number just in case
-                 assigned_roll_map = {str(s.get('roll_number')): s for s in assigned_students if s.get('roll_number')}
-                 
-                 refs_to_fetch = []
-                 fetched_ids = set()
-
-                 for sid in student_ids:
-                     found_student = None
-                     if sid in assigned_map:
-                         found_student = assigned_map[sid]
-                     elif sid in assigned_roll_map:
-                         found_student = assigned_roll_map[sid]
-                     
-                     if found_student:
-                         if found_student['id'] not in fetched_ids:
-                             s_data = found_student.copy()
-                             s_data['boarding_status'] = 'On Board'
-                             boarded_students.append(s_data)
-                             fetched_ids.add(found_student['id'])
-                     else:
-                         # Fallback: Student might not be assigned or ID mismatch
-                         # Try querying by roll_number or rfid_tag_id
-                         try:
-                             # Try fetching by ID first (if valid ID)
-                             s_doc_ref = db.collection('organizations').document(uid).collection('students').document(sid)
-                             s_snap = s_doc_ref.get()
-                             
-                             if s_snap.exists:
-                                 found_student = s_snap.to_dict()
-                                 found_student['id'] = s_snap.id
-                             else:
-                                 # Query by roll_number
-                                 query = db.collection('organizations').document(uid).collection('students').where('roll_number', '==', sid).limit(1)
-                                 query_snaps = list(query.stream())
-                                 if query_snaps:
-                                     found_student = query_snaps[0].to_dict()
-                                     found_student['id'] = query_snaps[0].id
-                                 else:
-                                     # Query by rfid_tag_id
-                                     query_rfid = db.collection('organizations').document(uid).collection('students').where('rfid_tag_id', '==', sid).limit(1)
-                                     rfid_snaps = list(query_rfid.stream())
-                                     if rfid_snaps:
-                                         found_student = rfid_snaps[0].to_dict()
-                                         found_student['id'] = rfid_snaps[0].id
-
-                             if found_student and found_student.get('id') not in fetched_ids:
-                                  s_data = found_student.copy()
-                                  s_data['boarding_status'] = 'On Board'
-                                  boarded_students.append(s_data)
-                                  fetched_ids.add(found_student['id'])
-                                  
-                         except Exception as e:
-                             print(f"Error resolving student {sid}: {e}")
-
-        except Exception as e:
-             print(f"Error fetching boarded students: {e}")
+    try:
+        # Fetch recent board logs (last 50 should be enough for a bus)
+        boards_ref = bus_ref.collection('boards').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(50)
+        board_docs = list(boards_ref.stream())
+        
+        seen_students = set()
+        
+        for doc in board_docs:
+            data = doc.to_dict()
+            sid = data.get('studentId')
+            
+            if sid and sid not in seen_students:
+                seen_students.add(sid)
+                
+                # Check if latest action is entry
+                if data.get('scanType') == 'entry':
+                    # Map fields to match template expectations
+                    student_obj = {
+                        'full_name': data.get('studentName', 'Unknown'),
+                        'roll_number': data.get('rollNumber', '-'),
+                        'parent_phone': data.get('parentPhone', '-'),
+                        'profile_photo_url': data.get('photoUrl'),
+                        'boarding_time': data.get('timestamp') # Optional, for debug/display
+                    }
+                    boarded_students.append(student_obj)
+                    
+    except Exception as e:
+        print(f"Error fetching boards from subcollection: {e}")
 
     # Fetch drivers (Filter out those assigned to OTHER buses)
     drivers_ref = db.collection('organizations').document(uid).collection('drivers')

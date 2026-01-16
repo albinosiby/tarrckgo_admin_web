@@ -237,7 +237,6 @@ def api_add_student():
         'fee_amount': fee_amount,
         'paid': 0,
         'due': fee_amount,
-        'due': fee_amount,
         'can_travel': False, # Initialized to False as per request (unless fee is 0 potentially, but user said initially false)
         'created_at': firestore.SERVER_TIMESTAMP
     }
@@ -388,13 +387,19 @@ def api_add_bus():
         
         # Check if registration number already exists
         reg_no = data.get('registration_no')
-        if reg_no:
-            buses_ref = db.collection('organizations').document(uid).collection('buses')
-            query = buses_ref.where('registration_no', '==', reg_no).get()
-            if len(query) > 0:
-                 return jsonify({'status': 'error', 'message': 'Bus with this Registration Number already exists'}), 400
+        if not reg_no:
+             return jsonify({'status': 'error', 'message': 'Registration Number is required'}), 400
+
+        # Sanitize ID for RTDB compatibility
+        # RTDB keys cannot contain: . $ # [ ] / or ASCII control chars 0-31 or 127
+        doc_id = str(reg_no).replace('/', '-').replace('.', '-').replace('#', '').replace('$', '').replace('[', '').replace(']', '').strip()
         
-        bus_ref = db.collection('organizations').document(uid).collection('buses').document()
+        buses_ref = db.collection('organizations').document(uid).collection('buses')
+        
+        # Check if Doc ID exists
+        bus_ref = buses_ref.document(doc_id)
+        if bus_ref.get().exists:
+             return jsonify({'status': 'error', 'message': f'Bus with Registration Number {reg_no} already exists'}), 400
         
         # Handle driver assignment
         driver_id = data.get('driver_id')
@@ -454,6 +459,67 @@ def api_add_bus():
             # Continue even if RTDB init fails, as the main bus is created.
 
         return jsonify({'status': 'success', 'id': bus_ref.id})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/api/delete_bus/<bus_id>', methods=['POST'])
+def api_delete_bus(bus_id):
+    if 'user' not in session or 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        uid = session['uid']
+        db = get_db()
+        bus_ref = db.collection('organizations').document(uid).collection('buses').document(bus_id)
+        
+        bus_snap = bus_ref.get()
+        if not bus_snap.exists:
+            return jsonify({'status': 'error', 'message': 'Bus not found'}), 404
+            
+        bus_data = bus_snap.to_dict()
+        
+        # 1. Validation: Check for assigned Driver or Route
+        if bus_data.get('driver_id') or bus_data.get('route_id'):
+            return jsonify({
+                'status': 'error', 
+                'message': 'Cannot delete bus. Please unassign the Driver and Route first.'
+            }), 400
+
+        # 2. Unassign any students currently assigned to this bus
+        # Note: If validation passes, there shouldn't be students if logic is strict, 
+        # but students might still be linked if manual edits happened. Safer to clear.
+        students_ref = db.collection('organizations').document(uid).collection('students')
+        students_query = students_ref.where('bus_id', '==', bus_id).stream()
+        
+        batch = db.batch()
+        batch_count = 0
+        
+        for s in students_query:
+            batch.update(s.reference, {
+                'bus_id': '',
+                'bus_number': ''
+            })
+            batch_count += 1
+            if batch_count >= 400:
+                batch.commit()
+                batch = db.batch()
+                batch_count = 0
+        
+        if batch_count > 0:
+            batch.commit()
+            
+        # 3. RTDB Cleanup
+        try:
+            # Delete Bus Location
+            get_db_rtdb().reference(f'organizations/{uid}/bus_location/{bus_id}').delete()
+            # Delete RFID Read Data
+            get_db_rtdb().reference(f'organizations/{uid}/rfid_read/{bus_id}').delete()
+        except Exception as rtdb_e:
+            print(f"Warning cleaning up RTDB for bus {bus_id}: {rtdb_e}")
+            
+        # 4. Delete Bus Document
+        bus_ref.delete()
+        
+        return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
@@ -529,6 +595,29 @@ def api_update_bus(bus_id):
                 if old_route_id:
                      old_route_ref = db.collection('organizations').document(uid).collection('routes').document(old_route_id)
                      old_route_ref.update({'assigned_bus': ''})
+                     
+                     # FIX: Also unassign students on this old route from the bus
+                     try:
+                         students_ref = db.collection('organizations').document(uid).collection('students')
+                         # Find students on the old route who are assigned to THIS bus
+                         st_query = students_ref.where('route_id', '==', old_route_id).where('bus_id', '==', bus_id).stream()
+                         
+                         batch = db.batch()
+                         batch_count = 0
+                         for s in st_query:
+                             batch.update(s.reference, {
+                                 'bus_id': '',
+                                 'bus_number': ''
+                             })
+                             batch_count += 1
+                             if batch_count >= 400:
+                                 batch.commit()
+                                 batch = db.batch()
+                                 batch_count = 0
+                         if batch_count > 0:
+                             batch.commit()
+                     except Exception as e:
+                         print(f"Error unassigning students from old route in update_bus: {e}")
                 
                 # Assign to new route if exists
                 if new_route_id:
@@ -596,20 +685,27 @@ def api_update_bus(bus_id):
                         if batch_count > 0:
                             batch.commit()
                         
-                        # RECALCULATE AVAILABLE SEATS
-                        # Count total students assigned to this bus
-                        total_assigned_snaps = students_ref.where('bus_id', '==', bus_id).stream()
-                        total_assigned_count = sum(1 for _ in total_assigned_snaps)
-                        
-                        # Get capacity (from incoming data or existing)
-                        capacity_val = int(data.get('capacity', current_bus_data.get('capacity', 0)))
-                        new_avail_seats = max(0, capacity_val - total_assigned_count)
-                        
-                        # Update bus avail_seats immediately
-                        bus_ref.update({'avail_seats': new_avail_seats})
-                            
                     except Exception as e:
                         print(f"Error syncing students for bus {bus_id}: {e}")
+
+                # RECALCULATE AVAILABLE SEATS (Always run if route changed, even if unassigned)
+                try:
+                    students_ref = db.collection('organizations').document(uid).collection('students')
+                    # Count total students assigned to this bus
+                    total_assigned_snaps = students_ref.where('bus_id', '==', bus_id).stream()
+                    total_assigned_count = sum(1 for _ in total_assigned_snaps)
+                    
+                    # Get capacity (from incoming data or existing)
+                    capacity_val = int(data.get('capacity', current_bus_data.get('capacity', 0)))
+                    new_avail_seats = max(0, capacity_val - total_assigned_count)
+                    
+                    # Update bus avail_seats immediately (don't rely on final update as data might not have it)
+                    # We add it to 'data' so the final update below covers it, OR update independently.
+                    # Since 'data' is used in final update, let's update 'data' to ensure consistency.
+                    data['avail_seats'] = new_avail_seats
+                    
+                except Exception as e:
+                    print(f"Error recalculating seats for bus {bus_id}: {e}")
 
         bus_ref.update(data)
         return jsonify({'status': 'success'})
@@ -717,6 +813,40 @@ def api_update_route(route_id):
                             'route': 'N/A',
                             'route_id': ''
                         })
+
+                        # FIX: Also unassign students on this route from the OLD bus and UPDATE SEATS
+                        try:
+                            students_ref = db.collection('organizations').document(uid).collection('students')
+                            # Find students on THIS route 
+                            st_query = students_ref.where('route_id', '==', route_id).stream()
+                            
+                            batch = db.batch()
+                            batch_count = 0
+                            unassigned_count = 0
+
+                            for s in st_query:
+                                # Only update if they match the old bus (safety check)
+                                s_data = s.to_dict()
+                                if s_data.get('bus_id') == old_bus_id:
+                                    batch.update(s.reference, {
+                                        'bus_id': '',
+                                        'bus_number': ''
+                                    })
+                                    unassigned_count += 1
+                                    batch_count += 1
+                                    if batch_count >= 400:
+                                        batch.commit()
+                                        batch = db.batch()
+                                        batch_count = 0
+                            if batch_count > 0:
+                                batch.commit()
+                            
+                            # Update Old Bus Seats
+                            if unassigned_count > 0:
+                                old_bus_ref.update({'avail_seats': firestore.Increment(unassigned_count)})
+
+                        except Exception as e:
+                            print(f"Error unassigning students in update_route: {e}")
                     
                     # 2. Assign to new bus if exists
                     if new_bus_id:
@@ -730,6 +860,46 @@ def api_update_route(route_id):
                             'route': route_name,
                             'route_id': route_id
                         })
+
+                        # FIX: Assign students to NEW bus and UPDATE SEATS
+                        try:
+                            students_ref = db.collection('organizations').document(uid).collection('students')
+                            
+                            # Get new bus details for student records
+                            nb_snap = new_bus_ref.get()
+                            new_bus_number = ''
+                            if nb_snap.exists:
+                                new_bus_number = nb_snap.to_dict().get('bus_number', '')
+
+                            # Find all students associated with this route
+                            st_query = students_ref.where('route_id', '==', route_id).stream()
+                            
+                            batch = db.batch()
+                            batch_count = 0
+                            assigned_count = 0
+                            
+                            for s in st_query:
+                                batch.update(s.reference, {
+                                    'bus_id': new_bus_id,
+                                    'bus_number': new_bus_number
+                                })
+                                assigned_count += 1
+                                batch_count += 1
+                                if batch_count >= 400:
+                                    batch.commit()
+                                    batch = db.batch()
+                                    batch_count = 0
+                            
+                            if batch_count > 0:
+                                batch.commit()
+                            
+                            # Update New Bus Seats
+                            if assigned_count > 0:
+                                # Use atomic increment (-count)
+                                new_bus_ref.update({'avail_seats': firestore.Increment(-assigned_count)})
+
+                        except Exception as e:
+                            print(f"Error assigning students in update_route: {e}")
 
         route_ref.update(data)
         return jsonify({'status': 'success'})
@@ -1216,5 +1386,55 @@ def api_reset_all_fees():
             batch.commit()
             
         return jsonify({'status': 'success', 'message': f'Fee cycle reset for {count} students. History preserved (archived).'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/api/delete_route/<route_id>', methods=['POST'])
+def api_delete_route(route_id):
+    if 'user' not in session or 'uid' not in session:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+    try:
+        uid = session['uid']
+        db = get_db()
+        route_ref = db.collection('organizations').document(uid).collection('routes').document(route_id)
+        
+        route_doc = route_ref.get()
+        if not route_doc.exists:
+            return jsonify({'status': 'error', 'message': 'Route not found'}), 404
+            
+        data = route_doc.to_dict()
+        
+        # 1. Validation: Assigned Bus
+        if data.get('assigned_bus'):
+            # Fetch bus details to show readable error
+            bus_id = data.get('assigned_bus')
+            bus_ref = db.collection('organizations').document(uid).collection('buses').document(bus_id)
+            bus_snap = bus_ref.get()
+            bus_detail = f"Bus ({bus_snap.to_dict().get('bus_number', 'Unknown')})" if bus_snap.exists else "a Bus"
+            
+            return jsonify({
+                'status': 'error', 
+                'message': f'Cannot delete route. It is currently assigned to {bus_detail}. Please unassign it first.'
+            }), 400
+
+        # 2. Validation: Assigned Students
+        students_ref = db.collection('organizations').document(uid).collection('students')
+        student_query = students_ref.where('route_id', '==', route_id).limit(1).stream()
+        
+        has_students = False
+        for _ in student_query:
+            has_students = True
+            break
+            
+        if has_students:
+             return jsonify({
+                'status': 'error', 
+                'message': 'Cannot delete route. There are students assigned to this route. Please reassign them first.'
+            }), 400
+
+        # 3. Delete
+        route_ref.delete()
+        
+        return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500

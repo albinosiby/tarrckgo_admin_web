@@ -71,13 +71,31 @@ def driver_details(driver_id):
             t_data = t_doc.to_dict()
             
             # Map fields for template
+            # Helper to format timestamp
+            def format_ts(ts):
+                if not ts: return '-'
+                try:
+                     # Convert to IST (UTC+5:30)
+                    from datetime import timedelta, timezone
+                    target_tz = timezone(timedelta(hours=5, minutes=30))
+                    
+                    # If it's a Firestore datetime (aware), convert it.
+                    # If naive, assume UTC and convert.
+                    if hasattr(ts, 'astimezone'):
+                         ts_local = ts.astimezone(target_tz)
+                         return ts_local.strftime('%I:%M %p')
+                    return str(ts)
+                except:
+                    return str(ts)
+
+            # Map fields for template
             trip = {
                 'id': t_doc.id,
                 'date': t_data.get('date', '-'),
                 'bus_number': t_data.get('busNumber', '-'), # CamelCase from Firestore
                 'type': t_data.get('type', '-'),
-                'startTime': t_data.get('startTime'),
-                'endTime': t_data.get('endTime'),
+                'startTime': format_ts(t_data.get('startTime')),
+                'endTime': format_ts(t_data.get('endTime')),
                 'durationMinutes': t_data.get('durationMinutes', 0)
             }
             trip_history.append(trip)

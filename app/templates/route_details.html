@@ -32,18 +32,32 @@
             <div class="profile-meta">
                 <span id="display_points">{{ route.start_point }} ➝ {{ route.end_point }}</span>
                 <div id="edit_points" style="display:none; margin-top:5px;">
-                    <input type="text" id="edit_start_point" class="form-input-edit" value="{{ route.start_point }}"
-                        placeholder="Start Point" style="margin-bottom:5px;">
-                    <input type="text" id="edit_end_point" class="form-input-edit" value="{{ route.end_point }}"
-                        placeholder="End Point">
+                    <!-- Legacy Text Inputs (Hidden if IDs are used, or strictly synced) -->
+                    <input type="hidden" id="edit_start_point" value="{{ route.start_point }}">
+                    <input type="hidden" id="edit_end_point" value="{{ route.end_point }}">
+
+                    <label style="font-size:0.8rem; color:var(--text-secondary);">Start Stop</label>
+                    <select id="edit_start_stop_id" class="form-input-edit" style="margin-bottom:5px;"
+                        onchange="updatePointName('start')">
+                        <option value="">-- Select Start Stop --</option>
+                    </select>
+
+                    <label style="font-size:0.8rem; color:var(--text-secondary);">End Stop</label>
+                    <select id="edit_end_stop_id" class="form-input-edit" onchange="updatePointName('end')">
+                        <option value="">-- Select End Stop --</option>
+                    </select>
                 </div>
             </div>
 
             <div class="badge badge-success" style="font-size: 0.9rem; padding: 6px 16px;">Active Route</div>
 
-            <div style="margin-top: 24px;">
+            <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 10px;">
                 <button id="edit-profile-btn" class="btn btn-primary" style="width:100%; justify-content:center;">
                     <span style="margin-right:8px">✏️</span> Edit Route
+                </button>
+                <button onclick="deleteRoute()" class="btn btn-danger"
+                    style="width:100%; justify-content:center; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);">
+                    <span style="margin-right:8px">🗑️</span> Delete Route
                 </button>
             </div>
         </div>
@@ -243,8 +257,8 @@
 
     // Add markers for start and end points (Placeholder coordinates)
     // In a real app, you would geocode the start and end points
-    const startMarker = L.marker([11.2588, 75.7804]).addTo(map).bindPopup('Start: {{ route.start_point }}');
-    const endMarker = L.marker([11.2700, 75.7900]).addTo(map).bindPopup('End: {{ route.end_point }}');
+    // const startMarker = L.marker([11.2588, 75.7804]).addTo(map).bindPopup('Start: {{ route.start_point }}');
+    // const endMarker = L.marker([11.2700, 75.7900]).addTo(map).bindPopup('End: {{ route.end_point }}');
 
     // Consolidate Stop Rendering
     const markers = []; // For fitBounds
@@ -418,6 +432,59 @@
         }
     }
 
+    // Populate Start/End Stop Dropdowns
+    function updateStopDropdowns() {
+        const startSelect = document.getElementById('edit_start_stop_id');
+        const endSelect = document.getElementById('edit_end_stop_id');
+
+        // Save current selection if any
+        const currentStart = startSelect.value;
+        const currentEnd = endSelect.value;
+
+        startSelect.innerHTML = '<option value="">-- Select Start Stop --</option>';
+        endSelect.innerHTML = '<option value="">-- Select End Stop --</option>';
+
+        const stopItems = document.querySelectorAll('.stop-item');
+        stopItems.forEach(item => {
+            const id = item.querySelector('.stop-id-input').value;
+            const name = item.querySelector('.stop-name-input').value;
+
+            if (id) {
+                startSelect.add(new Option(name, id));
+                endSelect.add(new Option(name, id));
+            }
+        });
+
+        // Restore selection or set default from initial data if first load
+        if (currentStart) {
+            startSelect.value = currentStart;
+            // If value is empty after setting, the option doesn't exist anymore (removed)
+            if (startSelect.value === "") {
+                document.getElementById('edit_start_point').value = "";
+            }
+        }
+
+        if (currentEnd) {
+            endSelect.value = currentEnd;
+            if (endSelect.value === "") {
+                document.getElementById('edit_end_point').value = "";
+            }
+        }
+
+        // If empty (e.g. first open), try to set from route data
+        if (!startSelect.value && "{{ route.start_stop_id or '' }}") startSelect.value = "{{ route.start_stop_id or '' }}";
+        if (!endSelect.value && "{{ route.end_stop_id or '' }}") endSelect.value = "{{ route.end_stop_id or '' }}";
+    }
+
+    function updatePointName(type) {
+        const select = document.getElementById(`edit_${type}_stop_id`);
+        const nameInput = document.getElementById(`edit_${type}_point`);
+
+        if (select.selectedIndex > 0) {
+            nameInput.value = select.options[select.selectedIndex].text;
+        }
+    }
+
     function addSelectedStop() {
         const selector = document.getElementById('geo_stop_selector');
         const selectedOption = selector.options[selector.selectedIndex];
@@ -431,12 +498,39 @@
         const name = selectedOption.getAttribute('data-name');
         const fee = selectedOption.getAttribute('data-fee');
 
-        // Prevent duplicate IDs if possible, but for routes maybe same stop occurs twice? (unlikely for "Stop")
-        // Let's allow duplicates for now or check:
-        // if (document.querySelector(`.stop-item[data-id="${id}"]`)) { alert("Stop already added"); return; }
+        // Check for duplicates (ID or Name)
+        // We need to check against currently rendered stop items in the edit list
+        const existingItems = document.querySelectorAll('#stops_list .stop-item');
+        let isDuplicate = false;
+
+        for (let item of existingItems) {
+            const existingId = item.getAttribute('data-id');
+            const nameInput = item.querySelector('.stop-name-input');
+            const existingName = nameInput ? nameInput.value.trim() : '';
+
+            // Strict ID check (if both have IDs)
+            if (id && existingId && id === existingId) {
+                isDuplicate = true;
+                break;
+            }
+
+            // Name check (fallback if ID missing or strictly by name)
+            if (existingName.toLowerCase() === name.toLowerCase()) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        if (isDuplicate) {
+            alert(`Stop '${name}' is already included in this route.`);
+            return;
+        }
 
         renderStopItem(id, name, fee);
         selector.value = ""; // Reset
+
+        // Update Start/End dropdowns
+        updateStopDropdowns();
     }
 
     function renderStopItem(id, name, fee) {
@@ -446,8 +540,6 @@
         div.setAttribute('data-id', id);
 
         // Visual only, not editable inputs anymore (global stops)
-        // We might want to allow custom "Trip Fee" override? 
-        // For now, simple read-only view with remove button
         div.innerHTML = `
              <span class="stop-number">📍</span>
              <span style="flex: 1; margin-left:8px; font-weight:500;">${name}</span>
@@ -455,9 +547,17 @@
              <input type="hidden" class="stop-id-input" value="${id}">
              <input type="hidden" class="stop-name-input" value="${name}">
              <input type="hidden" class="stop-fee-input" value="${fee}">
-             <button type="button" class="remove-stop-btn" onclick="this.parentElement.remove()">×</button>
+             <button type="button" class="remove-stop-btn" onclick="removeStopItem(this)">×</button>
          `;
         container.appendChild(div);
+
+        // Update dropdowns immediately so user can select this new stop as start/end
+        updateStopDropdowns();
+    }
+
+    function removeStopItem(btn) {
+        btn.parentElement.remove();
+        updateStopDropdowns();
     }
 
     function saveChanges() {
@@ -485,6 +585,8 @@
             route_name: document.getElementById('edit_route_name').value,
             start_point: document.getElementById('edit_start_point').value,
             end_point: document.getElementById('edit_end_point').value,
+            start_stop_id: document.getElementById('edit_start_stop_id').value,
+            end_stop_id: document.getElementById('edit_end_stop_id').value,
             stops: stops,
             distance: document.getElementById('edit_distance').value,
             assigned_bus: document.getElementById('edit_assigned_bus').value
@@ -518,6 +620,39 @@
                 btn.style.backgroundColor = ''; // Reset color
                 isEditing = false;
             });
+    }
+
+    // Call updateStopDropdowns initially when toggleFields is called
+    const originalToggleFields = toggleFields;
+    toggleFields = function (showInput) {
+        originalToggleFields(showInput);
+        if (showInput) {
+            updateStopDropdowns();
+        }
+    };
+
+    function deleteRoute() {
+        if (confirm('Are you sure you want to delete this route? This action cannot be undone.')) {
+            fetch("{{ url_for('api.api_delete_route', route_id=route.id) }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Route deleted successfully.');
+                        window.location.href = "{{ url_for('routes.routes') }}";
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+        }
     }
 </script>
 {% endblock %}

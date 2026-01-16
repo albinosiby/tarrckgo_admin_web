@@ -29,11 +29,11 @@
                 <!-- Search -->
                 <div style="flex: 1; min-width: 200px;">
                     <input type="text" name="q" placeholder="Search name or roll id..." value="{{ filters.q }}"
-                        class="form-input">
+                        class="form-input" oninput="debounceSubmit(this.form)">
                 </div>
 
                 <!-- Assignment Filter -->
-                <select name="assignment" class="form-input" style="width:auto;">
+                <select name="assignment" class="form-input" style="width:auto;" onchange="fetchStudents(this.form)">
                     <option value="">All Students</option>
                     <option value="assigned" {% if filters.assignment=='assigned' %}selected{% endif %}>Assigned Only
                     </option>
@@ -42,7 +42,7 @@
                 </select>
 
                 <!-- Bus Filter -->
-                <select name="bus" class="form-input" style="width:auto;">
+                <select name="bus" class="form-input" style="width:auto;" onchange="fetchStudents(this.form)">
                     <option value="">All Buses</option>
                     {% for bus in buses %}
                     <option value="{{ bus.bus_number }}" {% if filters.bus==bus.bus_number %}selected{% endif %}>
@@ -52,7 +52,7 @@
                 </select>
 
                 <!-- Route Filter -->
-                <select name="route" class="form-input" style="width:auto;">
+                <select name="route" class="form-input" style="width:auto;" onchange="fetchStudents(this.form)">
                     <option value="">All Routes</option>
                     {% for route in routes %}
                     <option value="{{ route.route_name }}" {% if filters.route==route.route_name %}selected{% endif %}>
@@ -62,9 +62,7 @@
                 </select>
 
                 <!-- Actions -->
-                <button type="submit" class="btn btn-primary">
-                    🔍 Search
-                </button>
+                <!-- Search button removed for auto-filter -->
 
                 {% if filters.q or filters.assignment or filters.bus or filters.route %}
                 <a href="{{ url_for('students.students') }}" class="btn btn-secondary">
@@ -112,6 +110,45 @@
 
 {% block scripts %}
 <script>
+    let debounceTimeout;
+
+    function fetchStudents(form) {
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+        const url = form.action + '?' + params.toString();
+
+        const grid = document.querySelector('.student-grid');
+        grid.style.opacity = '0.5';
+        grid.style.transition = 'opacity 0.2s';
+
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newGrid = doc.querySelector('.student-grid');
+
+                if (newGrid) {
+                    grid.innerHTML = newGrid.innerHTML;
+                }
+                grid.style.opacity = '1';
+
+                // Update Browser URL without reloading
+                window.history.pushState({}, '', url);
+            })
+            .catch(error => {
+                console.error('Error fetching students:', error);
+                grid.style.opacity = '1';
+            });
+    }
+
+    function debounceSubmit(form) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            fetchStudents(form);
+        }, 600);
+    }
+
     function deleteStudent(studentId, studentName) {
         if (confirm(`Are you sure you want to delete ${studentName}? This action cannot be undone.`)) {
             fetch(`/api/delete_student/${studentId}`, {
