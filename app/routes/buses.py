@@ -75,13 +75,57 @@ def bus_details(bus_id):
     # Fetch Trip History (Top 10 only)
     trip_history = []
     latest_trip = None
+    # Helper to format timestamp
+    def format_ts_bus(ts):
+        if not ts: return '-'
+        try:
+             # Convert to IST (UTC+5:30)
+            from datetime import timedelta, timezone
+            target_tz = timezone(timedelta(hours=5, minutes=30))
+            
+            # If it's a Firestore datetime (aware), convert it.
+            # If naive, assume UTC and convert.
+            if hasattr(ts, 'astimezone'):
+                 ts_local = ts.astimezone(target_tz)
+                 return ts_local.strftime('%I:%M %p')
+            return str(ts)
+        except:
+            return str(ts)
+
     try:
         trips_ref = bus_ref.collection('trip_history').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(10)
         trips_stream = list(trips_ref.stream())
         
         for t_doc in trips_stream:
             t_data = t_doc.to_dict()
+            
+            # Calculate duration if not present
+            duration = t_data.get('durationMinutes')
+            st_obj = t_data.get('start_time') or t_data.get('startTime')
+            et_obj = t_data.get('end_time') or t_data.get('endTime')
+
+            if not duration and st_obj and et_obj:
+                try:
+                    import datetime
+                    if not isinstance(st_obj, datetime.datetime) and hasattr(st_obj, 'to_datetime'):
+                        st_obj = st_obj.to_datetime()
+                    if not isinstance(et_obj, datetime.datetime) and hasattr(et_obj, 'to_datetime'):
+                        et_obj = et_obj.to_datetime()
+                    
+                    if isinstance(st_obj, datetime.datetime) and isinstance(et_obj, datetime.datetime):
+                        diff = et_obj - st_obj
+                        duration = int(diff.total_seconds() / 60)
+                except Exception as e:
+                    print(f"Error calculating duration: {e}")
+
             t_data['id'] = t_doc.id
+            t_data['startTime'] = format_ts_bus(st_obj)
+            t_data['endTime'] = format_ts_bus(et_obj)
+            t_data['type'] = t_data.get('trip_type', t_data.get('type', '-'))
+            t_data['durationMinutes'] = duration if duration is not None else 0
+            t_data['boardedStudents'] = t_data.get('student_count', 0)
+            t_data['totalStudents'] = t_data.get('capacity', bus.get('capacity', '-'))
+            
             trip_history.append(t_data)
             
         if trip_history:
@@ -172,9 +216,48 @@ def bus_trip_history(bus_id):
         trips_ref = bus_ref.collection('trip_history').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(100)
         trips_stream = trips_ref.stream()
         
+        # Reuse helper if accessible or redefine (redefining for safety/isolation)
+        def format_ts_bus_all(ts):
+            if not ts: return '-'
+            try:
+                from datetime import timedelta, timezone
+                target_tz = timezone(timedelta(hours=5, minutes=30))
+                if hasattr(ts, 'astimezone'):
+                     ts_local = ts.astimezone(target_tz)
+                     return ts_local.strftime('%I:%M %p')
+                return str(ts)
+            except:
+                return str(ts)
+        
         for t_doc in trips_stream:
             t_data = t_doc.to_dict()
+            
+            # Calculate duration
+            duration = t_data.get('durationMinutes')
+            st_obj = t_data.get('start_time') or t_data.get('startTime')
+            et_obj = t_data.get('end_time') or t_data.get('endTime')
+
+            if not duration and st_obj and et_obj:
+                try:
+                    import datetime
+                    if not isinstance(st_obj, datetime.datetime) and hasattr(st_obj, 'to_datetime'):
+                        st_obj = st_obj.to_datetime()
+                    if not isinstance(et_obj, datetime.datetime) and hasattr(et_obj, 'to_datetime'):
+                        et_obj = et_obj.to_datetime()
+                    
+                    if isinstance(st_obj, datetime.datetime) and isinstance(et_obj, datetime.datetime):
+                        diff = et_obj - st_obj
+                        duration = int(diff.total_seconds() / 60)
+                except: pass
+
             t_data['id'] = t_doc.id
+            t_data['startTime'] = format_ts_bus_all(st_obj)
+            t_data['endTime'] = format_ts_bus_all(et_obj)
+            t_data['type'] = t_data.get('trip_type', t_data.get('type', '-'))
+            t_data['durationMinutes'] = duration if duration is not None else 0
+            t_data['boardedStudents'] = t_data.get('student_count', 0)
+            t_data['totalStudents'] = t_data.get('capacity', bus.get('capacity', '-'))
+            
             trip_history.append(t_data)
     except Exception as e:
         print(f"Error fetching full trip history: {e}")
