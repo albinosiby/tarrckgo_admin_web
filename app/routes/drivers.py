@@ -88,15 +88,35 @@ def driver_details(driver_id):
                 except:
                     return str(ts)
 
+            # Calculate duration if not present
+            duration = t_data.get('durationMinutes')
+            st_obj = t_data.get('start_time') or t_data.get('startTime')
+            et_obj = t_data.get('end_time') or t_data.get('endTime')
+
+            if not duration and st_obj and et_obj:
+                try:
+                    # Ensure they are datetime objects
+                    import datetime
+                    if not isinstance(st_obj, datetime.datetime) and hasattr(st_obj, 'to_datetime'):
+                        st_obj = st_obj.to_datetime()
+                    if not isinstance(et_obj, datetime.datetime) and hasattr(et_obj, 'to_datetime'):
+                        et_obj = et_obj.to_datetime()
+                    
+                    if isinstance(st_obj, datetime.datetime) and isinstance(et_obj, datetime.datetime):
+                        diff = et_obj - st_obj
+                        duration = int(diff.total_seconds() / 60)
+                except Exception as e:
+                    print(f"Error calculating duration: {e}")
+
             # Map fields for template
             trip = {
                 'id': t_doc.id,
                 'date': t_data.get('date', '-'),
-                'bus_number': t_data.get('busNumber', '-'), # CamelCase from Firestore
-                'type': t_data.get('type', '-'),
-                'startTime': format_ts(t_data.get('startTime')),
-                'endTime': format_ts(t_data.get('endTime')),
-                'durationMinutes': t_data.get('durationMinutes', 0)
+                'bus_number': t_data.get('busNumber', t_data.get('bus_number', '-')),
+                'type': t_data.get('trip_type', t_data.get('type', '-')),
+                'startTime': format_ts(st_obj),
+                'endTime': format_ts(et_obj),
+                'durationMinutes': duration if duration is not None else 0
             }
             trip_history.append(trip)
             
